@@ -148,21 +148,24 @@ Future<void> seedInformation() async {
       'title': 'What is the Aedes Mosquito?',
       'content':
           'The Aedes aegypti mosquito is the primary carrier of dengue fever. It has distinctive black and white markings on its legs and body. Unlike other mosquitoes, it is most active during the day, especially in the early morning and late afternoon.',
-      'imageHeader': 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800',
+      'imageHeader':
+          'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800',
       'source': 'Department of Disease Control, Ministry of Public Health',
     },
     {
       'title': 'How to Prevent Mosquito Breeding',
       'content':
           '1. Remove standing water around your home\n2. Cover all water storage containers\n3. Change water in vases every week\n4. Use mosquito larvicide (Abate) in containers that cannot be covered\n5. Wear long-sleeved clothing when outdoors',
-      'imageHeader': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800',
+      'imageHeader':
+          'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800',
       'source': 'Chiang Mai Provincial Health Office',
     },
     {
       'title': 'Symptoms of Dengue Fever',
       'content':
           'Dengue fever typically causes sudden high fever lasting 2-7 days, severe headache, pain behind the eyes, muscle and joint pain, nausea, vomiting, and a skin rash. If you experience these symptoms, seek medical attention immediately.',
-      'imageHeader': 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800',
+      'imageHeader':
+          'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800',
       'source': 'Maharaj Nakorn Chiang Mai Hospital',
     },
   ];
@@ -181,21 +184,28 @@ Future<void> seedNotifications() async {
   final notifications = [
     {
       'title': '⚠️ Outbreak Detected in Suthep Area',
-      'body': 'Dengue fever cases have increased in Suthep subdistrict. Please eliminate standing water around your home.',
+      'body':
+          'Dengue fever cases have increased in Suthep subdistrict. Please eliminate standing water around your home.',
       'relatedZone': areaRefs.isNotEmpty ? areaRefs[0] : null,
       'sentAt': Timestamp.now(),
     },
     {
       'title': '📢 High Risk Area Alert',
-      'body': 'Chang Phueak area is rated high risk. Residents are advised to take precautionary measures immediately.',
+      'body':
+          'Chang Phueak area is rated high risk. Residents are advised to take precautionary measures immediately.',
       'relatedZone': areaRefs.length > 1 ? areaRefs[1] : null,
-      'sentAt': Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 1))),
+      'sentAt': Timestamp.fromDate(
+        DateTime.now().subtract(const Duration(days: 1)),
+      ),
     },
     {
       'title': '✅ Risk Level Improved',
-      'body': 'Pa Tan subdistrict has been downgraded to low risk. Keep up the good work in keeping your area clean.',
+      'body':
+          'Pa Tan subdistrict has been downgraded to low risk. Keep up the good work in keeping your area clean.',
       'relatedZone': null,
-      'sentAt': Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 3))),
+      'sentAt': Timestamp.fromDate(
+        DateTime.now().subtract(const Duration(days: 3)),
+      ),
     },
   ];
 
@@ -212,7 +222,8 @@ Future<void> seedNews() async {
       'title': 'Warning: Dengue Fever Cases Surge During Rainy Season',
       'description':
           'Health authorities report a significant increase in dengue fever cases across northern Thailand. Residents are urged to eliminate standing water around their homes to reduce mosquito breeding sites.',
-      'imageUrl': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800',
       'sourceName': 'Department of Disease Control',
       'sourceUrl': 'https://ddc.moph.go.th',
       'publishedAt': Timestamp.fromDate(DateTime(2025, 5, 20, 9, 0)),
@@ -223,7 +234,8 @@ Future<void> seedNews() async {
       'title': 'Chiang Mai Records Highest Dengue Cases in 5 Years',
       'description':
           'Chiang Mai province has reported over 1,200 dengue cases this year, the highest in five years. Local health officials are launching emergency mosquito control campaigns in high-risk areas.',
-      'imageUrl': 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=800',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=800',
       'sourceName': 'ThaiPBS',
       'sourceUrl': 'https://www.thaipbs.or.th',
       'publishedAt': Timestamp.fromDate(DateTime(2025, 5, 18, 14, 30)),
@@ -234,7 +246,8 @@ Future<void> seedNews() async {
       'title': 'How to Identify Aedes Mosquito Breeding Sites at Home',
       'description':
           'Experts share practical tips on identifying and eliminating common Aedes mosquito breeding spots, including flower pot saucers, water containers, and clogged gutters.',
-      'imageUrl': 'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=800',
       'sourceName': 'Mahidol University',
       'sourceUrl': 'https://www.mahidol.ac.th',
       'publishedAt': Timestamp.fromDate(DateTime(2025, 5, 15, 10, 0)),
@@ -245,7 +258,8 @@ Future<void> seedNews() async {
       'title': 'Thailand Launches National Dengue Prevention Week',
       'description':
           'The Ministry of Public Health has announced a national dengue prevention week campaign, encouraging communities to clean up potential mosquito breeding sites simultaneously across the country.',
-      'imageUrl': 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800',
       'sourceName': 'Ministry of Public Health',
       'sourceUrl': 'https://www.moph.go.th',
       'publishedAt': Timestamp.fromDate(DateTime(2025, 5, 12, 8, 0)),
@@ -256,7 +270,8 @@ Future<void> seedNews() async {
       'title': 'New Rapid Test for Dengue Fever Now Available at Clinics',
       'description':
           'A new rapid diagnostic test for dengue fever is now available at clinics nationwide. The test provides results within 15 minutes, allowing faster treatment and reducing complications.',
-      'imageUrl': 'https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=800',
+      'imageUrl':
+          'https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=800',
       'sourceName': 'Bangkok Post',
       'sourceUrl': 'https://www.bangkokpost.com',
       'publishedAt': Timestamp.fromDate(DateTime(2025, 5, 10, 11, 0)),
