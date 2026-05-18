@@ -37,6 +37,9 @@ dependencies:
   flutter_riverpod: ^2.6.1
   google_fonts: ^6.2.1
   cupertino_icons: ^1.0.8
+  geoflutterfire_plus: ^0.0.32
+  dio: ^5.7.0
+  geolocator: ^14.0.0
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +51,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  mockito: ^5.6.1
+  build_runner: ^2.4.13
+  fake_cloud_firestore: ^3.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
