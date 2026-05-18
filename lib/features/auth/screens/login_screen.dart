@@ -156,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               // Bug Icon
                               const Icon(
-                                Icons.bug_report,
+                                Icons.pest_control_outlined,
                                 color: AppColors.primary,
                                 size: 22,
                               ),

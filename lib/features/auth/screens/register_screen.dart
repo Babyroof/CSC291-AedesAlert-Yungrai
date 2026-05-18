@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             children: [
                               // Bug Icon
                               const Icon(
-                                Icons.bug_report,
+                                Icons.pest_control_outlined,
                                 color: AppColors.primary,
                                 size: 22,
                               ),
@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           const SizedBox(height: 8),
                           // Description
                           const Text(
-                            'create an account to continue',
+                            'Create an account to continue',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
