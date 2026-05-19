@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:aedes_alert_yungrai/core/constants/app_colors.dart';
 import 'package:aedes_alert_yungrai/features/auth/services/auth_service.dart';
+import 'package:aedes_alert_yungrai/features/profile/screens/edit_profile_screen.dart';
+import 'package:aedes_alert_yungrai/features/profile/screens/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -182,7 +184,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: 'Edit Profile',
                 subtitle: 'firstName · lastName · phoneNumber',
                 onTap: () {
-                  // Handle Edit Profile
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfileScreen(
+                        firstName: _userDisplayName?.split(' ').first ?? '',
+                        lastName: _userDisplayName?.split(' ').skip(1).join(' ') ?? '',
+                        email: _userEmail,
+                      ),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 16),
@@ -194,7 +205,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: 'Change Password',
                 subtitle: 'Firebase Authentication',
                 onTap: () {
-                  // Handle Change Password
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ChangePasswordScreen(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 16),
