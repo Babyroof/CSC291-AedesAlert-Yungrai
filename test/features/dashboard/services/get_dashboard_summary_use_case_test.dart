@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/risk_count_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/monthly_risk_data_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_risk_counts_use_case.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_average_risk_score_use_case.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_monthly_trend_use_case.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_top_areas_use_case.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_dashboard_summary_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/risk_count_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/monthly_risk_data_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_risk_counts_use_case.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_average_risk_score_use_case.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_monthly_trend_use_case.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_top_areas_use_case.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_dashboard_summary_use_case.dart';
 
 import 'get_dashboard_summary_use_case_test.mocks.dart';
 

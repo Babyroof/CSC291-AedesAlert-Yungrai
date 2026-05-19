@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:aedes_alert_yungrai/features/home/models/weather_forecast_model.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/entities/weather_forecast_model.dart';
 
 void main() {
   Map<String, dynamic> validJson() => {

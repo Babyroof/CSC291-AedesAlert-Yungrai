@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "718444697672",
+    "project_id": "yungrai-aedesalert",
+    "storage_bucket": "yungrai-aedesalert.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718444697672:android:680f95c4f1a478f428e07d",
+        "android_client_info": {
+          "package_name": "com.example.aedes_alert_yungrai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPNDrI0MvLQ64rXcpwyOiIhwsV04IUyJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

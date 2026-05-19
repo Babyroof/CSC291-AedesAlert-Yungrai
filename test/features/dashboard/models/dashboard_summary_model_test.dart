@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/risk_count_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/monthly_risk_data_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/dashboard_summary_model.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/risk_count_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/monthly_risk_data_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/dashboard_summary_model.dart';
 
 void main() {
   AreaModel fakeArea(String id) => AreaModel(

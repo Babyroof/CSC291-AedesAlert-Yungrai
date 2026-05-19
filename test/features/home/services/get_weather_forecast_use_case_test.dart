@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:aedes_alert_yungrai/features/home/models/weather_forecast_model.dart';
-import 'package:aedes_alert_yungrai/features/home/services/weather_service.dart';
-import 'package:aedes_alert_yungrai/features/home/services/get_weather_forecast_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/entities/weather_forecast_model.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/repositories/weather_service.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_weather_forecast_use_case.dart';
 
 import 'get_weather_forecast_use_case_test.mocks.dart';
 

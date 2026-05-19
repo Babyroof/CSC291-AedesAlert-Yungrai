@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:aedes_alert_yungrai/features/home/services/weather_service_impl.dart';
+import 'package:aedes_alert_yungrai/features/home/data/data_sources/weather_service_impl.dart';
 
 import 'weather_service_impl_test.mocks.dart';
 

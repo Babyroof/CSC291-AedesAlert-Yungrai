@@ -5,17 +5,17 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i8;
 
-import 'package:aedes_alert_yungrai/features/dashboard/models/dashboard_summary_model.dart'
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/dashboard_summary_model.dart'
     as _i6;
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_average_risk_score_use_case.dart'
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_average_risk_score_use_case.dart'
     as _i3;
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_dashboard_summary_use_case.dart'
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_dashboard_summary_use_case.dart'
     as _i7;
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_monthly_trend_use_case.dart'
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_monthly_trend_use_case.dart'
     as _i4;
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_risk_counts_use_case.dart'
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_risk_counts_use_case.dart'
     as _i2;
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_top_areas_use_case.dart'
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_top_areas_use_case.dart'
     as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 

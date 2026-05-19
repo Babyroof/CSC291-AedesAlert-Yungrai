@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/risk_count_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/monthly_risk_data_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/dashboard_summary_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_dashboard_summary_use_case.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/controllers/dashboard_controller.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/risk_count_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/monthly_risk_data_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/dashboard_summary_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_dashboard_summary_use_case.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/presentation/controllers/dashboard_controller.dart';
 
 import 'dashboard_controller_test.mocks.dart';
 

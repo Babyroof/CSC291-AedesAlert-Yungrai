@@ -5,17 +5,17 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart'
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart'
     as _i5;
-import 'package:aedes_alert_yungrai/features/home/models/notification_model.dart'
+import 'package:aedes_alert_yungrai/features/home/data/models/notification_model.dart'
     as _i8;
-import 'package:aedes_alert_yungrai/features/home/models/weather_forecast_model.dart'
+import 'package:aedes_alert_yungrai/features/home/domain/entities/weather_forecast_model.dart'
     as _i2;
-import 'package:aedes_alert_yungrai/features/home/services/get_latest_notification_use_case.dart'
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_latest_notification_use_case.dart'
     as _i7;
-import 'package:aedes_alert_yungrai/features/home/services/get_nearest_area_use_case.dart'
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_nearest_area_use_case.dart'
     as _i3;
-import 'package:aedes_alert_yungrai/features/home/services/get_weather_forecast_use_case.dart'
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_weather_forecast_use_case.dart'
     as _i9;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;

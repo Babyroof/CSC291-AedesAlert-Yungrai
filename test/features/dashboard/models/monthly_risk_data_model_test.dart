@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/models/monthly_risk_data_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/monthly_risk_data_model.dart';
 
 void main() {
   group('MonthlyRiskDataModel.fromBucket', () {

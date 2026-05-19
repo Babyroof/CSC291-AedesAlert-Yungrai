@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/dashboard_repository.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/get_top_areas_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_top_areas_use_case.dart';
 
 import 'get_top_areas_use_case_test.mocks.dart';
 

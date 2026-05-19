@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart';
-import 'package:aedes_alert_yungrai/features/home/models/notification_model.dart';
-import 'package:aedes_alert_yungrai/features/home/models/weather_forecast_model.dart';
-import 'package:aedes_alert_yungrai/features/home/services/get_nearest_area_use_case.dart';
-import 'package:aedes_alert_yungrai/features/home/services/get_latest_notification_use_case.dart';
-import 'package:aedes_alert_yungrai/features/home/services/get_weather_forecast_use_case.dart';
-import 'package:aedes_alert_yungrai/features/home/controllers/home_controller.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/notification_model.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/entities/weather_forecast_model.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_nearest_area_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_latest_notification_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_weather_forecast_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/presentation/controllers/home_controller.dart';
 
 import 'home_controller_test.mocks.dart';
 

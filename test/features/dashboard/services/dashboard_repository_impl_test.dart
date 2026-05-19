@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:aedes_alert_yungrai/features/dashboard/services/dashboard_repository_impl.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 
 void main() {
   late FakeFirebaseFirestore fakeFirestore;

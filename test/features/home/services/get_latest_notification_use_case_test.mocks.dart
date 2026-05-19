@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:aedes_alert_yungrai/features/home/models/notification_model.dart'
+import 'package:aedes_alert_yungrai/features/home/data/models/notification_model.dart'
     as _i4;
-import 'package:aedes_alert_yungrai/features/home/services/notification_repository.dart'
+import 'package:aedes_alert_yungrai/features/home/domain/repositories/notification_repository.dart'
     as _i2;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;

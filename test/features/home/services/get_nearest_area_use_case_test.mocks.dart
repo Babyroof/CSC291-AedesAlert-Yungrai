@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:aedes_alert_yungrai/features/home/models/area_model.dart'
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart'
     as _i4;
-import 'package:aedes_alert_yungrai/features/home/services/area_repository.dart'
+import 'package:aedes_alert_yungrai/features/home/domain/repositories/area_repository.dart'
     as _i2;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
