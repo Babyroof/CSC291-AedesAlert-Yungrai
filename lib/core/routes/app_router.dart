@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/auth/screens/login_screen.dart';
-import '../../features/auth/screens/register_screen.dart';
-import '../../features/home/screens/home_screen.dart';
-import '../../features/home/screens/checklist_screen.dart';
-import '../../features/home/screens/report_risk_screen.dart';
-import '../../features/map/screens/map_screen.dart';
-import '../../features/dashboard/screens/dashboard_screen.dart';
-import '../../features/profile/screens/profile_screen.dart';
-import '../../features/news/screens/news_list_screen.dart';
-import '../../features/news/screens/news_detail_screen.dart';
-import '../../features/notification/screens/notification_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/checklist_screen.dart';
+import '../../features/home/presentation/screens/report_risk_screen.dart';
+import '../../features/map/presentation/screens/map_screen.dart';
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/news/presentation/screens/news_list_screen.dart';
+import '../../features/news/presentation/screens/news_detail_screen.dart';
+import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../widgets/app_bottom_nav.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
