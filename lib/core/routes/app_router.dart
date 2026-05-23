@@ -49,7 +49,8 @@ final appRouter = GoRouter(
   refreshListenable: _authNotifier,
   redirect: (BuildContext context, GoRouterState state) {
     final user = FirebaseAuth.instance.currentUser;
-    final onAuthPage = state.matchedLocation == '/login' ||
+    final onAuthPage =
+        state.matchedLocation == '/login' ||
         state.matchedLocation == '/register';
 
     if (user == null && !onAuthPage) return '/login';

@@ -13,7 +13,8 @@ class GetWeatherForecastUseCase {
       _service.getForecast(location.latitude, location.longitude);
 }
 
-final getWeatherForecastUseCaseProvider =
-    Provider<GetWeatherForecastUseCase>((ref) {
+final getWeatherForecastUseCaseProvider = Provider<GetWeatherForecastUseCase>((
+  ref,
+) {
   return GetWeatherForecastUseCase(ref.watch(weatherServiceProvider));
 });

@@ -20,14 +20,12 @@ class UserProfileEntity {
     String? lastName,
     String? phoneNumber,
     bool? notificationsEnabled,
-  }) =>
-      UserProfileEntity(
-        uid: uid,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        email: email,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        notificationsEnabled:
-            notificationsEnabled ?? this.notificationsEnabled,
-      );
+  }) => UserProfileEntity(
+    uid: uid,
+    firstName: firstName ?? this.firstName,
+    lastName: lastName ?? this.lastName,
+    email: email,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+  );
 }

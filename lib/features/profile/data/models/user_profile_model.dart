@@ -36,32 +36,33 @@ class UserProfileModel {
   }
 
   Map<String, dynamic> toFirestore() => {
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'fcmToken': fcmToken,
-        'notificationsEnabled': notificationsEnabled,
-      };
+    'firstName': firstName,
+    'lastName': lastName,
+    'email': email,
+    'phoneNumber': phoneNumber,
+    'fcmToken': fcmToken,
+    'notificationsEnabled': notificationsEnabled,
+  };
 
   UserProfileEntity toEntity() => UserProfileEntity(
-        uid: uid,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phoneNumber: phoneNumber,
-        notificationsEnabled: notificationsEnabled,
-      );
+    uid: uid,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    phoneNumber: phoneNumber,
+    notificationsEnabled: notificationsEnabled,
+  );
 
-  factory UserProfileModel.fromEntity(UserProfileEntity entity,
-      {String fcmToken = ''}) =>
-      UserProfileModel(
-        uid: entity.uid,
-        firstName: entity.firstName,
-        lastName: entity.lastName,
-        email: entity.email,
-        phoneNumber: entity.phoneNumber,
-        fcmToken: fcmToken,
-        notificationsEnabled: entity.notificationsEnabled,
-      );
+  factory UserProfileModel.fromEntity(
+    UserProfileEntity entity, {
+    String fcmToken = '',
+  }) => UserProfileModel(
+    uid: entity.uid,
+    firstName: entity.firstName,
+    lastName: entity.lastName,
+    email: entity.email,
+    phoneNumber: entity.phoneNumber,
+    fcmToken: fcmToken,
+    notificationsEnabled: entity.notificationsEnabled,
+  );
 }

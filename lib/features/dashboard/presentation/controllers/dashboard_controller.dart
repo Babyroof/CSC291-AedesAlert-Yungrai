@@ -22,5 +22,5 @@ class DashboardController extends StateNotifier<DashboardState> {
 
 final dashboardControllerProvider =
     StateNotifierProvider<DashboardController, DashboardState>((ref) {
-  return DashboardController(ref.watch(getDashboardSummaryUseCaseProvider));
-});
+      return DashboardController(ref.watch(getDashboardSummaryUseCaseProvider));
+    });

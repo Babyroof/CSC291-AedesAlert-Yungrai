@@ -4,8 +4,8 @@ import 'package:aedes_alert_yungrai/features/notification/presentation/controlle
 
 class NotificationController extends StateNotifier<NotificationState> {
   NotificationController({required GetNotificationsUseCase getNotifications})
-      : _getNotifications = getNotifications,
-        super(NotificationState.initial());
+    : _getNotifications = getNotifications,
+      super(NotificationState.initial());
 
   final GetNotificationsUseCase _getNotifications;
 
@@ -13,8 +13,7 @@ class NotificationController extends StateNotifier<NotificationState> {
     state = NotificationState.initial();
     try {
       final notifications = await _getNotifications.execute();
-      state = NotificationState(
-          notifications: AsyncValue.data(notifications));
+      state = NotificationState(notifications: AsyncValue.data(notifications));
     } catch (e, st) {
       state = NotificationState(notifications: AsyncValue.error(e, st));
     }
@@ -25,7 +24,7 @@ class NotificationController extends StateNotifier<NotificationState> {
 
 final notificationControllerProvider =
     StateNotifierProvider<NotificationController, NotificationState>((ref) {
-  return NotificationController(
-    getNotifications: ref.watch(getNotificationsUseCaseProvider),
-  );
-});
+      return NotificationController(
+        getNotifications: ref.watch(getNotificationsUseCaseProvider),
+      );
+    });

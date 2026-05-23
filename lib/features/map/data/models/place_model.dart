@@ -18,9 +18,7 @@ class PlaceModel {
   final String phoneNumber;
   final String type;
 
-  factory PlaceModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> doc,
-  ) {
+  factory PlaceModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
     return PlaceModel(
       id: doc.id,
@@ -33,12 +31,12 @@ class PlaceModel {
   }
 
   PlaceEntity toEntity() => PlaceEntity(
-        id: id,
-        name: name,
-        description: description,
-        lat: location.latitude,
-        lng: location.longitude,
-        phoneNumber: phoneNumber,
-        type: type,
-      );
+    id: id,
+    name: name,
+    description: description,
+    lat: location.latitude,
+    lng: location.longitude,
+    phoneNumber: phoneNumber,
+    type: type,
+  );
 }

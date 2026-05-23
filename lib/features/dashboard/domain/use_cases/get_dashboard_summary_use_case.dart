@@ -38,12 +38,13 @@ class GetDashboardSummaryUseCase {
   }
 }
 
-final getDashboardSummaryUseCaseProvider =
-    Provider<GetDashboardSummaryUseCase>((ref) {
-  return GetDashboardSummaryUseCase(
-    getRiskCounts: ref.watch(getRiskCountsUseCaseProvider),
-    getAverageScore: ref.watch(getAverageRiskScoreUseCaseProvider),
-    getMonthlyTrend: ref.watch(getMonthlyTrendUseCaseProvider),
-    getTopAreas: ref.watch(getTopAreasUseCaseProvider),
-  );
-});
+final getDashboardSummaryUseCaseProvider = Provider<GetDashboardSummaryUseCase>(
+  (ref) {
+    return GetDashboardSummaryUseCase(
+      getRiskCounts: ref.watch(getRiskCountsUseCaseProvider),
+      getAverageScore: ref.watch(getAverageRiskScoreUseCaseProvider),
+      getMonthlyTrend: ref.watch(getMonthlyTrendUseCaseProvider),
+      getTopAreas: ref.watch(getTopAreasUseCaseProvider),
+    );
+  },
+);

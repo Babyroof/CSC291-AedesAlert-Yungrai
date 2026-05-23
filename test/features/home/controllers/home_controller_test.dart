@@ -27,26 +27,28 @@ void main() {
   const userLocation = GeoPoint(13.7563, 100.5018);
 
   AreaModel fakeArea() => AreaModel(
-        id: 'a1',
-        subDistrict: 'S',
-        district: 'D',
-        province: 'P',
-        location: userLocation,
-        radius: 500,
-        riskScore: 60.0,
-        riskLevel: 'medium',
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 6, 1),
-      );
+    id: 'a1',
+    subDistrict: 'S',
+    district: 'D',
+    province: 'P',
+    location: userLocation,
+    radius: 500,
+    riskScore: 60.0,
+    riskLevel: 'medium',
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: DateTime(2024, 6, 1),
+  );
 
-  WeatherForecastModel fakeForecast() => WeatherForecastModel(days: [
-        DailyForecast(
-          date: DateTime(2024, 6, 1),
-          tempMax: 35.0,
-          tempMin: 26.0,
-          precipitationSum: 0.0,
-        ),
-      ]);
+  WeatherForecastModel fakeForecast() => WeatherForecastModel(
+    days: [
+      DailyForecast(
+        date: DateTime(2024, 6, 1),
+        tempMax: 35.0,
+        tempMin: 26.0,
+        precipitationSum: 0.0,
+      ),
+    ],
+  );
 
   setUp(() {
     mockGetNearestArea = MockGetNearestAreaUseCase();
@@ -67,17 +69,20 @@ void main() {
   });
 
   test('loadHomeData populates all three fields on success', () async {
-    when(mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')))
-        .thenAnswer((_) async => fakeArea());
-    when(mockGetLatestNotification.execute(any))
-        .thenAnswer((_) async => NotificationModel(
-              id: 'n1',
-              title: 'Alert',
-              body: 'body',
-              sentAt: DateTime(2024, 6, 1),
-            ));
-    when(mockGetWeatherForecast.execute(any))
-        .thenAnswer((_) async => fakeForecast());
+    when(
+      mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')),
+    ).thenAnswer((_) async => fakeArea());
+    when(mockGetLatestNotification.execute(any)).thenAnswer(
+      (_) async => NotificationModel(
+        id: 'n1',
+        title: 'Alert',
+        body: 'body',
+        sentAt: DateTime(2024, 6, 1),
+      ),
+    );
+    when(
+      mockGetWeatherForecast.execute(any),
+    ).thenAnswer((_) async => fakeForecast());
 
     await controller.loadHomeData(userLocation);
 
@@ -86,41 +91,53 @@ void main() {
     expect(controller.state.weatherForecast.value?.days.length, 1);
   });
 
-  test('empty areas — nearestArea is null, downstream is data(null) not error',
-      () async {
-    when(mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')))
-        .thenAnswer((_) async => null);
+  test(
+    'empty areas — nearestArea is null, downstream is data(null) not error',
+    () async {
+      when(
+        mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')),
+      ).thenAnswer((_) async => null);
 
-    await controller.loadHomeData(userLocation);
+      await controller.loadHomeData(userLocation);
 
-    expect(controller.state.nearestArea.value, isNull);
-    expect(controller.state.latestNotification.value, isNull);
-    expect(controller.state.weatherForecast.value, isNull);
-  });
+      expect(controller.state.nearestArea.value, isNull);
+      expect(controller.state.latestNotification.value, isNull);
+      expect(controller.state.weatherForecast.value, isNull);
+    },
+  );
 
-  test('getNearestArea failure sets nearestArea error, others data(null)',
-      () async {
-    when(mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')))
-        .thenThrow(Exception('Firestore down'));
+  test(
+    'getNearestArea failure sets nearestArea error, others data(null)',
+    () async {
+      when(
+        mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')),
+      ).thenThrow(Exception('Firestore down'));
 
-    await controller.loadHomeData(userLocation);
+      await controller.loadHomeData(userLocation);
 
-    expect(controller.state.nearestArea, isA<AsyncError>());
-    expect(controller.state.latestNotification.value, isNull);
-    expect(controller.state.weatherForecast.value, isNull);
-  });
+      expect(controller.state.nearestArea, isA<AsyncError>());
+      expect(controller.state.latestNotification.value, isNull);
+      expect(controller.state.weatherForecast.value, isNull);
+    },
+  );
 
-  test('weather timeout sets weatherForecast error without affecting notification',
-      () async {
-    when(mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')))
-        .thenAnswer((_) async => fakeArea());
-    when(mockGetLatestNotification.execute(any)).thenAnswer((_) async => null);
-    when(mockGetWeatherForecast.execute(any))
-        .thenAnswer((_) async => throw Exception('timeout'));
+  test(
+    'weather timeout sets weatherForecast error without affecting notification',
+    () async {
+      when(
+        mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')),
+      ).thenAnswer((_) async => fakeArea());
+      when(
+        mockGetLatestNotification.execute(any),
+      ).thenAnswer((_) async => null);
+      when(
+        mockGetWeatherForecast.execute(any),
+      ).thenAnswer((_) async => throw Exception('timeout'));
 
-    await controller.loadHomeData(userLocation);
+      await controller.loadHomeData(userLocation);
 
-    expect(controller.state.weatherForecast, isA<AsyncError>());
-    expect(controller.state.latestNotification.value, isNull);
-  });
+      expect(controller.state.weatherForecast, isA<AsyncError>());
+      expect(controller.state.latestNotification.value, isNull);
+    },
+  );
 }

@@ -30,10 +30,10 @@ class ArticleModel {
   }
 
   ArticleEntity toEntity() => ArticleEntity(
-        id: id,
-        title: title,
-        content: content,
-        imageHeader: imageHeader,
-        source: source,
-      );
+    id: id,
+    title: title,
+    content: content,
+    imageHeader: imageHeader,
+    source: source,
+  );
 }

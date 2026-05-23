@@ -31,10 +31,10 @@ class NotificationDataModel {
   }
 
   NotificationEntity toEntity() => NotificationEntity(
-        id: id,
-        title: title,
-        body: body,
-        relatedZoneId: relatedZoneId,
-        sentAt: sentAt,
-      );
+    id: id,
+    title: title,
+    body: body,
+    relatedZoneId: relatedZoneId,
+    sentAt: sentAt,
+  );
 }

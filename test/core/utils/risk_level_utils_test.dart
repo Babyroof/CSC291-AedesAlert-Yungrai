@@ -27,7 +27,10 @@ void main() {
 
   group('RiskLevelUtils.bgColorForLevel', () {
     test('critical returns riskCriticalBg', () {
-      expect(RiskLevelUtils.bgColorForLevel('critical'), AppColors.riskCriticalBg);
+      expect(
+        RiskLevelUtils.bgColorForLevel('critical'),
+        AppColors.riskCriticalBg,
+      );
     });
 
     test('high returns riskHighBg', () {
@@ -40,10 +43,16 @@ void main() {
   });
 
   group('RiskLevelUtils.severityIndex', () {
-    test('critical → 3', () => expect(RiskLevelUtils.severityIndex('critical'), 3));
+    test(
+      'critical → 3',
+      () => expect(RiskLevelUtils.severityIndex('critical'), 3),
+    );
     test('high → 2', () => expect(RiskLevelUtils.severityIndex('high'), 2));
     test('medium → 1', () => expect(RiskLevelUtils.severityIndex('medium'), 1));
     test('low → 0', () => expect(RiskLevelUtils.severityIndex('low'), 0));
-    test('unknown → 0', () => expect(RiskLevelUtils.severityIndex('unknown'), 0));
+    test(
+      'unknown → 0',
+      () => expect(RiskLevelUtils.severityIndex('unknown'), 0),
+    );
   });
 }

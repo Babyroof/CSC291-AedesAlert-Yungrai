@@ -37,7 +37,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 }
 
-final notificationFeatureRepositoryProvider =
-    Provider<NotificationRepository>((ref) {
+final notificationFeatureRepositoryProvider = Provider<NotificationRepository>((
+  ref,
+) {
   return NotificationRepositoryImpl(FirebaseFirestore.instance);
 });

@@ -10,9 +10,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
   final FirebaseFirestore _firestore;
 
   @override
-  Future<NotificationModel?> getLatestForArea(
-    DocumentReference areaRef,
-  ) async {
+  Future<NotificationModel?> getLatestForArea(DocumentReference areaRef) async {
     final snapshot = await _firestore
         .collection(AppConstants.notificationsCollection)
         .where('relatedZone', isEqualTo: areaRef)

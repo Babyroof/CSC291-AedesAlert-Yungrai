@@ -8,16 +8,15 @@ class NewsState {
   final AsyncValue<ArticleEntity?> selected;
 
   factory NewsState.initial() => const NewsState(
-        articles: AsyncValue.loading(),
-        selected: AsyncValue.data(null),
-      );
+    articles: AsyncValue.loading(),
+    selected: AsyncValue.data(null),
+  );
 
   NewsState copyWith({
     AsyncValue<List<ArticleEntity>>? articles,
     AsyncValue<ArticleEntity?>? selected,
-  }) =>
-      NewsState(
-        articles: articles ?? this.articles,
-        selected: selected ?? this.selected,
-      );
+  }) => NewsState(
+    articles: articles ?? this.articles,
+    selected: selected ?? this.selected,
+  );
 }

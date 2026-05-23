@@ -8,8 +8,7 @@ class GetProfileUseCase {
 
   final ProfileRepository _repository;
 
-  Future<UserProfileEntity?> execute(String uid) =>
-      _repository.getProfile(uid);
+  Future<UserProfileEntity?> execute(String uid) => _repository.getProfile(uid);
 }
 
 final getProfileUseCaseProvider = Provider<GetProfileUseCase>((ref) {

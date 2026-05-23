@@ -6,8 +6,7 @@ class AuthState {
 
   final AsyncValue<AuthUserEntity?> user;
 
-  factory AuthState.initial() =>
-      const AuthState(user: AsyncValue.loading());
+  factory AuthState.initial() => const AuthState(user: AsyncValue.loading());
 
   AuthState copyWith({AsyncValue<AuthUserEntity?>? user}) =>
       AuthState(user: user ?? this.user);

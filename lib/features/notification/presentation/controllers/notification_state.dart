@@ -11,6 +11,5 @@ class NotificationState {
 
   NotificationState copyWith({
     AsyncValue<List<NotificationEntity>>? notifications,
-  }) =>
-      NotificationState(notifications: notifications ?? this.notifications);
+  }) => NotificationState(notifications: notifications ?? this.notifications);
 }

@@ -18,18 +18,21 @@ void main() {
     useCase = GetWeatherForecastUseCase(mockService);
   });
 
-  WeatherForecastModel fakeForecast() => WeatherForecastModel(days: [
-        DailyForecast(
-          date: DateTime(2024, 6, 1),
-          tempMax: 35.0,
-          tempMin: 26.0,
-          precipitationSum: 0.0,
-        ),
-      ]);
+  WeatherForecastModel fakeForecast() => WeatherForecastModel(
+    days: [
+      DailyForecast(
+        date: DateTime(2024, 6, 1),
+        tempMax: 35.0,
+        tempMin: 26.0,
+        precipitationSum: 0.0,
+      ),
+    ],
+  );
 
   test('returns forecast from service', () async {
-    when(mockService.getForecast(any, any))
-        .thenAnswer((_) async => fakeForecast());
+    when(
+      mockService.getForecast(any, any),
+    ).thenAnswer((_) async => fakeForecast());
 
     const location = GeoPoint(13.7563, 100.5018);
     final result = await useCase.execute(location);
@@ -38,8 +41,9 @@ void main() {
   });
 
   test('passes lat/lng from GeoPoint to service', () async {
-    when(mockService.getForecast(any, any))
-        .thenAnswer((_) async => fakeForecast());
+    when(
+      mockService.getForecast(any, any),
+    ).thenAnswer((_) async => fakeForecast());
 
     await useCase.execute(const GeoPoint(13.7563, 100.5018));
 
@@ -47,8 +51,9 @@ void main() {
   });
 
   test('Open-Meteo timeout propagates as exception (not crash)', () async {
-    when(mockService.getForecast(any, any))
-        .thenThrow(Exception('connection timeout'));
+    when(
+      mockService.getForecast(any, any),
+    ).thenThrow(Exception('connection timeout'));
 
     expect(
       () => useCase.execute(const GeoPoint(13.7563, 100.5018)),

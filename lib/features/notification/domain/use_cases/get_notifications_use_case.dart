@@ -8,12 +8,13 @@ class GetNotificationsUseCase {
 
   final NotificationRepository _repository;
 
-  Future<List<NotificationEntity>> execute() =>
-      _repository.getNotifications();
+  Future<List<NotificationEntity>> execute() => _repository.getNotifications();
 }
 
-final getNotificationsUseCaseProvider =
-    Provider<GetNotificationsUseCase>((ref) {
+final getNotificationsUseCaseProvider = Provider<GetNotificationsUseCase>((
+  ref,
+) {
   return GetNotificationsUseCase(
-      ref.watch(notificationFeatureRepositoryProvider));
+    ref.watch(notificationFeatureRepositoryProvider),
+  );
 });

@@ -20,9 +20,7 @@ class UserModel {
   final String fcmToken;
   final bool notificationsEnabled;
 
-  factory UserModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> doc,
-  ) {
+  factory UserModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
     return UserModel(
       uid: doc.id,
@@ -36,20 +34,20 @@ class UserModel {
   }
 
   Map<String, dynamic> toFirestore() => {
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'phoneNumber': phoneNumber,
-        'fcmToken': fcmToken,
-        'notificationsEnabled': notificationsEnabled,
-      };
+    'firstName': firstName,
+    'lastName': lastName,
+    'email': email,
+    'phoneNumber': phoneNumber,
+    'fcmToken': fcmToken,
+    'notificationsEnabled': notificationsEnabled,
+  };
 
   AuthUserEntity toEntity() => AuthUserEntity(
-        uid: uid,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        notificationsEnabled: notificationsEnabled,
-      );
+    uid: uid,
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    phoneNumber: phoneNumber,
+    notificationsEnabled: notificationsEnabled,
+  );
 }

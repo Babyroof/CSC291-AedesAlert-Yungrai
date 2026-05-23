@@ -26,8 +26,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         .collection(AppConstants.usersCollection)
         .doc(profile.uid)
         .get();
-    final fcmToken =
-        existing.data()?['fcmToken'] as String? ?? '';
+    final fcmToken = existing.data()?['fcmToken'] as String? ?? '';
     final model = UserProfileModel.fromEntity(profile, fcmToken: fcmToken);
     await _firestore
         .collection(AppConstants.usersCollection)

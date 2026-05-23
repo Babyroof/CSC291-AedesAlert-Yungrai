@@ -12,8 +12,9 @@ class NewsRepositoryImpl implements NewsRepository {
 
   @override
   Future<List<ArticleEntity>> getArticles() async {
-    final snapshot =
-        await _firestore.collection(AppConstants.informationCollection).get();
+    final snapshot = await _firestore
+        .collection(AppConstants.informationCollection)
+        .get();
     return snapshot.docs
         .map((doc) => ArticleModel.fromFirestore(doc).toEntity())
         .toList();

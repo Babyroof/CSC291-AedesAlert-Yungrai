@@ -2,7 +2,10 @@ import 'package:aedes_alert_yungrai/features/auth/domain/entities/auth_user_enti
 
 abstract class AuthRepository {
   Stream<AuthUserEntity?> get authStateChanges;
-  Future<AuthUserEntity> signIn({required String email, required String password});
+  Future<AuthUserEntity> signIn({
+    required String email,
+    required String password,
+  });
   Future<AuthUserEntity> signUp({
     required String email,
     required String password,

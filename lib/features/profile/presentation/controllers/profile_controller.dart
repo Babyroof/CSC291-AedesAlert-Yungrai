@@ -8,9 +8,9 @@ class ProfileController extends StateNotifier<ProfileState> {
   ProfileController({
     required GetProfileUseCase getProfile,
     required UpdateProfileUseCase updateProfile,
-  })  : _getProfile = getProfile,
-        _updateProfile = updateProfile,
-        super(ProfileState.initial());
+  }) : _getProfile = getProfile,
+       _updateProfile = updateProfile,
+       super(ProfileState.initial());
 
   final GetProfileUseCase _getProfile;
   final UpdateProfileUseCase _updateProfile;
@@ -29,10 +29,7 @@ class ProfileController extends StateNotifier<ProfileState> {
     state = state.copyWith(saving: true);
     try {
       await _updateProfile.execute(profile);
-      state = state.copyWith(
-        profile: AsyncValue.data(profile),
-        saving: false,
-      );
+      state = state.copyWith(profile: AsyncValue.data(profile), saving: false);
     } catch (_) {
       state = state.copyWith(saving: false);
       rethrow;
@@ -42,8 +39,8 @@ class ProfileController extends StateNotifier<ProfileState> {
 
 final profileControllerProvider =
     StateNotifierProvider<ProfileController, ProfileState>((ref) {
-  return ProfileController(
-    getProfile: ref.watch(getProfileUseCaseProvider),
-    updateProfile: ref.watch(updateProfileUseCaseProvider),
-  );
-});
+      return ProfileController(
+        getProfile: ref.watch(getProfileUseCaseProvider),
+        updateProfile: ref.watch(updateProfileUseCaseProvider),
+      );
+    });

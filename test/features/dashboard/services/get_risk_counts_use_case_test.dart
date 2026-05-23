@@ -19,17 +19,17 @@ void main() {
   });
 
   AreaModel makeArea(String level, {double score = 50.0}) => AreaModel(
-        id: level,
-        subDistrict: 'S',
-        district: 'D',
-        province: 'P',
-        location: const GeoPoint(13.7563, 100.5018),
-        radius: 500,
-        riskScore: score,
-        riskLevel: level,
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 6, 1),
-      );
+    id: level,
+    subDistrict: 'S',
+    district: 'D',
+    province: 'P',
+    location: const GeoPoint(13.7563, 100.5018),
+    radius: 500,
+    riskScore: score,
+    riskLevel: level,
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: DateTime(2024, 6, 1),
+  );
 
   test('empty collection returns all zeros without crash', () async {
     when(mockRepo.getAllAreas()).thenAnswer((_) async => []);
@@ -42,15 +42,17 @@ void main() {
   });
 
   test('counts each risk level correctly', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea('critical'),
-          makeArea('critical'),
-          makeArea('high'),
-          makeArea('medium'),
-          makeArea('medium'),
-          makeArea('medium'),
-          makeArea('low'),
-        ]);
+    when(mockRepo.getAllAreas()).thenAnswer(
+      (_) async => [
+        makeArea('critical'),
+        makeArea('critical'),
+        makeArea('high'),
+        makeArea('medium'),
+        makeArea('medium'),
+        makeArea('medium'),
+        makeArea('low'),
+      ],
+    );
 
     final result = await useCase.execute();
     expect(result.criticalCount, 2);
@@ -61,17 +63,15 @@ void main() {
   });
 
   test('null riskScore area does not affect level count', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea('low', score: 0.0),
-        ]);
+    when(
+      mockRepo.getAllAreas(),
+    ).thenAnswer((_) async => [makeArea('low', score: 0.0)]);
     final result = await useCase.execute();
     expect(result.lowCount, 1);
   });
 
   test('unknown riskLevel falls into low bucket', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea('unknown'),
-        ]);
+    when(mockRepo.getAllAreas()).thenAnswer((_) async => [makeArea('unknown')]);
     final result = await useCase.execute();
     expect(result.lowCount, 1);
   });

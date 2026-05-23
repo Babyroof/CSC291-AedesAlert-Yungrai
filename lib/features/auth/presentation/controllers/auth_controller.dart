@@ -9,10 +9,10 @@ class AuthController extends StateNotifier<AuthState> {
     required SignInUseCase signIn,
     required SignUpUseCase signUp,
     required SignOutUseCase signOut,
-  })  : _signIn = signIn,
-        _signUp = signUp,
-        _signOut = signOut,
-        super(AuthState.initial());
+  }) : _signIn = signIn,
+       _signUp = signUp,
+       _signOut = signOut,
+       super(AuthState.initial());
 
   final SignInUseCase _signIn;
   final SignUpUseCase _signUp;
@@ -56,11 +56,12 @@ class AuthController extends StateNotifier<AuthState> {
   }
 }
 
-final authControllerProvider =
-    StateNotifierProvider<AuthController, AuthState>((ref) {
-  return AuthController(
-    signIn: ref.watch(signInUseCaseProvider),
-    signUp: ref.watch(signUpUseCaseProvider),
-    signOut: ref.watch(signOutUseCaseProvider),
-  );
-});
+final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
+  (ref) {
+    return AuthController(
+      signIn: ref.watch(signInUseCaseProvider),
+      signUp: ref.watch(signUpUseCaseProvider),
+      signOut: ref.watch(signOutUseCaseProvider),
+    );
+  },
+);

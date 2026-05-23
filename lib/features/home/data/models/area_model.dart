@@ -25,9 +25,7 @@ class AreaModel {
   final DateTime reportedAt;
   final DateTime updatedAt;
 
-  factory AreaModel.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> doc,
-  ) {
+  factory AreaModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
     return AreaModel(
       id: doc.id,
@@ -44,16 +42,16 @@ class AreaModel {
   }
 
   Map<String, dynamic> toFirestore() => {
-        'subDistrict': subDistrict,
-        'district': district,
-        'province': province,
-        'location': location,
-        'radius': radius,
-        'riskScore': riskScore,
-        'riskLevel': riskLevel,
-        'reportedAt': Timestamp.fromDate(reportedAt),
-        'updatedAt': Timestamp.fromDate(updatedAt),
-      };
+    'subDistrict': subDistrict,
+    'district': district,
+    'province': province,
+    'location': location,
+    'radius': radius,
+    'riskScore': riskScore,
+    'riskLevel': riskLevel,
+    'reportedAt': Timestamp.fromDate(reportedAt),
+    'updatedAt': Timestamp.fromDate(updatedAt),
+  };
 
   AreaModel copyWith({
     String? id,

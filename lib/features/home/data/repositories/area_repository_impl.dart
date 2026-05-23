@@ -15,20 +15,25 @@ class AreaRepositoryImpl implements AreaRepository {
     GeoPoint userLocation, {
     double radiusKm = AppConstants.defaultGeoRadiusKm,
   }) async {
-    final snapshot =
-        await _firestore.collection(AppConstants.areasCollection).get();
+    final snapshot = await _firestore
+        .collection(AppConstants.areasCollection)
+        .get();
 
     if (snapshot.docs.isEmpty) return null;
 
     // Compute distance for each document and filter by radius
-    final candidates = snapshot.docs
-        .map((doc) {
-          final location = doc.data()['location'] as GeoPoint;
-          return (doc: doc, distance: GeoUtils.distanceInKm(userLocation, location));
-        })
-        .where((item) => item.distance <= radiusKm)
-        .toList()
-      ..sort((a, b) => a.distance.compareTo(b.distance));
+    final candidates =
+        snapshot.docs
+            .map((doc) {
+              final location = doc.data()['location'] as GeoPoint;
+              return (
+                doc: doc,
+                distance: GeoUtils.distanceInKm(userLocation, location),
+              );
+            })
+            .where((item) => item.distance <= radiusKm)
+            .toList()
+          ..sort((a, b) => a.distance.compareTo(b.distance));
 
     if (candidates.isEmpty) return null;
 

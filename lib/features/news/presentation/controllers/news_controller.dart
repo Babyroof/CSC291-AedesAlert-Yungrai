@@ -7,9 +7,9 @@ class NewsController extends StateNotifier<NewsState> {
   NewsController({
     required GetArticlesUseCase getArticles,
     required GetArticleUseCase getArticle,
-  })  : _getArticles = getArticles,
-        _getArticle = getArticle,
-        super(NewsState.initial());
+  }) : _getArticles = getArticles,
+       _getArticle = getArticle,
+       super(NewsState.initial());
 
   final GetArticlesUseCase _getArticles;
   final GetArticleUseCase _getArticle;
@@ -37,10 +37,11 @@ class NewsController extends StateNotifier<NewsState> {
   Future<void> refresh() => loadArticles();
 }
 
-final newsControllerProvider =
-    StateNotifierProvider<NewsController, NewsState>((ref) {
-  return NewsController(
-    getArticles: ref.watch(getArticlesUseCaseProvider),
-    getArticle: ref.watch(getArticleUseCaseProvider),
-  );
-});
+final newsControllerProvider = StateNotifierProvider<NewsController, NewsState>(
+  (ref) {
+    return NewsController(
+      getArticles: ref.watch(getArticlesUseCaseProvider),
+      getArticle: ref.watch(getArticleUseCaseProvider),
+    );
+  },
+);

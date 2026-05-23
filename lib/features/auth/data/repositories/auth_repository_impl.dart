@@ -85,10 +85,7 @@ class AuthRepositoryImpl implements AuthRepository {
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl(
-    FirebaseAuth.instance,
-    FirebaseFirestore.instance,
-  );
+  return AuthRepositoryImpl(FirebaseAuth.instance, FirebaseFirestore.instance);
 });
 
 final authStateChangesProvider = StreamProvider<AuthUserEntity?>((ref) {

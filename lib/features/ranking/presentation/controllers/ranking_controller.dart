@@ -4,8 +4,8 @@ import 'package:aedes_alert_yungrai/features/ranking/presentation/controllers/ra
 
 class RankingController extends StateNotifier<RankingState> {
   RankingController({required GetRankedAreasUseCase getRankedAreas})
-      : _getRankedAreas = getRankedAreas,
-        super(RankingState.initial());
+    : _getRankedAreas = getRankedAreas,
+      super(RankingState.initial());
 
   final GetRankedAreasUseCase _getRankedAreas;
 
@@ -24,7 +24,7 @@ class RankingController extends StateNotifier<RankingState> {
 
 final rankingControllerProvider =
     StateNotifierProvider<RankingController, RankingState>((ref) {
-  return RankingController(
-    getRankedAreas: ref.watch(getRankedAreasUseCaseProvider),
-  );
-});
+      return RankingController(
+        getRankedAreas: ref.watch(getRankedAreasUseCaseProvider),
+      );
+    });

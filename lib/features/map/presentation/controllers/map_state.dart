@@ -8,17 +8,11 @@ class MapState {
   final AsyncValue<List<MapAreaEntity>> areas;
   final AsyncValue<List<PlaceEntity>> places;
 
-  factory MapState.initial() => const MapState(
-        areas: AsyncValue.loading(),
-        places: AsyncValue.loading(),
-      );
+  factory MapState.initial() =>
+      const MapState(areas: AsyncValue.loading(), places: AsyncValue.loading());
 
   MapState copyWith({
     AsyncValue<List<MapAreaEntity>>? areas,
     AsyncValue<List<PlaceEntity>>? places,
-  }) =>
-      MapState(
-        areas: areas ?? this.areas,
-        places: places ?? this.places,
-      );
+  }) => MapState(areas: areas ?? this.areas, places: places ?? this.places);
 }

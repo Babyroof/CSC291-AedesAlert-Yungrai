@@ -14,8 +14,9 @@ class MapRepositoryImpl implements MapRepository {
 
   @override
   Future<List<MapAreaEntity>> getAllAreas() async {
-    final snapshot =
-        await _firestore.collection(AppConstants.areasCollection).get();
+    final snapshot = await _firestore
+        .collection(AppConstants.areasCollection)
+        .get();
     return snapshot.docs.map((doc) {
       final m = AreaModel.fromFirestore(doc);
       return MapAreaEntity(
@@ -34,8 +35,9 @@ class MapRepositoryImpl implements MapRepository {
 
   @override
   Future<List<PlaceEntity>> getAllPlaces() async {
-    final snapshot =
-        await _firestore.collection(AppConstants.placesCollection).get();
+    final snapshot = await _firestore
+        .collection(AppConstants.placesCollection)
+        .get();
     return snapshot.docs
         .map((doc) => PlaceModel.fromFirestore(doc).toEntity())
         .toList();
