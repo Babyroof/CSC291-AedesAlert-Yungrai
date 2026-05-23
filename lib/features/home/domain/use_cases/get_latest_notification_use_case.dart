@@ -7,7 +7,7 @@ import 'package:aedes_alert_yungrai/features/home/data/repositories/notification
 
 class GetLatestNotificationUseCase {
   GetLatestNotificationUseCase(this._repository, {FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final NotificationRepository _repository;
   final FirebaseFirestore _firestore;
@@ -22,7 +22,7 @@ class GetLatestNotificationUseCase {
 
 final getLatestNotificationUseCaseProvider =
     Provider<GetLatestNotificationUseCase>((ref) {
-  return GetLatestNotificationUseCase(
-    ref.watch(notificationRepositoryProvider),
-  );
-});
+      return GetLatestNotificationUseCase(
+        ref.watch(notificationRepositoryProvider),
+      );
+    });

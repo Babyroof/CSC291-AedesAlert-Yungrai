@@ -7,31 +7,31 @@ import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/dashboard
 
 void main() {
   AreaModel fakeArea(String id) => AreaModel(
-        id: id,
-        subDistrict: 'S',
-        district: 'D',
-        province: 'P',
-        location: const GeoPoint(13.7563, 100.5018),
-        radius: 500,
-        riskScore: 60.0,
-        riskLevel: 'medium',
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 6, 1),
-      );
+    id: id,
+    subDistrict: 'S',
+    district: 'D',
+    province: 'P',
+    location: const GeoPoint(13.7563, 100.5018),
+    radius: 500,
+    riskScore: 60.0,
+    riskLevel: 'medium',
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: DateTime(2024, 6, 1),
+  );
 
   DashboardSummaryModel fakeSummary() => DashboardSummaryModel(
-        riskCounts: const RiskCountModel(
-          criticalCount: 1,
-          highCount: 2,
-          mediumCount: 3,
-          lowCount: 4,
-        ),
-        averageRiskScore: 55.0,
-        monthlyTrend: [
-          MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
-        ],
-        topFiveAreas: [fakeArea('a1'), fakeArea('a2')],
-      );
+    riskCounts: const RiskCountModel(
+      criticalCount: 1,
+      highCount: 2,
+      mediumCount: 3,
+      lowCount: 4,
+    ),
+    averageRiskScore: 55.0,
+    monthlyTrend: [
+      MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
+    ],
+    topFiveAreas: [fakeArea('a1'), fakeArea('a2')],
+  );
 
   test('constructs and holds all fields', () {
     final model = fakeSummary();

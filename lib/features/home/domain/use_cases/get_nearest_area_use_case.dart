@@ -9,10 +9,7 @@ class GetNearestAreaUseCase {
 
   final AreaRepository _repository;
 
-  Future<AreaModel?> execute(
-    GeoPoint userLocation, {
-    double radiusKm = 5.0,
-  }) =>
+  Future<AreaModel?> execute(GeoPoint userLocation, {double radiusKm = 5.0}) =>
       _repository.getNearestArea(userLocation, radiusKm: radiusKm);
 }
 

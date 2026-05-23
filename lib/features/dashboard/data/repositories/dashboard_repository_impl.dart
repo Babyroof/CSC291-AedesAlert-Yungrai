@@ -11,8 +11,9 @@ class DashboardRepositoryImpl implements DashboardRepository {
 
   @override
   Future<List<AreaModel>> getAllAreas() async {
-    final snapshot =
-        await _firestore.collection(AppConstants.areasCollection).get();
+    final snapshot = await _firestore
+        .collection(AppConstants.areasCollection)
+        .get();
     return snapshot.docs.map(AreaModel.fromFirestore).toList();
   }
 

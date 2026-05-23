@@ -19,38 +19,44 @@ void main() {
   });
 
   AreaModel fakeArea() => AreaModel(
-        id: 'a1',
-        subDistrict: 'S',
-        district: 'D',
-        province: 'P',
-        location: const GeoPoint(13.7563, 100.5018),
-        radius: 500,
-        riskScore: 60.0,
-        riskLevel: 'medium',
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 6, 1),
-      );
+    id: 'a1',
+    subDistrict: 'S',
+    district: 'D',
+    province: 'P',
+    location: const GeoPoint(13.7563, 100.5018),
+    radius: 500,
+    riskScore: 60.0,
+    riskLevel: 'medium',
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: DateTime(2024, 6, 1),
+  );
 
   test('returns area from repository', () async {
-    when(mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')))
-        .thenAnswer((_) async => fakeArea());
+    when(
+      mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')),
+    ).thenAnswer((_) async => fakeArea());
 
     final result = await useCase.execute(const GeoPoint(13.7563, 100.5018));
     expect(result, isNotNull);
     expect(result!.id, 'a1');
   });
 
-  test('returns null when no area is within radius (empty collection)', () async {
-    when(mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')))
-        .thenAnswer((_) async => null);
+  test(
+    'returns null when no area is within radius (empty collection)',
+    () async {
+      when(
+        mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')),
+      ).thenAnswer((_) async => null);
 
-    final result = await useCase.execute(const GeoPoint(13.7563, 100.5018));
-    expect(result, isNull);
-  });
+      final result = await useCase.execute(const GeoPoint(13.7563, 100.5018));
+      expect(result, isNull);
+    },
+  );
 
   test('location permission denied — returns null gracefully', () async {
-    when(mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')))
-        .thenAnswer((_) async => null);
+    when(
+      mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')),
+    ).thenAnswer((_) async => null);
 
     // Simulates caller passing a null-equivalent location after permission denial
     final result = await useCase.execute(
@@ -61,8 +67,9 @@ void main() {
   });
 
   test('propagates repository exception', () async {
-    when(mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')))
-        .thenThrow(Exception('Firestore error'));
+    when(
+      mockRepo.getNearestArea(any, radiusKm: anyNamed('radiusKm')),
+    ).thenThrow(Exception('Firestore error'));
 
     expect(
       () => useCase.execute(const GeoPoint(13.7563, 100.5018)),

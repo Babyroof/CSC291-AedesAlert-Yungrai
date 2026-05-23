@@ -41,32 +41,36 @@ void main() {
   });
 
   AreaModel fakeArea() => AreaModel(
-        id: 'a1',
-        subDistrict: 'S',
-        district: 'D',
-        province: 'P',
-        location: const GeoPoint(13.7563, 100.5018),
-        radius: 500,
-        riskScore: 60.0,
-        riskLevel: 'medium',
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 6, 1),
-      );
+    id: 'a1',
+    subDistrict: 'S',
+    district: 'D',
+    province: 'P',
+    location: const GeoPoint(13.7563, 100.5018),
+    radius: 500,
+    riskScore: 60.0,
+    riskLevel: 'medium',
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: DateTime(2024, 6, 1),
+  );
 
   void stubAllSuccess() {
-    when(mockGetRiskCounts.execute()).thenAnswer((_) async =>
-        const RiskCountModel(
-          criticalCount: 1,
-          highCount: 2,
-          mediumCount: 3,
-          lowCount: 4,
-        ));
+    when(mockGetRiskCounts.execute()).thenAnswer(
+      (_) async => const RiskCountModel(
+        criticalCount: 1,
+        highCount: 2,
+        mediumCount: 3,
+        lowCount: 4,
+      ),
+    );
     when(mockGetAverageScore.execute()).thenAnswer((_) async => 55.0);
-    when(mockGetMonthlyTrend.execute()).thenAnswer((_) async => [
-          MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
-        ]);
-    when(mockGetTopAreas.execute(limit: anyNamed('limit')))
-        .thenAnswer((_) async => [fakeArea()]);
+    when(mockGetMonthlyTrend.execute()).thenAnswer(
+      (_) async => [
+        MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
+      ],
+    );
+    when(
+      mockGetTopAreas.execute(limit: anyNamed('limit')),
+    ).thenAnswer((_) async => [fakeArea()]);
   }
 
   test('returns assembled DashboardSummaryModel on success', () async {
@@ -78,33 +82,38 @@ void main() {
     expect(result.topFiveAreas.length, 1);
   });
 
-  test('empty areas — all sub-use-cases return zeros/empty without crash',
-      () async {
-    when(mockGetRiskCounts.execute()).thenAnswer((_) async =>
-        const RiskCountModel(
+  test(
+    'empty areas — all sub-use-cases return zeros/empty without crash',
+    () async {
+      when(mockGetRiskCounts.execute()).thenAnswer(
+        (_) async => const RiskCountModel(
           criticalCount: 0,
           highCount: 0,
           mediumCount: 0,
           lowCount: 0,
-        ));
-    when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
-    when(mockGetMonthlyTrend.execute()).thenAnswer((_) async => []);
-    when(mockGetTopAreas.execute(limit: anyNamed('limit')))
-        .thenAnswer((_) async => []);
+        ),
+      );
+      when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
+      when(mockGetMonthlyTrend.execute()).thenAnswer((_) async => []);
+      when(
+        mockGetTopAreas.execute(limit: anyNamed('limit')),
+      ).thenAnswer((_) async => []);
 
-    final result = await useCase.execute();
-    expect(result.riskCounts.totalCount, 0);
-    expect(result.averageRiskScore, 0.0);
-    expect(result.monthlyTrend, isEmpty);
-    expect(result.topFiveAreas, isEmpty);
-  });
+      final result = await useCase.execute();
+      expect(result.riskCounts.totalCount, 0);
+      expect(result.averageRiskScore, 0.0);
+      expect(result.monthlyTrend, isEmpty);
+      expect(result.topFiveAreas, isEmpty);
+    },
+  );
 
   test('propagates exception from any sub-use-case', () async {
     when(mockGetRiskCounts.execute()).thenThrow(Exception('Firestore error'));
     when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
     when(mockGetMonthlyTrend.execute()).thenAnswer((_) async => []);
-    when(mockGetTopAreas.execute(limit: anyNamed('limit')))
-        .thenAnswer((_) async => []);
+    when(
+      mockGetTopAreas.execute(limit: anyNamed('limit')),
+    ).thenAnswer((_) async => []);
 
     expect(() => useCase.execute(), throwsA(isA<Exception>()));
   });

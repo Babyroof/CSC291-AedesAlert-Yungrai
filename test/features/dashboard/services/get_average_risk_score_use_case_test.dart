@@ -19,17 +19,17 @@ void main() {
   });
 
   AreaModel makeArea(double score) => AreaModel(
-        id: 'a',
-        subDistrict: 'S',
-        district: 'D',
-        province: 'P',
-        location: const GeoPoint(13.7563, 100.5018),
-        radius: 500,
-        riskScore: score,
-        riskLevel: 'medium',
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 6, 1),
-      );
+    id: 'a',
+    subDistrict: 'S',
+    district: 'D',
+    province: 'P',
+    location: const GeoPoint(13.7563, 100.5018),
+    radius: 500,
+    riskScore: score,
+    riskLevel: 'medium',
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: DateTime(2024, 6, 1),
+  );
 
   test('empty collection returns 0.0 without crash', () async {
     when(mockRepo.getAllAreas()).thenAnswer((_) async => []);
@@ -44,21 +44,21 @@ void main() {
   });
 
   test('multiple areas return correct average', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea(60.0),
-          makeArea(80.0),
-          makeArea(100.0),
-        ]);
+    when(mockRepo.getAllAreas()).thenAnswer(
+      (_) async => [makeArea(60.0), makeArea(80.0), makeArea(100.0)],
+    );
     final result = await useCase.execute();
     expect(result, closeTo(80.0, 0.001));
   });
 
-  test('null riskScore area uses 0.0 in average (defaulted by model)', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea(0.0),
-          makeArea(100.0),
-        ]);
-    final result = await useCase.execute();
-    expect(result, closeTo(50.0, 0.001));
-  });
+  test(
+    'null riskScore area uses 0.0 in average (defaulted by model)',
+    () async {
+      when(
+        mockRepo.getAllAreas(),
+      ).thenAnswer((_) async => [makeArea(0.0), makeArea(100.0)]);
+      final result = await useCase.execute();
+      expect(result, closeTo(50.0, 0.001));
+    },
+  );
 }

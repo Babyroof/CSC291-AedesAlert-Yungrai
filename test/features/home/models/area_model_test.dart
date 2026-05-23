@@ -11,16 +11,16 @@ void main() {
   });
 
   Map<String, dynamic> baseData() => {
-        'subDistrict': 'Bang Khen',
-        'district': 'Mueang',
-        'province': 'Nonthaburi',
-        'location': const GeoPoint(13.8621, 100.5144),
-        'radius': 500.0,
-        'riskScore': 75.5,
-        'riskLevel': 'high',
-        'reportedAt': Timestamp.fromDate(DateTime(2024, 1, 1)),
-        'updatedAt': Timestamp.fromDate(DateTime(2024, 6, 1)),
-      };
+    'subDistrict': 'Bang Khen',
+    'district': 'Mueang',
+    'province': 'Nonthaburi',
+    'location': const GeoPoint(13.8621, 100.5144),
+    'radius': 500.0,
+    'riskScore': 75.5,
+    'riskLevel': 'high',
+    'reportedAt': Timestamp.fromDate(DateTime(2024, 1, 1)),
+    'updatedAt': Timestamp.fromDate(DateTime(2024, 6, 1)),
+  };
 
   test('fromFirestore parses all fields correctly', () async {
     final ref = await fakeFirestore.collection('areas').add(baseData());

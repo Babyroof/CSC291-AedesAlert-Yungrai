@@ -21,12 +21,12 @@ void main() {
   });
 
   NotificationModel fakeNotif() => NotificationModel(
-        id: 'n1',
-        title: 'Alert',
-        body: 'Risk zone nearby',
-        relatedZoneId: 'area1',
-        sentAt: DateTime(2024, 6, 1),
-      );
+    id: 'n1',
+    title: 'Alert',
+    body: 'Risk zone nearby',
+    relatedZoneId: 'area1',
+    sentAt: DateTime(2024, 6, 1),
+  );
 
   test('returns notification for a known area', () async {
     when(mockRepo.getLatestForArea(any)).thenAnswer((_) async => fakeNotif());
@@ -47,9 +47,6 @@ void main() {
     when(mockRepo.getLatestForArea(any)).thenAnswer((_) async => null);
 
     // Should not throw even with a fake Firestore instance
-    expect(
-      () => useCase.execute('nonexistent_area'),
-      returnsNormally,
-    );
+    expect(() => useCase.execute('nonexistent_area'), returnsNormally);
   });
 }

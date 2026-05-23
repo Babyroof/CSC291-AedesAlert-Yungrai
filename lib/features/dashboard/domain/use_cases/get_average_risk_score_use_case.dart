@@ -15,7 +15,8 @@ class GetAverageRiskScoreUseCase {
   }
 }
 
-final getAverageRiskScoreUseCaseProvider =
-    Provider<GetAverageRiskScoreUseCase>((ref) {
-  return GetAverageRiskScoreUseCase(ref.watch(dashboardRepositoryProvider));
-});
+final getAverageRiskScoreUseCaseProvider = Provider<GetAverageRiskScoreUseCase>(
+  (ref) {
+    return GetAverageRiskScoreUseCase(ref.watch(dashboardRepositoryProvider));
+  },
+);
