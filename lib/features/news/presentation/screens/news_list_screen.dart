@@ -282,7 +282,7 @@ class _NewsThumbState extends State<_NewsThumb> {
         width: 80,
         height: 80,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) {
+        errorBuilder: (_, _, _) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) setState(() => _failed = true);
           });
