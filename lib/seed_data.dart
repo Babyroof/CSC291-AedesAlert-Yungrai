@@ -2,6 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 final _db = FirebaseFirestore.instance;
 
+// ─── CLEAR + SEED ─────────────────────────────────────────────
+Future<void> clearAndSeedAll() async {
+  await clearAll();
+  await seedAll();
+}
+
+Future<void> clearAll() async {
+  final collections = [
+    'users',
+    'areas',
+    'places',
+    'information',
+    'notifications',
+    'news',
+  ];
+
+  for (final name in collections) {
+    final snapshot = await _db.collection(name).get();
+    for (final doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
+    print('🗑️ Cleared: $name');
+  }
+  print('🗑️ All collections cleared');
+}
+
 Future<void> seedAll() async {
   await seedUsers();
   await seedAreas();

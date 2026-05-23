@@ -1,17 +1,21 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/auth/screens/login_screen.dart';
-import '../../features/auth/screens/register_screen.dart';
-import '../../features/home/screens/home_screen.dart';
-import '../../features/home/screens/checklist_screen.dart';
-import '../../features/home/screens/report_risk_screen.dart';
-import '../../features/map/screens/map_screen.dart';
-import '../../features/dashboard/screens/dashboard_screen.dart';
-import '../../features/profile/screens/profile_screen.dart';
-import '../../features/news/screens/news_list_screen.dart';
-import '../../features/news/screens/news_detail_screen.dart';
-import '../../features/notification/screens/notification_screen.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/home/presentation/screens/checklist_screen.dart';
+import '../../features/home/presentation/screens/report_risk_screen.dart';
+import '../../features/map/presentation/screens/map_screen.dart';
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/news/presentation/screens/news_list_screen.dart';
+import '../../features/news/presentation/screens/news_detail_screen.dart';
+import '../../features/notification/presentation/screens/notification_screen.dart';
+import '../../features/ranking/presentation/screens/ranking_screen.dart';
 import '../widgets/app_bottom_nav.dart';
 
 // Route path constants
@@ -32,9 +36,39 @@ final _shellMapKey = GlobalKey<NavigatorState>(debugLabel: 'map');
 final _shellDashboardKey = GlobalKey<NavigatorState>(debugLabel: 'dashboard');
 final _shellProfileKey = GlobalKey<NavigatorState>(debugLabel: 'profile');
 
+// Listens to Firebase auth state and notifies GoRouter to re-evaluate redirects.
+class _AuthNotifier extends ChangeNotifier {
+  _AuthNotifier() {
+    _subscription = FirebaseAuth.instance.authStateChanges().listen((_) {
+      notifyListeners();
+    });
+  }
+
+  late final StreamSubscription<User?> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
+final _authNotifier = _AuthNotifier();
+
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: routeLogin,
+  initialLocation: '/login',
+  refreshListenable: _authNotifier,
+  redirect: (BuildContext context, GoRouterState state) {
+    final user = FirebaseAuth.instance.currentUser;
+    final onAuthPage =
+        state.matchedLocation == '/login' ||
+        state.matchedLocation == '/register';
+
+    if (user == null && !onAuthPage) return '/login';
+    if (user != null && onAuthPage) return '/home';
+    return null;
+  },
   routes: [
     GoRoute(path: routeLogin, builder: (context, state) => const LoginScreen()),
     GoRoute(
@@ -58,6 +92,10 @@ final appRouter = GoRouter(
       path: '$routeNews/:id',
       builder: (context, state) =>
           NewsDetailScreen(id: state.pathParameters['id']!),
+    ),
+    GoRoute(
+      path: '/ranking',
+      builder: (context, state) => const RankingScreen(),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
