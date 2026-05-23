@@ -100,9 +100,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration error')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Registration error')));
       }
     } finally {
       if (mounted) {
@@ -274,24 +274,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   width: double.infinity,
                                   height: 46,
                                   child: ElevatedButton(
-                                    onPressed: _isLoading ? null : _handleSignUp,
+                                    onPressed: _isLoading
+                                        ? null
+                                        : _handleSignUp,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF05108B),
-                                      padding: const EdgeInsets.fromLTRB(6, 12, 6, 12),
+                                      padding: const EdgeInsets.fromLTRB(
+                                        6,
+                                        12,
+                                        6,
+                                        12,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(14),
                                       ),
                                       elevation: 3,
-                                      shadowColor: const Color(0xFF05108B).withValues(alpha: 0.4),
+                                      shadowColor: const Color(
+                                        0xFF05108B,
+                                      ).withValues(alpha: 0.4),
                                     ),
                                     child: _isLoading
                                         ? const SizedBox(
                                             height: 24,
                                             width: 24,
                                             child: CircularProgressIndicator(
-                                              valueColor: AlwaysStoppedAnimation<Color>(
-                                                Colors.white,
-                                              ),
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    Colors.white,
+                                                  ),
                                               strokeWidth: 2.5,
                                             ),
                                           )

@@ -37,7 +37,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _firstNameController = TextEditingController(text: widget.firstName ?? '');
     _lastNameController = TextEditingController(text: widget.lastName ?? '');
     _emailController = TextEditingController(text: widget.email ?? '');
-    _phoneNumberController = TextEditingController(text: widget.phoneNumber ?? '');
+    _phoneNumberController = TextEditingController(
+      text: widget.phoneNumber ?? '',
+    );
   }
 
   @override
@@ -111,9 +113,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
-                  color: hasError
-                      ? const Color(0xFFE53935)
-                      : AppColors.primary,
+                  color: hasError ? const Color(0xFFE53935) : AppColors.primary,
                   width: 1,
                 ),
               ),
@@ -295,7 +295,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       elevation: 3,
-                      shadowColor: const Color(0xFF05108B).withValues(alpha: 0.4),
+                      shadowColor: const Color(
+                        0xFF05108B,
+                      ).withValues(alpha: 0.4),
                     ),
                     child: _isLoading
                         ? const SizedBox(

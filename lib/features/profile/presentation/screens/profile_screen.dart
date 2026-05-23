@@ -22,7 +22,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _authService = AuthService();
     _userEmail = _authService.currentUserEmail ?? 'somchai@email.com';
-    _userDisplayName = _authService.currentUser?.displayName ?? 'Somchai Jaidee';
+    _userDisplayName =
+        _authService.currentUser?.displayName ?? 'Somchai Jaidee';
   }
 
   @override
@@ -80,10 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           // angle: 135 * 3.14159 / 180,
-                          colors: [
-                            Color(0xFF283593),
-                            Color(0xFF1A237E),
-                          ],
+                          colors: [Color(0xFF283593), Color(0xFF1A237E)],
                         ),
                         shape: BoxShape.circle,
                       ),
@@ -151,7 +149,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          _notificationsEnabled ? 'NOTIFICATIONSENABLED' : 'NOTIFICATIONSDISABLED',
+                          _notificationsEnabled
+                              ? 'NOTIFICATIONSENABLED'
+                              : 'NOTIFICATIONSDISABLED',
                           style: const TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
@@ -189,7 +189,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     MaterialPageRoute(
                       builder: (context) => EditProfileScreen(
                         firstName: _userDisplayName?.split(' ').first ?? '',
-                        lastName: _userDisplayName?.split(' ').skip(1).join(' ') ?? '',
+                        lastName:
+                            _userDisplayName?.split(' ').skip(1).join(' ') ??
+                            '',
                         email: _userEmail,
                       ),
                     ),
@@ -261,11 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: iconBackgroundColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                  size: 24,
-                ),
+                child: Icon(icon, color: iconColor, size: 24),
               ),
               const SizedBox(width: 16),
               // Title and Subtitle
@@ -303,18 +301,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               // Arrow Icon
-              Icon(
-                Icons.chevron_right,
-                color: arrowIconColor,
-                size: 24,
-              ),
+              Icon(Icons.chevron_right, color: arrowIconColor, size: 24),
             ],
           ),
           const SizedBox(height: 12),
-          const Divider(
-            color: AppColors.divider,
-            height: 1,
-          ),
+          const Divider(color: AppColors.divider, height: 1),
         ],
       ),
     );

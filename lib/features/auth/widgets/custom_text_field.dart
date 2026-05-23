@@ -143,17 +143,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 : widget.suffixIcon,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppColors.border,
-                width: 0.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.border, width: 0.5),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppColors.border,
-                width: 0.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.border, width: 0.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
@@ -164,17 +158,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppColors.error,
-                width: 0.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.error, width: 0.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: AppColors.error,
-                width: 0.5,
-              ),
+              borderSide: const BorderSide(color: AppColors.error, width: 0.5),
             ),
             helperText: widget.helperText,
             helperStyle: const TextStyle(

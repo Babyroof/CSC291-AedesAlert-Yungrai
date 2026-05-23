@@ -6,13 +6,21 @@ class AppColors {
   AppColors._(); // Private constructor to prevent instantiation
 
   // Primary Colors
-  static const Color primary = Color(0xFF00235B); // Dark blue - main brand color
-  static const Color primaryLight = Color(0xFF1E3A8A); // Lighter blue for accents
-  static const Color secondary = Color(0xFFEF4444); // Red for warnings/high risk
+  static const Color primary = Color(
+    0xFF00235B,
+  ); // Dark blue - main brand color
+  static const Color primaryLight = Color(
+    0xFF1E3A8A,
+  ); // Lighter blue for accents
+  static const Color secondary = Color(
+    0xFFEF4444,
+  ); // Red for warnings/high risk
 
   // Text Colors
   static const Color textPrimary = Color(0xFF1F2937); // Dark grey for main text
-  static const Color textSecondary = Color(0xFF6B7280); // Medium grey for secondary text
+  static const Color textSecondary = Color(
+    0xFF6B7280,
+  ); // Medium grey for secondary text
   static const Color textHint = Color(0xFF9CA3AF); // Light grey for hints
   static const Color textOnPrimary = Color(0xFFFFFFFF); // White text on primary
 
@@ -20,7 +28,9 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color grey = Color(0xFF6B7280); // Medium grey for secondary text
-  static const Color lightGrey = Color(0xFFF3F4F6); // Light grey for backgrounds
+  static const Color lightGrey = Color(
+    0xFFF3F4F6,
+  ); // Light grey for backgrounds
   static const Color darkGrey = Color(0xFF374151); // Dark grey for primary text
 
   // Risk Level Colors
@@ -52,5 +62,7 @@ class AppColors {
 
   // Transparent Colors
   static const Color transparent = Color(0x00000000);
-  static const Color scrim = Color(0x4D000000); // Semi-transparent black overlay
+  static const Color scrim = Color(
+    0x4D000000,
+  ); // Semi-transparent black overlay
 }

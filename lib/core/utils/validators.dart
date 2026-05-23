@@ -9,7 +9,9 @@ class AppValidators {
     }
 
     // Simple email regex pattern
-    final emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailPattern = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
     if (!emailPattern.hasMatch(value)) {
       return 'Please enter a valid email';
     }
@@ -53,7 +55,8 @@ class AppValidators {
     final cleanedPhone = value.replaceAll(RegExp(r'[\s\-]'), '');
 
     // Thai phone number: 10 digits, starts with 0-9
-    if (cleanedPhone.length != 10 || !RegExp(r'^[0-9]{10}$').hasMatch(cleanedPhone)) {
+    if (cleanedPhone.length != 10 ||
+        !RegExp(r'^[0-9]{10}$').hasMatch(cleanedPhone)) {
       return 'Please enter a valid Thai phone number';
     }
 
@@ -83,7 +86,11 @@ class AppValidators {
   }
 
   /// Validates minimum length
-  static String? minLength(String? value, int minLength, {String fieldName = 'This field'}) {
+  static String? minLength(
+    String? value,
+    int minLength, {
+    String fieldName = 'This field',
+  }) {
     if (value == null || value.isEmpty) {
       return '$fieldName is required';
     }
@@ -96,7 +103,11 @@ class AppValidators {
   }
 
   /// Validates maximum length
-  static String? maxLength(String? value, int maxLength, {String fieldName = 'This field'}) {
+  static String? maxLength(
+    String? value,
+    int maxLength, {
+    String fieldName = 'This field',
+  }) {
     if (value == null) {
       return null;
     }

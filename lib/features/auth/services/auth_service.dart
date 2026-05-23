@@ -34,12 +34,19 @@ class AuthService {
 
   /// Register a new user with email and password
   /// Returns "Success" on successful registration, or an error message
-  Future<String?> register(String email, String password, String firstName, String lastName, String phoneNumber) async {
+  Future<String?> register(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    String phoneNumber,
+  ) async {
     try {
-      UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
+      UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(
+            email: email.trim(),
+            password: password,
+          );
 
       // Update user profile with display name
       await userCredential.user?.updateDisplayName('$firstName $lastName');

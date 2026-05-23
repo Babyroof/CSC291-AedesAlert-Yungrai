@@ -238,12 +238,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onPressed: _isLoading ? null : _handleLogin,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF05108B),
-                                      padding: const EdgeInsets.fromLTRB(6, 12, 6, 12),
+                                      padding: const EdgeInsets.fromLTRB(
+                                        6,
+                                        12,
+                                        6,
+                                        12,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(14),
                                       ),
                                       elevation: 3,
-                                      shadowColor: const Color(0xFF05108B).withValues(alpha: 0.4),
+                                      shadowColor: const Color(
+                                        0xFF05108B,
+                                      ).withValues(alpha: 0.4),
                                     ),
                                     child: _isLoading
                                         ? const SizedBox(

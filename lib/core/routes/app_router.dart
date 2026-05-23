@@ -64,7 +64,7 @@ final appRouter = GoRouter(
     final onAuthPage =
         state.matchedLocation == '/login' ||
         state.matchedLocation == '/register';
-     
+
     if (user == null && !onAuthPage) return '/login';
     if (user != null && onAuthPage) return '/home';
     return null;
@@ -87,7 +87,10 @@ final appRouter = GoRouter(
       path: routeReportRisk,
       builder: (context, state) => const ReportRiskScreen(),
     ),
-    GoRoute(path: routeNews, builder: (context, state) => const NewsListScreen()),
+    GoRoute(
+      path: routeNews,
+      builder: (context, state) => const NewsListScreen(),
+    ),
     GoRoute(
       path: '$routeNews/:id',
       builder: (context, state) =>

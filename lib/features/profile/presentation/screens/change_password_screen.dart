@@ -112,9 +112,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: hasError
-                    ? const Color(0xFFE53935)
-                    : AppColors.primary,
+                color: hasError ? const Color(0xFFE53935) : AppColors.primary,
                 width: 1,
               ),
             ),
@@ -250,7 +248,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       elevation: 3,
-                      shadowColor: const Color(0xFF05108B).withValues(alpha: 0.4),
+                      shadowColor: const Color(
+                        0xFF05108B,
+                      ).withValues(alpha: 0.4),
                     ),
                     child: _isLoading
                         ? const SizedBox(
