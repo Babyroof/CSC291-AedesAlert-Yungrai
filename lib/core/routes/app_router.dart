@@ -14,6 +14,9 @@ import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/news/presentation/screens/news_list_screen.dart';
 import '../../features/news/presentation/screens/news_detail_screen.dart';
+import '../../features/news/presentation/screens/news_article_detail_screen.dart';
+import '../../features/news/domain/entities/article_entity.dart';
+import '../../features/news/domain/entities/news_article_entity.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/ranking/presentation/screens/ranking_screen.dart';
 import '../widgets/app_bottom_nav.dart';
@@ -29,6 +32,7 @@ const String routeNotification = '/notification';
 const String routeNews = '/news';
 const String routeChecklist = '/checklist';
 const String routeReportRisk = '/report-risk';
+const String routeNewsArticle = '/news-article';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellHomeKey = GlobalKey<NavigatorState>(debugLabel: 'home');
@@ -92,9 +96,16 @@ final appRouter = GoRouter(
       builder: (context, state) => const NewsListScreen(),
     ),
     GoRoute(
-      path: '$routeNews/:id',
+      path: routeNewsArticle,
       builder: (context, state) =>
-          NewsDetailScreen(id: state.pathParameters['id']!),
+          NewsArticleDetailScreen(article: state.extra as NewsArticleEntity),
+    ),
+    GoRoute(
+      path: '$routeNews/:id',
+      builder: (context, state) => NewsDetailScreen(
+        id: state.pathParameters['id']!,
+        article: state.extra as ArticleEntity?,
+      ),
     ),
     GoRoute(
       path: '/ranking',

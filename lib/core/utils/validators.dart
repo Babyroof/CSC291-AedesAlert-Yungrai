@@ -47,9 +47,7 @@ class AppValidators {
 
   /// Validates phone number (Thai format)
   static String? phoneNumber(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Phone number is required';
-    }
+    if (value == null || value.isEmpty) return null;
 
     // Remove spaces and dashes
     final cleanedPhone = value.replaceAll(RegExp(r'[\s\-]'), '');

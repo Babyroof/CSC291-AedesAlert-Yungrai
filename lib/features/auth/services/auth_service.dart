@@ -1,39 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:aedes_alert_yungrai/features/auth/data/models/user_model.dart';
 
-/// Service class to handle Firebase authentication operations
 class AuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
 
-  /// Get the currently authenticated user
-  User? get currentUser => _firebaseAuth.currentUser;
+  AuthService({FirebaseAuth? auth, FirebaseFirestore? firestore})
+    : _auth = auth ?? FirebaseAuth.instance,
+      _firestore = firestore ?? FirebaseFirestore.instance;
 
-  /// Check if user is authenticated
-  bool get isAuthenticated => _firebaseAuth.currentUser != null;
+  User? get currentUser => _auth.currentUser;
+  bool get isAuthenticated => _auth.currentUser != null;
+  String? get currentUserUid => _auth.currentUser?.uid;
+  String? get currentUserEmail => _auth.currentUser?.email;
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  /// Get the current user's UID
-  String? get currentUserUid => _firebaseAuth.currentUser?.uid;
-
-  /// Get the current user's email
-  String? get currentUserEmail => _firebaseAuth.currentUser?.email;
-
-  /// Login with email and password
-  /// Returns "Success" on successful login, or an error message
-  Future<String?> login(String email, String password) async {
-    try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      return "Success";
-    } on FirebaseAuthException catch (e) {
-      return _handleFirebaseAuthException(e);
-    } catch (e) {
-      return "An unexpected error occurred";
-    }
-  }
-
-  /// Register a new user with email and password
-  /// Returns "Success" on successful registration, or an error message
   Future<String?> register(
     String email,
     String password,
@@ -41,47 +24,113 @@ class AuthService {
     String lastName,
     String phoneNumber,
   ) async {
+    debugPrint('[AuthService] register: attempt — email=$email');
     try {
-      UserCredential userCredential = await _firebaseAuth
-          .createUserWithEmailAndPassword(
-            email: email.trim(),
-            password: password,
-          );
-
-      // Update user profile with display name
-      await userCredential.user?.updateDisplayName('$firstName $lastName');
-
-      return "Success";
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      final user = credential.user;
+      if (user == null) {
+        debugPrint('[AuthService] register: Firebase Auth returned null user');
+        return 'Cannot create an account.';
+      }
+      final model = UserModel(
+        uid: user.uid,
+        email: email.trim(),
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
+        fcmToken: '',
+        notificationsEnabled: true,
+      );
+      try {
+        await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .set(model.toFirestore());
+        debugPrint('[AuthService] register: success — uid=${user.uid}');
+        return 'Success';
+      } catch (e) {
+        debugPrint('[AuthService] register: Firestore write failed — $e');
+        return 'Cannot save data. Please check Firestore Rules.';
+      }
     } on FirebaseAuthException catch (e) {
-      return _handleFirebaseAuthException(e);
+      debugPrint(
+        '[AuthService] register: FirebaseAuthException — code=${e.code}',
+      );
+      if (e.code == 'weak-password') {
+        return 'Password must be at least 6 characters.';
+      }
+      if (e.code == 'email-already-in-use') {
+        return 'This email is already in use.';
+      }
+      return e.message ?? 'Firebase Auth Error';
     } catch (e) {
-      return "An unexpected error occurred";
+      debugPrint('[AuthService] register: unexpected error — $e');
+      return 'Registration failed. Please try again.';
     }
   }
 
-  /// Sign out the current user
-  Future<void> logout() async {
+  Future<String?> login(String email, String password) async {
+    debugPrint('[AuthService] login: attempt — email=$email');
     try {
-      await _firebaseAuth.signOut();
+      await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      debugPrint('[AuthService] login: success — $email');
+      return 'Success';
+    } on FirebaseAuthException catch (e) {
+      debugPrint('[AuthService] login: FirebaseAuthException — code=${e.code}');
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
+        return 'Email or Password is not correct.';
+      }
+      if (e.code == 'user-disabled') return 'This account has been disabled.';
+      if (e.code == 'too-many-requests') {
+        return 'Too many attempts. Please try again later.';
+      }
+      return e.message ?? 'Login failed.';
     } catch (e) {
-      rethrow;
+      debugPrint('[AuthService] login: unexpected error — $e');
+      return 'Something went wrong.';
     }
   }
 
-  /// Reset password for email
+  Future<void> logout() async {
+    await _auth.signOut();
+  }
+
   Future<String?> resetPassword(String email) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
-      return "Success";
+      await _auth.sendPasswordResetEmail(email: email.trim());
+      return 'Success';
     } on FirebaseAuthException catch (e) {
-      return _handleFirebaseAuthException(e);
+      return _handleAuthException(e);
     } catch (e) {
-      return "An unexpected error occurred";
+      return 'An unexpected error occurred';
     }
   }
 
-  /// Handle Firebase Authentication exceptions
-  String _handleFirebaseAuthException(FirebaseAuthException e) {
+  Future<UserModel?> getCurrentUserData() async {
+    try {
+      final currentUser = _auth.currentUser;
+      if (currentUser == null) return null;
+      final doc = await _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+      if (!doc.exists || doc.data() == null) return null;
+      return UserModel.fromFirestore(doc);
+    } catch (e) {
+      debugPrint('[AuthService] getCurrentUserData: error — $e');
+      return null;
+    }
+  }
+
+  String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
         return 'Email or password is incorrect';
@@ -107,7 +156,4 @@ class AuthService {
         return e.message ?? 'An authentication error occurred';
     }
   }
-
-  /// Stream of authentication state changes
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 }

@@ -1,33 +1,74 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedes_alert_yungrai/core/constants/app_colors.dart';
 import 'package:aedes_alert_yungrai/features/auth/services/auth_service.dart';
+import 'package:aedes_alert_yungrai/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:aedes_alert_yungrai/features/profile/presentation/controllers/profile_state.dart';
 import 'package:aedes_alert_yungrai/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:aedes_alert_yungrai/features/profile/presentation/screens/change_password_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  bool _notificationsEnabled = true;
-  late final AuthService _authService;
-  String? _userDisplayName;
-  String? _userEmail;
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  final _authService = AuthService();
+  bool? _localNotificationsEnabled;
 
   @override
   void initState() {
     super.initState();
-    _authService = AuthService();
-    _userEmail = _authService.currentUserEmail ?? 'somchai@email.com';
-    _userDisplayName =
-        _authService.currentUser?.displayName ?? 'Somchai Jaidee';
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(profileControllerProvider.notifier).loadProfile(uid);
+      });
+    }
+  }
+
+  Future<void> _handleSignOut() async {
+    await _authService.logout();
+  }
+
+  Future<void> _handleNotificationToggle(bool value) async {
+    setState(() => _localNotificationsEnabled = value);
+    final profile = ref.read(profileControllerProvider).profile.valueOrNull;
+    if (profile != null) {
+      await ref
+          .read(profileControllerProvider.notifier)
+          .saveProfile(profile.copyWith(notificationsEnabled: value));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<ProfileState>(profileControllerProvider, (_, next) {
+      final p = next.profile.valueOrNull;
+      if (p != null && _localNotificationsEnabled == null) {
+        setState(() => _localNotificationsEnabled = p.notificationsEnabled);
+      }
+    });
+
+    final profileState = ref.watch(profileControllerProvider);
+    final profile = profileState.profile.valueOrNull;
+    final authUser = FirebaseAuth.instance.currentUser;
+
+    final profileName = profile != null
+        ? '${profile.firstName} ${profile.lastName}'.trim()
+        : '';
+    final displayName = profileName.isNotEmpty
+        ? profileName
+        : (authUser?.displayName ?? '');
+    final email = (profile?.email ?? '').isNotEmpty
+        ? profile!.email
+        : (authUser?.email ?? '');
+    final notificationsEnabled =
+        profile?.notificationsEnabled ?? _localNotificationsEnabled ?? true;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -45,196 +86,184 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: AppColors.background,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              // Profile Card
-              Container(
-                width: double.infinity,
-                height: 216,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0x0A000000),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(16),
+      body: profileState.profile.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // User Avatar
+                    const SizedBox(height: 20),
                     Container(
-                      width: 80,
-                      height: 80,
+                      width: double.infinity,
+                      height: 216,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          // angle: 135 * 3.14159 / 180,
-                          colors: [Color(0xFF283593), Color(0xFF1A237E)],
-                        ),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.person,
                         color: Colors.white,
-                        size: 40,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // User Name
-                    Text(
-                      _userDisplayName ?? 'Somchai Jaidee',
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w800,
-                        fontSize: 20,
-                        height: 28 / 20,
-                        letterSpacing: 0,
-                        color: Color(0xFF1B1B21),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // User Email
-                    Text(
-                      _userEmail ?? 'somchai@email.com',
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        height: 20 / 14,
-                        letterSpacing: 0,
-                        color: Color(0xFF454652),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              // Push Notifications Section
-              Container(
-                width: double.infinity,
-                height: 75,
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Push Notifications',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            height: 24 / 16,
-                            letterSpacing: 0,
-                            color: Color(0xFF1B1B21),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x0A000000),
+                            blurRadius: 12,
+                            offset: Offset(0, 4),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _notificationsEnabled
-                              ? 'NOTIFICATIONSENABLED'
-                              : 'NOTIFICATIONSDISABLED',
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 10,
-                            height: 15 / 10,
-                            letterSpacing: 0.5,
-                            color: Color(0xFF454652),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF283593), Color(0xFF1A237E)],
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 40,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          Text(
+                            displayName,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
+                              height: 28 / 20,
+                              letterSpacing: 0,
+                              color: Color(0xFF1B1B21),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            email,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              height: 20 / 14,
+                              letterSpacing: 0,
+                              color: Color(0xFF454652),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    Switch(
-                      value: _notificationsEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _notificationsEnabled = value;
+                    const SizedBox(height: 32),
+                    Container(
+                      width: double.infinity,
+                      height: 75,
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Push Notifications',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  height: 24 / 16,
+                                  letterSpacing: 0,
+                                  color: Color(0xFF1B1B21),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                notificationsEnabled ? 'Enabled' : 'Disabled',
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10,
+                                  height: 15 / 10,
+                                  letterSpacing: 0.5,
+                                  color: Color(0xFF454652),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Switch(
+                            value: notificationsEnabled,
+                            onChanged: _handleNotificationToggle,
+                            activeThumbColor: const Color(0xFF22C55E),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    _buildProfileMenuItem(
+                      icon: Icons.person_outline,
+                      iconBackgroundColor: const Color(0xFFE0E0FF),
+                      iconColor: AppColors.primary,
+                      title: 'Edit Profile',
+                      subtitle: profile != null
+                          ? '${profile.firstName} · ${profile.lastName} · ${profile.phoneNumber}'
+                          : '',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EditProfileScreen(),
+                          ),
+                        ).then((_) {
+                          final uid = FirebaseAuth.instance.currentUser?.uid;
+                          if (uid != null) {
+                            ref
+                                .read(profileControllerProvider.notifier)
+                                .loadProfile(uid);
+                          }
                         });
                       },
-                      activeColor: const Color(0xFF22C55E),
                     ),
+                    const SizedBox(height: 16),
+                    _buildProfileMenuItem(
+                      icon: Icons.lock_outline,
+                      iconBackgroundColor: const Color(0xFFEEEEEE),
+                      iconColor: const Color(0xFF666666),
+                      title: 'Change Password',
+                      subtitle: 'Firebase Authentication',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ChangePasswordScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildProfileMenuItem(
+                      icon: Icons.exit_to_app_outlined,
+                      iconBackgroundColor: const Color(0xFFFFEBEE),
+                      iconColor: const Color(0xFFBA1A1A),
+                      title: 'Sign Out',
+                      subtitle: '',
+                      titleColor: const Color(0xFFBA1A1A),
+                      titleFontWeight: FontWeight.w500,
+                      arrowIconColor: const Color(0xFFBA1A1A),
+                      onTap: () => _handleSignOut(),
+                    ),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              // Edit Profile
-              _buildProfileMenuItem(
-                icon: Icons.person_outline,
-                iconBackgroundColor: const Color(0xFFE0E0FF),
-                iconColor: AppColors.primary,
-                title: 'Edit Profile',
-                subtitle: 'firstName · lastName · phoneNumber',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditProfileScreen(
-                        firstName: _userDisplayName?.split(' ').first ?? '',
-                        lastName:
-                            _userDisplayName?.split(' ').skip(1).join(' ') ??
-                            '',
-                        email: _userEmail,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              // Change Password
-              _buildProfileMenuItem(
-                icon: Icons.lock_outline,
-                iconBackgroundColor: const Color(0xFFEEEEEE),
-                iconColor: const Color(0xFF666666),
-                title: 'Change Password',
-                subtitle: 'Firebase Authentication',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ChangePasswordScreen(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              // Sign Out
-              _buildProfileMenuItem(
-                icon: Icons.exit_to_app_outlined,
-                iconBackgroundColor: const Color(0xFFFFEBEE),
-                iconColor: const Color(0xFFBA1A1A),
-                title: 'Sign Out',
-                subtitle: '',
-                titleColor: const Color(0xFFBA1A1A),
-                titleFontWeight: FontWeight.w500,
-                arrowIconColor: const Color(0xFFBA1A1A),
-                onTap: () {
-                  // Handle Sign Out
-                },
-              ),
-              const SizedBox(height: 40),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -255,7 +284,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Row(
             children: [
-              // Icon Container
               Container(
                 width: 40,
                 height: 40,
@@ -266,7 +294,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Icon(icon, color: iconColor, size: 24),
               ),
               const SizedBox(width: 16),
-              // Title and Subtitle
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,7 +327,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              // Arrow Icon
               Icon(Icons.chevron_right, color: arrowIconColor, size: 24),
             ],
           ),
