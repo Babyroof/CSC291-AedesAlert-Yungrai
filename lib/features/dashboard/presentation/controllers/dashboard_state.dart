@@ -6,9 +6,8 @@ class DashboardState {
 
   final AsyncValue<DashboardSummaryModel?> summary;
 
-  factory DashboardState.initial() => const DashboardState(
-        summary: AsyncValue.loading(),
-      );
+  factory DashboardState.initial() =>
+      const DashboardState(summary: AsyncValue.loading());
 
   DashboardState copyWith({AsyncValue<DashboardSummaryModel?>? summary}) {
     return DashboardState(summary: summary ?? this.summary);

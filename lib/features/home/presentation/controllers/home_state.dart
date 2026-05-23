@@ -15,10 +15,10 @@ class HomeState {
   final AsyncValue<WeatherForecastModel?> weatherForecast;
 
   factory HomeState.initial() => const HomeState(
-        nearestArea: AsyncValue.loading(),
-        latestNotification: AsyncValue.loading(),
-        weatherForecast: AsyncValue.loading(),
-      );
+    nearestArea: AsyncValue.loading(),
+    latestNotification: AsyncValue.loading(),
+    weatherForecast: AsyncValue.loading(),
+  );
 
   HomeState copyWith({
     AsyncValue<AreaModel?>? nearestArea,

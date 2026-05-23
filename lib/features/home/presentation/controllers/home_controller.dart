@@ -11,10 +11,10 @@ class HomeController extends StateNotifier<HomeState> {
     required GetNearestAreaUseCase getNearestArea,
     required GetLatestNotificationUseCase getLatestNotification,
     required GetWeatherForecastUseCase getWeatherForecast,
-  })  : _getNearestArea = getNearestArea,
-        _getLatestNotification = getLatestNotification,
-        _getWeatherForecast = getWeatherForecast,
-        super(HomeState.initial());
+  }) : _getNearestArea = getNearestArea,
+       _getLatestNotification = getLatestNotification,
+       _getWeatherForecast = getWeatherForecast,
+       super(HomeState.initial());
 
   final GetNearestAreaUseCase _getNearestArea;
   final GetLatestNotificationUseCase _getLatestNotification;
@@ -47,14 +47,18 @@ class HomeController extends StateNotifier<HomeState> {
 
     // Step 2: fetch notification and weather in parallel
     await Future.wait([
-      _getLatestNotification.execute(area.id).then(
+      _getLatestNotification
+          .execute(area.id)
+          .then(
             (n) =>
                 state = state.copyWith(latestNotification: AsyncValue.data(n)),
             onError: (Object e, StackTrace st) => state = state.copyWith(
               latestNotification: AsyncValue.error(e, st),
             ),
           ),
-      _getWeatherForecast.execute(area.location).then(
+      _getWeatherForecast
+          .execute(area.location)
+          .then(
             (w) => state = state.copyWith(weatherForecast: AsyncValue.data(w)),
             onError: (Object e, StackTrace st) => state = state.copyWith(
               weatherForecast: AsyncValue.error(e, st),
@@ -66,11 +70,12 @@ class HomeController extends StateNotifier<HomeState> {
   Future<void> refresh(GeoPoint userLocation) => loadHomeData(userLocation);
 }
 
-final homeControllerProvider =
-    StateNotifierProvider<HomeController, HomeState>((ref) {
-  return HomeController(
-    getNearestArea: ref.watch(getNearestAreaUseCaseProvider),
-    getLatestNotification: ref.watch(getLatestNotificationUseCaseProvider),
-    getWeatherForecast: ref.watch(getWeatherForecastUseCaseProvider),
-  );
-});
+final homeControllerProvider = StateNotifierProvider<HomeController, HomeState>(
+  (ref) {
+    return HomeController(
+      getNearestArea: ref.watch(getNearestAreaUseCaseProvider),
+      getLatestNotification: ref.watch(getLatestNotificationUseCaseProvider),
+      getWeatherForecast: ref.watch(getWeatherForecastUseCaseProvider),
+    );
+  },
+);
