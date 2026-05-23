@@ -10,9 +10,7 @@ void main() {
   testWidgets('LoginScreen renders without error', (WidgetTester tester) async {
     final mockAuthService = MockAuthService();
     await tester.pumpWidget(
-      MaterialApp(
-        home: LoginScreen(authService: mockAuthService),
-      ),
+      MaterialApp(home: LoginScreen(authService: mockAuthService)),
     );
     expect(find.byType(LoginScreen), findsOneWidget);
   });
