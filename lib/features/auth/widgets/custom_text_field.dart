@@ -43,27 +43,18 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   late bool _obscureText;
   late FocusNode _focusNode;
-  bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
     _obscureText = widget.isPassword;
     _focusNode = FocusNode();
-    _focusNode.addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_handleFocusChange);
     _focusNode.dispose();
     super.dispose();
-  }
-
-  void _handleFocusChange() {
-    setState(() {
-      _isFocused = _focusNode.hasFocus;
-    });
   }
 
   void _togglePasswordVisibility() {
