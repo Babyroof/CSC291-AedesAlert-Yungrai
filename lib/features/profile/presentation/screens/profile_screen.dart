@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:aedes_alert_yungrai/core/constants/app_colors.dart';
 import 'package:aedes_alert_yungrai/features/auth/services/auth_service.dart';
-import 'package:aedes_alert_yungrai/features/profile/screens/edit_profile_screen.dart';
-import 'package:aedes_alert_yungrai/features/profile/screens/change_password_screen.dart';
+import 'package:aedes_alert_yungrai/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:aedes_alert_yungrai/features/profile/presentation/screens/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

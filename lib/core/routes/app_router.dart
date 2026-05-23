@@ -64,7 +64,7 @@ final appRouter = GoRouter(
     final onAuthPage =
         state.matchedLocation == '/login' ||
         state.matchedLocation == '/register';
-
+     
     if (user == null && !onAuthPage) return '/login';
     if (user != null && onAuthPage) return '/home';
     return null;
