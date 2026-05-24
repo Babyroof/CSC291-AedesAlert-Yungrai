@@ -10,7 +10,6 @@ import '../../../../core/widgets/yungrai_app_bar.dart';
 import '../../data/models/area_model.dart';
 import '../../domain/entities/weather_forecast_model.dart';
 import '../controllers/home_controller.dart';
-import '../controllers/home_location_provider.dart';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -76,7 +75,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(homeAutoLoadProvider);
     final state = ref.watch(homeControllerProvider);
 
     final isLoading = state.nearestArea is AsyncLoading;
