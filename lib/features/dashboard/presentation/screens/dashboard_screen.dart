@@ -5,6 +5,7 @@ import '../../../../core/themes/app_colors.dart';
 import '../../../../core/widgets/yungrai_app_bar.dart';
 import '../../../../features/dashboard/domain/entities/dashboard_summary_model.dart';
 import '../../../../features/dashboard/presentation/controllers/dashboard_controller.dart';
+import '../../../../features/dashboard/presentation/controllers/dashboard_init_provider.dart';
 
 final _selectedMonthProvider = StateProvider<int>((ref) => 0);
 
@@ -117,6 +118,7 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(dashboardInitProvider);
     final selectedMonth = ref.watch(_selectedMonthProvider);
 
     // Reads live state from controller; falls back to placeholder until
