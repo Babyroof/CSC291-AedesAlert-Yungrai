@@ -8,6 +8,7 @@ Future<void> clearAndSeedAll() async {
   await clearAll();
   await seedAll();
 }
+
 Future<void> clearAndSeedAreas() async {
   final areasSnapshot = await _db.collection('areas').get();
   for (final doc in areasSnapshot.docs) {
@@ -84,7 +85,7 @@ Future<void> seedAreas() async {
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 15)),
       'updatedAt': Timestamp.now(),
     },
- 
+
     // ─── HIGH RISK ───
     {
       'subDistrict': 'Bang Rak',
@@ -185,7 +186,7 @@ Future<void> seedAreas() async {
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 3)),
       'updatedAt': Timestamp.now(),
     },
- 
+
     // ─── MEDIUM RISK ───
     {
       'subDistrict': 'Dusit',
@@ -341,7 +342,7 @@ Future<void> seedAreas() async {
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 10)),
       'updatedAt': Timestamp.now(),
     },
- 
+
     // ─── LOW RISK ───
     {
       'subDistrict': 'Lak Si',
@@ -564,7 +565,7 @@ Future<void> seedAreas() async {
       'updatedAt': Timestamp.now(),
     },
   ];
- 
+
   for (final area in areas) {
     await _db.collection('areas').add(area);
   }
@@ -638,21 +639,22 @@ Future<void> seedUsers() async {
 
 // ─── 2. AREAS ────────────────────────────────────────────────
 
-
 // ─── 3. PLACES ───────────────────────────────────────────────
 // ─── 3. PLACES ───────────────────────────────────────────────
 Future<void> seedPlaces() async {
   final places = [
     {
       'name': 'King Chulalongkorn Memorial Hospital',
-      'description': 'Large public hospital under Thai Red Cross, open 24 hours',
+      'description':
+          'Large public hospital under Thai Red Cross, open 24 hours',
       'location': const GeoPoint(13.7330, 100.5347),
       'phoneNumber': '02-256-4000',
       'type': 'hospital',
     },
     {
       'name': 'Ramathibodi Hospital',
-      'description': 'University hospital, Faculty of Medicine Mahidol University',
+      'description':
+          'University hospital, Faculty of Medicine Mahidol University',
       'location': const GeoPoint(13.7651, 100.5278),
       'phoneNumber': '02-201-1000',
       'type': 'hospital',

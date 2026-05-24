@@ -491,7 +491,8 @@ class _BarChartPainter extends CustomPainter {
     final double chartH = size.height - bottomPad - topPad;
     final double chartW = size.width;
     final int n = months.length;
-    final double maxVal = scores.reduce(max) * 1.25;
+    if (n == 0) return;
+    final double maxVal = scores.isEmpty ? 100.0 : scores.reduce(max) * 1.25;
 
     final double slotW = chartW / n;
     const double barWidthFraction = 0.52;
@@ -549,7 +550,7 @@ class _BarChartPainter extends CustomPainter {
 
         final tp = TextPainter(
           text: TextSpan(
-            text: '${scores[i]}',
+            text: scores[i].toStringAsFixed(1),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 11,
@@ -585,7 +586,10 @@ class _BarChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _BarChartPainter oldDelegate) =>
+      oldDelegate.scores != scores ||
+      oldDelegate.months != months ||
+      oldDelegate.highlightIndex != highlightIndex;
 }
 
 // ─── Risk Distribution ────────────────────────────────────────────────────────
