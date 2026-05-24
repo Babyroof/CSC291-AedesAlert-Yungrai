@@ -7,16 +7,30 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/home/presentation/screens/checklist_screen.dart';
-import '../../features/home/presentation/screens/report_risk_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/news/presentation/screens/news_list_screen.dart';
 import '../../features/news/presentation/screens/news_detail_screen.dart';
+import '../../features/news/presentation/screens/news_article_detail_screen.dart';
+import '../../features/news/domain/entities/article_entity.dart';
+import '../../features/news/domain/entities/news_article_entity.dart';
 import '../../features/notification/presentation/screens/notification_screen.dart';
 import '../../features/ranking/presentation/screens/ranking_screen.dart';
 import '../widgets/app_bottom_nav.dart';
+
+// Route path constants
+const String routeLogin = '/login';
+const String routeRegister = '/register';
+const String routeHome = '/home';
+const String routeMap = '/map';
+const String routeDashboard = '/dashboard';
+const String routeProfile = '/profile';
+const String routeNotification = '/notification';
+const String routeNews = '/news';
+const String routeChecklist = '/checklist';
+const String routeReportRisk = '/report-risk';
+const String routeNewsArticle = '/news-article';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellHomeKey = GlobalKey<NavigatorState>(debugLabel: 'home');
@@ -58,28 +72,30 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
-    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+    GoRoute(path: routeLogin, builder: (context, state) => const LoginScreen()),
     GoRoute(
-      path: '/register',
+      path: routeRegister,
       builder: (context, state) => const RegisterScreen(),
     ),
     GoRoute(
-      path: '/notification',
+      path: routeNotification,
       builder: (context, state) => const NotificationScreen(),
     ),
     GoRoute(
-      path: '/checklist',
-      builder: (context, state) => const ChecklistScreen(),
+      path: routeNews,
+      builder: (context, state) => const NewsListScreen(),
     ),
     GoRoute(
-      path: '/report-risk',
-      builder: (context, state) => const ReportRiskScreen(),
-    ),
-    GoRoute(path: '/news', builder: (context, state) => const NewsListScreen()),
-    GoRoute(
-      path: '/news/:id',
+      path: routeNewsArticle,
       builder: (context, state) =>
-          NewsDetailScreen(id: state.pathParameters['id']!),
+          NewsArticleDetailScreen(article: state.extra as NewsArticleEntity),
+    ),
+    GoRoute(
+      path: '$routeNews/:id',
+      builder: (context, state) => NewsDetailScreen(
+        id: state.pathParameters['id']!,
+        article: state.extra as ArticleEntity?,
+      ),
     ),
     GoRoute(
       path: '/ranking',
@@ -93,7 +109,7 @@ final appRouter = GoRouter(
           navigatorKey: _shellHomeKey,
           routes: [
             GoRoute(
-              path: '/home',
+              path: routeHome,
               builder: (context, state) => const HomeScreen(),
             ),
           ],
@@ -102,7 +118,7 @@ final appRouter = GoRouter(
           navigatorKey: _shellMapKey,
           routes: [
             GoRoute(
-              path: '/map',
+              path: routeMap,
               builder: (context, state) => const MapScreen(),
             ),
           ],
@@ -111,7 +127,7 @@ final appRouter = GoRouter(
           navigatorKey: _shellDashboardKey,
           routes: [
             GoRoute(
-              path: '/dashboard',
+              path: routeDashboard,
               builder: (context, state) => const DashboardScreen(),
             ),
           ],
@@ -120,7 +136,7 @@ final appRouter = GoRouter(
           navigatorKey: _shellProfileKey,
           routes: [
             GoRoute(
-              path: '/profile',
+              path: routeProfile,
               builder: (context, state) => const ProfileScreen(),
             ),
           ],

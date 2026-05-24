@@ -14,8 +14,8 @@ class AppColors {
   static const Color cardBackground = Color(0xFFFFFFFF);
 
   // Risk Levels
-  static const Color riskCritical = Color(0xFFD32F2F);
-  static const Color riskHigh = Color(0xFFF57C00);
+  static const Color riskCritical = Color(0xFFB71C1C);
+  static const Color riskHigh = Color(0xFFD32F2F);
   static const Color riskMedium = Color(0xFFFFC107);
   static const Color riskLow = Color(0xFF4CAF50);
 
