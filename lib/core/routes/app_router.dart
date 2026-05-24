@@ -7,8 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/home/presentation/screens/checklist_screen.dart';
-import '../../features/home/presentation/screens/report_risk_screen.dart';
 import '../../features/map/presentation/screens/map_screen.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
@@ -82,14 +80,6 @@ final appRouter = GoRouter(
     GoRoute(
       path: routeNotification,
       builder: (context, state) => const NotificationScreen(),
-    ),
-    GoRoute(
-      path: routeChecklist,
-      builder: (context, state) => const ChecklistScreen(),
-    ),
-    GoRoute(
-      path: routeReportRisk,
-      builder: (context, state) => const ReportRiskScreen(),
     ),
     GoRoute(
       path: routeNews,

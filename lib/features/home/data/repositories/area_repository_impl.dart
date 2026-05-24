@@ -21,23 +21,16 @@ class AreaRepositoryImpl implements AreaRepository {
 
     if (snapshot.docs.isEmpty) return null;
 
-    // Compute distance for each document and filter by radius
-    final candidates =
-        snapshot.docs
-            .map((doc) {
-              final location = doc.data()['location'] as GeoPoint;
-              return (
-                doc: doc,
-                distance: GeoUtils.distanceInKm(userLocation, location),
-              );
-            })
-            .where((item) => item.distance <= radiusKm)
-            .toList()
-          ..sort((a, b) => a.distance.compareTo(b.distance));
+    // Sort all areas by distance from user, return the nearest one
+    final sorted = snapshot.docs.map((doc) {
+      final location = doc.data()['location'] as GeoPoint;
+      return (
+        doc: doc,
+        distance: GeoUtils.distanceInKm(userLocation, location),
+      );
+    }).toList()..sort((a, b) => a.distance.compareTo(b.distance));
 
-    if (candidates.isEmpty) return null;
-
-    return AreaModel.fromFirestore(candidates.first.doc);
+    return AreaModel.fromFirestore(sorted.first.doc);
   }
 }
 
