@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aedes_alert_yungrai/core/themes/app_colors.dart';
 
@@ -39,20 +40,69 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  void _changePassword() {
-    // TODO: Implement change password logic
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _changePassword() async {
+    final currentPassword = _currentPasswordController.text;
+    final newPassword = _newPasswordController.text;
+    final confirmPassword = _confirmPasswordController.text;
 
-    Future.delayed(const Duration(seconds: 1), () {
+    bool hasError = false;
+    if (currentPassword.isEmpty) {
+      setState(() => _currentPasswordError = 'Current password is required');
+      hasError = true;
+    }
+    if (newPassword.isEmpty || newPassword.length < 6) {
+      setState(
+        () => _newPasswordError = 'Password must be at least 6 characters',
+      );
+      hasError = true;
+    }
+    if (confirmPassword.isEmpty) {
+      setState(() => _confirmPasswordError = 'Please confirm your password');
+      hasError = true;
+    } else if (confirmPassword != newPassword) {
+      setState(() => _confirmPasswordError = 'Passwords do not match');
+      hasError = true;
+    }
+    if (hasError) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email == null) return;
+
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(newPassword);
+
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password changed successfully.')),
+        );
         Navigator.pop(context);
       }
-    });
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        setState(() => _currentPasswordError = 'Current password is incorrect');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Failed to change password')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to change password. Please try again.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Widget _buildLabel(String text) {
@@ -195,7 +245,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Current Password
                 _buildLabel('Current Password'),
                 const SizedBox(height: 12),
                 _buildPasswordField(
@@ -209,7 +258,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       setState(() => _currentPasswordError = null),
                 ),
                 const SizedBox(height: 24),
-                // New Password
                 _buildLabel('New Password'),
                 const SizedBox(height: 12),
                 _buildPasswordField(
@@ -221,7 +269,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   onChanged: (_) => setState(() => _newPasswordError = null),
                 ),
                 const SizedBox(height: 24),
-                // Confirm New Password
                 _buildLabel('Confirm New Password'),
                 const SizedBox(height: 12),
                 _buildPasswordField(
@@ -235,7 +282,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       setState(() => _confirmPasswordError = null),
                 ),
                 const SizedBox(height: 40),
-                // Change Password Button
                 SizedBox(
                   width: double.infinity,
                   height: 46,

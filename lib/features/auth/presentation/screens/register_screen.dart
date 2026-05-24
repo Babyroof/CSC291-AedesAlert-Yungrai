@@ -61,7 +61,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  String? _validateEmail(String? value) => AppValidators.email(value);
+  String? _validateEmail(String? value) {
+    if (_backendError != null) return _backendError;
+    return AppValidators.email(value);
+  }
 
   String? _validatePassword(String? value) => AppValidators.password(value);
 
@@ -91,6 +94,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if (mounted) {
             context.go(routeHome);
           }
+        } else if (result ==
+            'Cannot save data. Please check Firestore Rules.') {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(result!)));
         } else {
           setState(() {
             _backendError = result ?? 'Registration failed';

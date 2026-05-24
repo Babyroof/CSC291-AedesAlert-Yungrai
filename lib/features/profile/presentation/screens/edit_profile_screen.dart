@@ -1,25 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedes_alert_yungrai/core/themes/app_colors.dart';
+import 'package:aedes_alert_yungrai/features/profile/domain/entities/user_profile_entity.dart';
+import 'package:aedes_alert_yungrai/features/profile/presentation/controllers/profile_controller.dart';
 
-class EditProfileScreen extends StatefulWidget {
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? phoneNumber;
-
-  const EditProfileScreen({
-    super.key,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.phoneNumber,
-  });
+class EditProfileScreen extends ConsumerStatefulWidget {
+  const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _emailController;
@@ -34,11 +27,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _firstNameController = TextEditingController(text: widget.firstName ?? '');
-    _lastNameController = TextEditingController(text: widget.lastName ?? '');
-    _emailController = TextEditingController(text: widget.email ?? '');
+    final profile = ref.read(profileControllerProvider).profile.valueOrNull;
+    _firstNameController = TextEditingController(
+      text: profile?.firstName ?? '',
+    );
+    _lastNameController = TextEditingController(text: profile?.lastName ?? '');
+    _emailController = TextEditingController(text: profile?.email ?? '');
     _phoneNumberController = TextEditingController(
-      text: widget.phoneNumber ?? '',
+      text: profile?.phoneNumber ?? '',
     );
   }
 
@@ -51,20 +47,58 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _saveChanges() {
-    // TODO: Implement save logic
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _saveChanges() async {
+    final profile = ref.read(profileControllerProvider).profile.valueOrNull;
+    final uid = profile?.uid ?? FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return;
 
-    Future.delayed(const Duration(seconds: 1), () {
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final email = _emailController.text.trim();
+    final phoneNumber = _phoneNumberController.text.trim();
+
+    bool hasError = false;
+    if (firstName.isEmpty) {
+      setState(() => _firstNameError = 'First name is required');
+      hasError = true;
+    }
+    if (lastName.isEmpty) {
+      setState(() => _lastNameError = 'Last name is required');
+      hasError = true;
+    }
+    if (email.isEmpty) {
+      setState(() => _emailError = 'Email is required');
+      hasError = true;
+    }
+    if (phoneNumber.isEmpty) {
+      setState(() => _phoneNumberError = 'Phone number is required');
+      hasError = true;
+    }
+    if (hasError) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final updated = UserProfileEntity(
+        uid: uid,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+        notificationsEnabled: profile?.notificationsEnabled ?? true,
+      );
+      await ref.read(profileControllerProvider.notifier).saveProfile(updated);
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to save profile. Please try again.'),
+          ),
+        );
       }
-    });
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Widget _buildTextField({
@@ -153,6 +187,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = ref.watch(profileControllerProvider).profile.valueOrNull;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -187,7 +223,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Current Name Display
                 const Text(
                   'Current Name',
                   style: TextStyle(
@@ -199,7 +234,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${widget.firstName ?? ''} ${widget.lastName ?? ''}',
+                  profile != null
+                      ? '${profile.firstName} ${profile.lastName}'.trim()
+                      : '',
                   style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 14,
@@ -208,7 +245,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                // First Name Field
                 const Text(
                   'First Name',
                   style: TextStyle(
@@ -226,7 +262,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onChanged: (_) => setState(() => _firstNameError = null),
                 ),
                 const SizedBox(height: 24),
-                // Last Name Field
                 const Text(
                   'Last Name',
                   style: TextStyle(
@@ -244,7 +279,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onChanged: (_) => setState(() => _lastNameError = null),
                 ),
                 const SizedBox(height: 24),
-                // Email Field
                 const Text(
                   'Email Address',
                   style: TextStyle(
@@ -263,7 +297,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onChanged: (_) => setState(() => _emailError = null),
                 ),
                 const SizedBox(height: 24),
-                // Phone Number Field
                 const Text(
                   'Phone Number',
                   style: TextStyle(
@@ -282,7 +315,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onChanged: (_) => setState(() => _phoneNumberError = null),
                 ),
                 const SizedBox(height: 40),
-                // Save Button
                 SizedBox(
                   width: double.infinity,
                   height: 46,
@@ -324,7 +356,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Cancel Button
                 SizedBox(
                   width: double.infinity,
                   height: 46,
