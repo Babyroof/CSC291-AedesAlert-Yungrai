@@ -22,6 +22,7 @@ class AreaRepositoryImpl implements AreaRepository {
     if (snapshot.docs.isEmpty) return null;
 
     final withDistance = snapshot.docs
+        .where((doc) => doc.data()['location'] is GeoPoint)
         .map((doc) {
           final location = doc.data()['location'] as GeoPoint;
           return (

@@ -26,7 +26,7 @@ class NotificationDataModel {
       title: data['title'] as String? ?? '',
       body: data['body'] as String? ?? '',
       relatedZoneId: relatedZone?.id,
-      sentAt: (data['sentAt'] as Timestamp).toDate(),
+      sentAt: (data['sentAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
