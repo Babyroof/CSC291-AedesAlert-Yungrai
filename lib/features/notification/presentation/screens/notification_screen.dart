@@ -55,8 +55,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       body: state.notifications.when(
         loading: () => const _LoadingBody(),
         error: (error, stackTrace) => _ErrorBody(
-          onRetry: () =>
-              ref.read(notificationControllerProvider.notifier).loadNotifications(),
+          onRetry: () => ref
+              .read(notificationControllerProvider.notifier)
+              .loadNotifications(),
         ),
         data: (notifications) {
           if (notifications.isEmpty) {
@@ -146,16 +147,16 @@ class _EmptyBody extends StatelessWidget {
           Text(
             'No Notifications',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'You\'re all caught up!',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -193,16 +194,16 @@ class _ErrorBody extends StatelessWidget {
           Text(
             'Failed to Load',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             'Check your connection and try again',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -227,10 +228,7 @@ class _ErrorBody extends StatelessWidget {
 // ── Notification Card ────────────────────────────────────────────────────────
 
 class _NotificationCard extends StatefulWidget {
-  const _NotificationCard({
-    required this.notification,
-    required this.index,
-  });
+  const _NotificationCard({required this.notification, required this.index});
 
   final NotificationEntity notification;
   final int index;
@@ -280,7 +278,9 @@ class _NotificationCardState extends State<_NotificationCard> {
             ),
           ],
           border: Border.all(
-            color: _isRead ? AppColors.divider : AppColors.primary.withOpacity(0.2),
+            color: _isRead
+                ? AppColors.divider
+                : AppColors.primary.withOpacity(0.2),
             width: _isRead ? 0 : 1.5,
           ),
         ),
