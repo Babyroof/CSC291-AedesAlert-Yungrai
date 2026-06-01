@@ -31,6 +31,11 @@ class MapController extends StateNotifier<MapState> {
   }
 
   Future<void> refresh() => loadMapData();
+
+  void setFilter(String mode) => state = state.copyWith(filterMode: mode);
+  void setSearch(String query) => state = state.copyWith(searchQuery: query);
+  void setUserLocation(double lat, double lng) =>
+      state = state.copyWith(userLat: lat, userLng: lng);
 }
 
 final mapControllerProvider = StateNotifierProvider<MapController, MapState>((
