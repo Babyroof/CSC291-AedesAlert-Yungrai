@@ -91,7 +91,6 @@ class RiskUpdateService {
         // 1. Set previous isLatest document to false
         final oldDocs = await _firestore
             .collection(AppConstants.areasCollection)
-            .where('subDistrict', isEqualTo: data['subDistrict'])
             .where('district', isEqualTo: data['district'])
             .where('isLatest', isEqualTo: true)
             .get();
@@ -103,11 +102,9 @@ class RiskUpdateService {
         batch.set(
           _firestore.collection(AppConstants.areasCollection).doc(),
           {
-            'subDistrict': data['subDistrict'],
             'district': data['district'],
             'province': data['province'],
             'location': location,
-            'radius': (data['radius'] as num).toDouble(),
             'riskScore': score * 100,
             'riskLevel': level,
             'temperature': weather.temperatureCelsius,

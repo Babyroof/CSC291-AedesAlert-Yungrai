@@ -29,10 +29,10 @@ class AreaModel {
     final data = doc.data()!;
     final district = data['district'] as String? ?? '';
     return AreaModel(
-      id: (data['areaId'] as String?) ?? doc.id,
-      subDistrict: data['subDistrict'] as String,
-      district: data['district'] as String,
-      province: data['province'] as String,
+      id: doc.id,
+      subDistrict: data['subDistrict'] as String? ?? district,
+      district: district,
+      province: data['province'] as String? ?? '',
       location: data['location'] as GeoPoint,
       radius: ((data['radius'] as num?) ?? 500).toDouble(),
       riskScore: ((data['riskScore'] as num?) ?? 0).toDouble(),

@@ -18,8 +18,14 @@ class MapRepositoryImpl implements MapRepository {
         .collection(AppConstants.areasCollection)
         .where('isLatest', isEqualTo: true)
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs.map((doc) {
+        .asyncMap((snapshot) async {
+          final docs = snapshot.docs.isNotEmpty
+              ? snapshot.docs
+              : (await _firestore
+                      .collection(AppConstants.areasCollection)
+                      .get())
+                  .docs;
+          return docs.map((doc) {
             final m = AreaModel.fromFirestore(doc);
             return MapAreaEntity(
               id: m.id,
@@ -28,12 +34,11 @@ class MapRepositoryImpl implements MapRepository {
               province: m.province,
               lat: m.location.latitude,
               lng: m.location.longitude,
-              radius: m.radius,
               riskScore: m.riskScore,
               riskLevel: m.riskLevel,
             );
-          }).toList(),
-        );
+          }).toList();
+        });
   }
 
   @override

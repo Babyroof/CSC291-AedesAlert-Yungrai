@@ -91,7 +91,6 @@ export const updateRiskScores = onSchedule(
         // 1. Set previous isLatest document to false
         const oldDocs = await db
           .collection("areas")
-          .where("subDistrict", "==", data.subDistrict)
           .where("district", "==", data.district)
           .where("isLatest", "==", true)
           .get();
@@ -99,11 +98,9 @@ export const updateRiskScores = onSchedule(
 
         // 2. Create new daily document in areas
         batch.set(db.collection("areas").doc(), {
-          subDistrict: data.subDistrict,
           district: data.district,
           province: data.province,
           location: location,
-          radius: data.radius,
           riskScore: score * 100,
           riskLevel: level,
           temperature: temp,
