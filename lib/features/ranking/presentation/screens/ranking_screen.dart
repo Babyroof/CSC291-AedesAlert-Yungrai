@@ -3,23 +3,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedes_alert_yungrai/core/utils/risk_level_utils.dart';
 import 'package:aedes_alert_yungrai/core/widgets/yungrai_app_bar.dart';
 import 'package:aedes_alert_yungrai/features/ranking/domain/entities/ranking_area_entity.dart';
-import 'package:aedes_alert_yungrai/features/ranking/presentation/controllers/ranking_stream_provider.dart';
+import 'package:aedes_alert_yungrai/features/ranking/presentation/controllers/ranking_controller.dart';
 
-class RankingScreen extends ConsumerWidget {
+class RankingScreen extends ConsumerStatefulWidget {
   const RankingScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final areasAsync = ref.watch(rankedAreasStreamProvider);
+  ConsumerState<RankingScreen> createState() => _RankingScreenState();
+}
+
+class _RankingScreenState extends ConsumerState<RankingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => ref.read(rankingControllerProvider.notifier).loadRanking(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(rankingControllerProvider);
     return Scaffold(
       appBar: const YungraiAppBar(showBackButton: true),
       body: state.areas.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (areas) => ListView.builder(
-          itemCount: areas.length,
-          itemBuilder: (context, index) =>
-              _RankingCard(rank: areas[index].rank != 0 ? areas[index].rank : index + 1, area: areas[index]),
+        data: (areas) => RefreshIndicator(
+          onRefresh: () =>
+              ref.read(rankingControllerProvider.notifier).refresh(),
+          child: ListView.builder(
+            itemCount: areas.length,
+            itemBuilder: (context, index) =>
+                _RankingCard(rank: index + 1, area: areas[index]),
+          ),
         ),
       ),
     );

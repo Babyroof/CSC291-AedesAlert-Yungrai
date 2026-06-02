@@ -23,7 +23,6 @@ void main() async {
       FcmService().initialize(user.uid);
     }
   });
-
   runApp(const ProviderScope(child: MyApp()));
 }
 
