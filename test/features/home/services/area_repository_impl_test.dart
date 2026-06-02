@@ -21,6 +21,7 @@ void main() {
       'radius': 500.0,
       'riskScore': riskScore,
       'riskLevel': 'medium',
+      'isLatest': true,
       'reportedAt': Timestamp.fromDate(DateTime(2024, 1, 1)),
       'updatedAt': Timestamp.fromDate(DateTime(2024, 6, 1)),
     });
@@ -73,6 +74,7 @@ void main() {
       'radius': 500.0,
       'riskScore': null,
       'riskLevel': 'low',
+      'isLatest': true,
       'reportedAt': Timestamp.fromDate(DateTime(2024, 1, 1)),
       'updatedAt': Timestamp.fromDate(DateTime(2024, 6, 1)),
     });

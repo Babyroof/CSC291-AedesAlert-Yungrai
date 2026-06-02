@@ -103,16 +103,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 userAgentPackageName: 'com.yungrai.aedes_alert',
               ),
               if (showRiskAreas)
-                CircleLayer(
-                  circles: areas.map((a) {
+                MarkerLayer(
+                  markers: areas.map((a) {
                     final color = RiskLevelUtils.colorForLevel(a.riskLevel);
-                    return CircleMarker(
+                    final score = a.riskScore.toInt();
+                    final size = score >= 100 ? 44.0 : 36.0;
+                    return Marker(
                       point: LatLng(a.lat, a.lng),
-                      radius: a.radius,
-                      useRadiusInMeter: true,
-                      color: color.withValues(alpha: 0.25),
-                      borderColor: color,
-                      borderStrokeWidth: 1.5,
+                      width: size,
+                      height: size,
+                      child: _RiskScoreMarker(score: score, color: color),
                     );
                   }).toList(),
                 ),
@@ -263,6 +263,43 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       ),
     ),
   );
+}
+
+// ── Risk score marker ──────────────────────────────────────────────────────
+
+class _RiskScoreMarker extends StatelessWidget {
+  const _RiskScoreMarker({required this.score, required this.color});
+
+  final int score;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Text(
+          '$score',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            height: 1,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // ── User location marker ───────────────────────────────────────────────────
@@ -623,7 +660,7 @@ class _ZoneRow extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  '${area.subDistrict}, ${area.district}',
+                  area.district,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
