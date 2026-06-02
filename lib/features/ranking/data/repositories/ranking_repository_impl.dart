@@ -14,7 +14,6 @@ class RankingRepositoryImpl implements RankingRepository {
     final snapshot = await _firestore
         .collection(AppConstants.areasCollection)
         .orderBy('riskScore', descending: true)
-        .limit(limit)
         .get();
 
     return snapshot.docs.map((doc) {

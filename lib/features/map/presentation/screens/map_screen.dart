@@ -127,22 +127,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   markers: [
                     Marker(
                       point: LatLng(state.userLat!, state.userLng!),
-                      width: 20,
-                      height: 20,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 3),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color(0x4D1B2B6B),
-                              blurRadius: 8,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                      ),
+                      width: 48,
+                      height: 48,
+                      child: const _UserLocationMarker(),
                     ),
                   ],
                 ),
@@ -157,8 +144,28 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             child: _MapOverlay(
               controller: _searchController,
               filterMode: filterMode,
-              onSearchChanged: (q) =>
-                  ref.read(mapControllerProvider.notifier).setSearch(q),
+              onSearchChanged: (q) {
+                ref.read(mapControllerProvider.notifier).setSearch(q);
+                if (q.isNotEmpty) {
+                  final lower = q.toLowerCase();
+                  final match =
+                      areas
+                          .where(
+                            (a) =>
+                                a.subDistrict.toLowerCase().contains(lower) ||
+                                a.district.toLowerCase().contains(lower) ||
+                                a.province.toLowerCase().contains(lower),
+                          )
+                          .toList()
+                        ..sort((a, b) => b.riskScore.compareTo(a.riskScore));
+                  if (match.isNotEmpty) {
+                    _flutterMapController.move(
+                      LatLng(match.first.lat, match.first.lng),
+                      14,
+                    );
+                  }
+                }
+              },
               onFilterChanged: (mode) =>
                   ref.read(mapControllerProvider.notifier).setFilter(mode!),
             ),
@@ -259,6 +266,64 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   );
 }
 
+// ── User location marker ───────────────────────────────────────────────────
+
+class _UserLocationMarker extends StatelessWidget {
+  const _UserLocationMarker();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // outer pulse ring
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary.withValues(alpha: 0.15),
+          ),
+        ),
+        // middle white ring
+        Container(
+          width: 28,
+          height: 28,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x331B2B6B),
+                blurRadius: 8,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+        ),
+        // inner solid dot
+        Container(
+          width: 16,
+          height: 16,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary,
+          ),
+        ),
+        // center white dot
+        Container(
+          width: 6,
+          height: 6,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 // ── Drag handle ───────────────────────────────────────────────────────────
 
 class _DragHandle extends StatelessWidget {
@@ -280,7 +345,7 @@ class _DragHandle extends StatelessWidget {
   }
 }
 
-// ── Map overlay: search bar + filter dropdown ──────────────────────────────
+// ── Map overlay: search bar ────────────────────────────────────────────────
 
 class _MapOverlay extends StatelessWidget {
   const _MapOverlay({
@@ -301,47 +366,47 @@ class _MapOverlay extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            height: 44,
+            height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x1A000000),
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
-                ),
-              ],
+              color: const Color(0xFFF3F4F6),
+              borderRadius: BorderRadius.circular(30),
             ),
             child: TextField(
               controller: controller,
               onChanged: onSearchChanged,
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
+              ),
               decoration: const InputDecoration(
                 hintText: 'Search risky areas...',
-                hintStyle: TextStyle(color: AppColors.textHint, fontSize: 14),
+                hintStyle: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
                 prefixIcon: Icon(
-                  Icons.search,
-                  color: AppColors.textHint,
+                  Icons.search_rounded,
+                  color: AppColors.textSecondary,
                   size: 20,
                 ),
                 border: InputBorder.none,
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
+                contentPadding: EdgeInsets.symmetric(vertical: 14),
               ),
             ),
           ),
         ),
         const SizedBox(width: 8),
         Container(
-          height: 44,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
             boxShadow: const [
               BoxShadow(
-                color: Color(0x1A000000),
+                color: Color(0x12000000),
                 blurRadius: 8,
                 offset: Offset(0, 2),
               ),
@@ -350,11 +415,15 @@ class _MapOverlay extends StatelessWidget {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: filterMode,
-              icon: const Icon(Icons.keyboard_arrow_down, size: 18),
-              style: const TextStyle(
-                fontSize: 13,
+              icon: const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 20,
                 color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
+              ),
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w700,
               ),
               items: const [
                 DropdownMenuItem(value: 'riskAreas', child: Text('Risk Areas')),
