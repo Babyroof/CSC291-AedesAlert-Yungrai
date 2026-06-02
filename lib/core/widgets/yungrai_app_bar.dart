@@ -3,9 +3,14 @@ import 'package:go_router/go_router.dart';
 import '../themes/app_colors.dart';
 
 class YungraiAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const YungraiAppBar({super.key, this.hasNotification = true});
+  const YungraiAppBar({
+    super.key,
+    this.hasNotification = true,
+    this.showBackButton = false,
+  });
 
   final bool hasNotification;
+  final bool showBackButton;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -14,6 +19,16 @@ class YungraiAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
+      leading: showBackButton
+          ? IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: AppColors.textPrimary,
+                size: 20,
+              ),
+              onPressed: () => context.pop(),
+            )
+          : null,
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
