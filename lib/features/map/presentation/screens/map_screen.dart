@@ -22,6 +22,8 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _searchController = TextEditingController();
   final _flutterMapController = MapController();
+  final _sheetController = DraggableScrollableController();
+  PlaceEntity? _selectedHospital;
 
   @override
   void initState() {
@@ -54,6 +56,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void dispose() {
     _searchController.dispose();
     _flutterMapController.dispose();
+    _sheetController.dispose();
     super.dispose();
   }
 
@@ -173,6 +176,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
           // ── Draggable bottom panel ────────────────────────────────
           DraggableScrollableSheet(
+            controller: _sheetController,
             initialChildSize: 0.38,
             minChildSize: 0.08,
             maxChildSize: 0.75,
@@ -191,48 +195,55 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     ),
                   ],
                 ),
-                child: state.areas.when(
-                  loading: () => Column(
-                    children: [
-                      const _DragHandle(),
-                      const Expanded(
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    ],
-                  ),
-                  error: (e, _) => Column(
-                    children: [
-                      const _DragHandle(),
-                      Expanded(child: Center(child: Text('Error: $e'))),
-                    ],
-                  ),
-                  data: (_) => CustomScrollView(
-                    controller: scrollController,
-                    slivers: [
-                      SliverToBoxAdapter(child: const _DragHandle()),
-                      SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                        sliver: SliverToBoxAdapter(
-                          child: _RiskCountRow(
-                            critical: criticalCount,
-                            high: highCount,
-                            medium: mediumCount,
-                          ),
+                child: _selectedHospital != null
+                    ? _buildHospitalPanel(scrollController)
+                    : state.areas.when(
+                        loading: () => Column(
+                          children: [
+                            const _DragHandle(),
+                            const Expanded(
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          ],
+                        ),
+                        error: (e, _) => Column(
+                          children: [
+                            const _DragHandle(),
+                            Expanded(child: Center(child: Text('Error: $e'))),
+                          ],
+                        ),
+                        data: (_) => CustomScrollView(
+                          controller: scrollController,
+                          slivers: [
+                            SliverToBoxAdapter(child: const _DragHandle()),
+                            SliverPadding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                              sliver: SliverToBoxAdapter(
+                                child: _RiskCountRow(
+                                  critical: criticalCount,
+                                  high: highCount,
+                                  medium: mediumCount,
+                                ),
+                              ),
+                            ),
+                            SliverPadding(
+                              padding: const EdgeInsets.fromLTRB(
+                                16,
+                                12,
+                                16,
+                                24,
+                              ),
+                              sliver: SliverToBoxAdapter(
+                                child: _TopRiskZonesSection(
+                                  areas: topAreas,
+                                  showAll: searchQuery.isNotEmpty,
+                                  onViewAll: () => context.push('/ranking'),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                        sliver: SliverToBoxAdapter(
-                          child: _TopRiskZonesSection(
-                            areas: topAreas,
-                            showAll: searchQuery.isNotEmpty,
-                            onViewAll: () => context.push('/ranking'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               );
             },
           ),
@@ -245,25 +256,116 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     point: LatLng(p.lat, p.lng),
     width: 36,
     height: 36,
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x33000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.local_hospital,
-        color: AppColors.riskHigh,
-        size: 20,
+    child: GestureDetector(
+      onTap: () => _selectHospital(p),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x33000000),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: const Icon(
+          Icons.local_hospital,
+          color: AppColors.riskHigh,
+          size: 20,
+        ),
       ),
     ),
   );
+
+  void _selectHospital(PlaceEntity p) {
+    setState(() => _selectedHospital = p);
+    _sheetController.animateTo(
+      0.45,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  Widget _buildHospitalPanel(ScrollController scrollController) {
+    final p = _selectedHospital!;
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => setState(() => _selectedHospital = null),
+                  child: Icon(Icons.close, color: Colors.grey.shade500),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.riskHigh.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.local_hospital,
+                    color: AppColors.riskHigh,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    p.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (p.description.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                p.description,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+              ),
+            ],
+            if (p.phoneNumber.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.phone, size: 16, color: Colors.grey.shade500),
+                  const SizedBox(width: 6),
+                  Text(p.phoneNumber, style: const TextStyle(fontSize: 14)),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // ── Risk score marker ──────────────────────────────────────────────────────
