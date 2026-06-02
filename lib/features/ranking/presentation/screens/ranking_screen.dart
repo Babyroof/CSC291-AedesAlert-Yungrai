@@ -12,8 +12,8 @@ class RankingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final areasAsync = ref.watch(rankedAreasStreamProvider);
     return Scaffold(
-      appBar: const YungraiAppBar(),
-      body: areasAsync.when(
+      appBar: const YungraiAppBar(showBackButton: true),
+      body: state.areas.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (areas) => ListView.builder(
