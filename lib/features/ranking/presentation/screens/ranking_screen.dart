@@ -60,11 +60,7 @@ class _RankingCard extends StatelessWidget {
           style: TextStyle(color: color, fontWeight: FontWeight.bold),
         ),
       ),
-      title: Text(
-        area.subDistrict.isNotEmpty
-            ? '${area.subDistrict}, ${area.district}'
-            : area.district,
-      ),
+      title: Text(area.district),
       subtitle: Text(area.province),
       trailing: Chip(
         label: Text(
