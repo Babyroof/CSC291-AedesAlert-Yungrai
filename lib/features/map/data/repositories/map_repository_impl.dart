@@ -16,6 +16,7 @@ class MapRepositoryImpl implements MapRepository {
   Future<List<MapAreaEntity>> getAllAreas() async {
     final snapshot = await _firestore
         .collection(AppConstants.areasCollection)
+        .where('isLatest', isEqualTo: true)
         .get();
     return snapshot.docs.map((doc) {
       final m = AreaModel.fromFirestore(doc);

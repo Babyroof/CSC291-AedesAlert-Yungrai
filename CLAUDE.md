@@ -69,9 +69,9 @@ lib/
     │
     ├── news/
     │   ├── controllers/          # NewsController (article list, pagination)
-    │   ├── models/               # ArticleModel (maps to `information` collection)
+    │   ├── models/               # NewsModel (maps to `news` collection), ArticleModel (maps to `information`)
     │   ├── screens/              # NewsListScreen, NewsDetailScreen
-    │   ├── services/             # Firestore `information` collection reads
+    │   ├── services/             # Firestore `news` and `information` collection reads
     │   └── widgets/              # ArticleCard, ArticleHeader
     │
     ├── notification/
@@ -98,7 +98,7 @@ lib/
 
 ---
 
-## Firestore Collections (5 total)
+## Firestore Collections (6 total)
 
 ### 1. `users`
 | Field | Type | Description |
@@ -113,15 +113,16 @@ lib/
 ### 2. `areas`
 | Field | Type | Description |
 |---|---|---|
-| `subDistrict` | String | Tambon |
-| `district` | String | Amphoe |
-| `province` | String | Changwat |
+| `district` | String | District name e.g. "Khlong Toei" |
+| `province` | String | Province name e.g. "Bangkok" |
 | `location` | GeoPoint | Center lat/lng |
-| `radius` | Number | Risk radius (meters) |
-| `riskScore` | Double | Computed score 0–100 |
+| `riskScore` | Double | Computed score 0.0–100.0 |
 | `riskLevel` | String | `low` / `medium` / `high` / `critical` |
-| `reportedAt` | Timestamp | First reported date |
-| `updatedAt` | Timestamp | Last updated date |
+| `temperature` | Double | Temperature (°C) |
+| `humidity` | Double | Relative humidity (%) |
+| `rain` | Double | Rainfall (mm) |
+| `reportedAt` | Timestamp | Record timestamp (daily 06:00) |
+| `isLatest` | Boolean | `true` = latest record for this area, `false` = historical |
 
 ### 3. `places`
 | Field | Type | Description |
@@ -148,6 +149,18 @@ lib/
 | `relatedZone` | Reference | Reference to `areas` doc |
 | `sentAt` | Timestamp | Time sent |
 
+### 6. `news`
+| Field | Type | Description |
+|---|---|---|
+| `title` | String | News headline |
+| `description` | String | Short summary |
+| `imageUrl` | String | Cover image URL |
+| `sourceName` | String | Source name e.g. "Bangkok Post" |
+| `sourceUrl` | String | Original article link |
+| `publishedAt` | Timestamp | When news was published |
+| `originalId` | String | ID for dedup check |
+| `createdAt` | Timestamp | When function saved it |
+
 ---
 
 ## Feature → Firestore Collection Mapping
@@ -158,7 +171,7 @@ lib/
 | `dashboard` | `areas` | — |
 | `home` | `areas` | `places` |
 | `map` | `areas` | `places` |
-| `news` | `information` | — |
+| `news` | `news` | `information` |
 | `notification` | `notifications` | `areas` |
 | `profile` | `users` | — |
 | `ranking` | `areas` | — |
@@ -212,6 +225,10 @@ service cloud.firestore {
       allow write: if false;
     }
     match /notifications/{notifId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /news/{newsId} {
       allow read: if request.auth != null;
       allow write: if false;
     }
