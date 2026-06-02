@@ -27,7 +27,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      ref.read(mapControllerProvider.notifier).loadMapData();
       await _fetchUserLocation();
     });
   }

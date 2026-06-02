@@ -28,7 +28,7 @@ class AreaModel {
   factory AreaModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
     return AreaModel(
-      id: doc.id,
+      id: (data['areaId'] as String?) ?? doc.id,
       subDistrict: data['subDistrict'] as String,
       district: data['district'] as String,
       province: data['province'] as String,
