@@ -22,9 +22,9 @@ class MapRepositoryImpl implements MapRepository {
           final docs = snapshot.docs.isNotEmpty
               ? snapshot.docs
               : (await _firestore
-                      .collection(AppConstants.areasCollection)
-                      .get())
-                  .docs;
+                        .collection(AppConstants.areasCollection)
+                        .get())
+                    .docs;
           return docs.map((doc) {
             final m = AreaModel.fromFirestore(doc);
             return MapAreaEntity(

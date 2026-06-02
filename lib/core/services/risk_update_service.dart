@@ -25,11 +25,9 @@ class _CurrentWeather {
 ///
 /// Throttled to once per 24 hours in-memory (resets on app restart).
 class RiskUpdateService {
-  RiskUpdateService({
-    required FirebaseFirestore firestore,
-    required Dio dio,
-  })  : _firestore = firestore,
-        _dio = dio;
+  RiskUpdateService({required FirebaseFirestore firestore, required Dio dio})
+    : _firestore = firestore,
+      _dio = dio;
 
   final FirebaseFirestore _firestore;
   final Dio _dio;
@@ -64,10 +62,8 @@ class RiskUpdateService {
       // Fallback: if no isLatest docs yet (fresh DB), read all seed docs
       final sourceDocs = seedSnapshot.docs.isNotEmpty
           ? seedSnapshot.docs
-          : (await _firestore
-                  .collection(AppConstants.areasCollection)
-                  .get())
-              .docs;
+          : (await _firestore.collection(AppConstants.areasCollection).get())
+                .docs;
 
       final batch = _firestore.batch();
 
@@ -99,21 +95,18 @@ class RiskUpdateService {
         }
 
         // 2. Create new daily document in areas
-        batch.set(
-          _firestore.collection(AppConstants.areasCollection).doc(),
-          {
-            'district': data['district'],
-            'province': data['province'],
-            'location': location,
-            'riskScore': score * 100,
-            'riskLevel': level,
-            'temperature': weather.temperatureCelsius,
-            'humidity': weather.humidityPercent,
-            'rain': weather.rainMm,
-            'isLatest': true,
-            'reportedAt': Timestamp.now(),
-          },
-        );
+        batch.set(_firestore.collection(AppConstants.areasCollection).doc(), {
+          'district': data['district'],
+          'province': data['province'],
+          'location': location,
+          'riskScore': score * 100,
+          'riskLevel': level,
+          'temperature': weather.temperatureCelsius,
+          'humidity': weather.humidityPercent,
+          'rain': weather.rainMm,
+          'isLatest': true,
+          'reportedAt': Timestamp.now(),
+        });
       }
 
       await batch.commit();

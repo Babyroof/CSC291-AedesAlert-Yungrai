@@ -6,12 +6,11 @@ void main() {
   group('RiskScoreCalculator temperature factor', () {
     // h=40 → humidityScore=0, r=0 → rainfallScore=0
     // score = 0.4 * tempScore
-    double scoreFromTemp(double t) =>
-        RiskScoreCalculator.calculate(
-          temperatureCelsius: t,
-          humidityPercent: 40,
-          rainfallMm: 0,
-        );
+    double scoreFromTemp(double t) => RiskScoreCalculator.calculate(
+      temperatureCelsius: t,
+      humidityPercent: 40,
+      rainfallMm: 0,
+    );
 
     test('below 15 °C returns 0.0', () {
       expect(scoreFromTemp(10), 0.0);
@@ -55,12 +54,11 @@ void main() {
   group('RiskScoreCalculator humidity factor', () {
     // t=15 → tempScore=0, r=0 → rainfallScore=0
     // score = 0.3 * humidityScore
-    double scoreFromHumidity(double h) =>
-        RiskScoreCalculator.calculate(
-          temperatureCelsius: 15,
-          humidityPercent: h,
-          rainfallMm: 0,
-        );
+    double scoreFromHumidity(double h) => RiskScoreCalculator.calculate(
+      temperatureCelsius: 15,
+      humidityPercent: h,
+      rainfallMm: 0,
+    );
 
     test('at 40 % (lower bound) returns 0.0', () {
       expect(scoreFromHumidity(40), 0.0);
@@ -89,12 +87,11 @@ void main() {
   group('RiskScoreCalculator rainfall factor', () {
     // t=15 → tempScore=0, h=40 → humidityScore=0
     // score = 0.3 * rainfallScore
-    double scoreFromRainfall(double r) =>
-        RiskScoreCalculator.calculate(
-          temperatureCelsius: 15,
-          humidityPercent: 40,
-          rainfallMm: r,
-        );
+    double scoreFromRainfall(double r) => RiskScoreCalculator.calculate(
+      temperatureCelsius: 15,
+      humidityPercent: 40,
+      rainfallMm: r,
+    );
 
     test('at 0 mm returns 0.0', () {
       expect(scoreFromRainfall(0), 0.0);
@@ -201,13 +198,37 @@ void main() {
 
   // ─── levelFromScore ──────────────────────────────────────────
   group('RiskScoreCalculator.levelFromScore', () {
-    test('0.0 → low', () => expect(RiskScoreCalculator.levelFromScore(0.0), 'low'));
-    test('0.24 → low', () => expect(RiskScoreCalculator.levelFromScore(0.24), 'low'));
-    test('0.25 → medium', () => expect(RiskScoreCalculator.levelFromScore(0.25), 'medium'));
-    test('0.49 → medium', () => expect(RiskScoreCalculator.levelFromScore(0.49), 'medium'));
-    test('0.50 → high', () => expect(RiskScoreCalculator.levelFromScore(0.50), 'high'));
-    test('0.74 → high', () => expect(RiskScoreCalculator.levelFromScore(0.74), 'high'));
-    test('0.75 → critical', () => expect(RiskScoreCalculator.levelFromScore(0.75), 'critical'));
-    test('1.0 → critical', () => expect(RiskScoreCalculator.levelFromScore(1.0), 'critical'));
+    test(
+      '0.0 → low',
+      () => expect(RiskScoreCalculator.levelFromScore(0.0), 'low'),
+    );
+    test(
+      '0.24 → low',
+      () => expect(RiskScoreCalculator.levelFromScore(0.24), 'low'),
+    );
+    test(
+      '0.25 → medium',
+      () => expect(RiskScoreCalculator.levelFromScore(0.25), 'medium'),
+    );
+    test(
+      '0.49 → medium',
+      () => expect(RiskScoreCalculator.levelFromScore(0.49), 'medium'),
+    );
+    test(
+      '0.50 → high',
+      () => expect(RiskScoreCalculator.levelFromScore(0.50), 'high'),
+    );
+    test(
+      '0.74 → high',
+      () => expect(RiskScoreCalculator.levelFromScore(0.74), 'high'),
+    );
+    test(
+      '0.75 → critical',
+      () => expect(RiskScoreCalculator.levelFromScore(0.75), 'critical'),
+    );
+    test(
+      '1.0 → critical',
+      () => expect(RiskScoreCalculator.levelFromScore(1.0), 'critical'),
+    );
   });
 }

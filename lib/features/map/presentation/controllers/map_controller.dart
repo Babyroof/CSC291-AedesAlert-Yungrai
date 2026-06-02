@@ -11,10 +11,10 @@ class MapController extends StateNotifier<MapState> {
     required GetAllAreasUseCase getAllAreas,
     required GetPlacesUseCase getPlaces,
     required RiskUpdateService riskUpdateService,
-  })  : _getAllAreas = getAllAreas,
-        _getPlaces = getPlaces,
-        _riskUpdateService = riskUpdateService,
-        super(MapState.initial()) {
+  }) : _getAllAreas = getAllAreas,
+       _getPlaces = getPlaces,
+       _riskUpdateService = riskUpdateService,
+       super(MapState.initial()) {
     _init();
   }
 
