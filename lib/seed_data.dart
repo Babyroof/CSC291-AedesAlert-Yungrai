@@ -40,6 +40,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'critical',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 3)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Khlong San',
@@ -51,6 +52,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'critical',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 7)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Samphanthawong',
@@ -62,6 +64,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'critical',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 10)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Huai Khwang',
@@ -73,6 +76,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'critical',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 12)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Din Daeng',
@@ -84,6 +88,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'critical',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 15)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
 
     // ─── HIGH RISK ───
@@ -97,6 +102,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 18)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Phra Nakhon',
@@ -108,6 +114,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 20)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Yannawa',
@@ -119,6 +126,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 22)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Phaya Thai',
@@ -130,6 +138,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 25)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Ratchathewi',
@@ -141,6 +150,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 27)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Wang Thonglang',
@@ -152,6 +162,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 4, 29)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Pathumwan',
@@ -163,6 +174,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 1)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Prawet',
@@ -174,6 +186,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 2)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Suan Luang',
@@ -185,6 +198,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'high',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 3)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
 
     // ─── MEDIUM RISK ───
@@ -198,6 +212,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 4)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Thon Buri',
@@ -209,6 +224,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 4)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bangkok Yai',
@@ -220,6 +236,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 5)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bangkok Noi',
@@ -231,6 +248,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 5)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Lat Phrao',
@@ -242,6 +260,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 6)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Chom Thong',
@@ -253,6 +272,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 6)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Rat Burana',
@@ -264,6 +284,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 7)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Phasi Charoen',
@@ -275,6 +296,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 7)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Kho Laem',
@@ -286,6 +308,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 8)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Saphan Sung',
@@ -297,6 +320,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 8)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bueng Kum',
@@ -308,6 +332,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 9)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Taling Chan',
@@ -319,6 +344,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 9)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Chatuchak',
@@ -330,6 +356,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 10)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Don Mueang',
@@ -341,6 +368,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'medium',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 10)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
 
     // ─── LOW RISK ───
@@ -354,6 +382,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 11)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Sai Mai',
@@ -365,6 +394,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 11)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Khan Na Yao',
@@ -376,6 +406,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 12)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Min Buri',
@@ -387,6 +418,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 12)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Lat Krabang',
@@ -398,6 +430,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 13)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Nong Chok',
@@ -409,6 +442,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 13)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Nong Khaem',
@@ -420,6 +454,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 14)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Khae',
@@ -431,6 +466,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 14)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Khun Thian',
@@ -442,6 +478,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 15)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Thawi Watthana',
@@ -453,6 +490,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 15)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Thung Khru',
@@ -464,6 +502,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 16)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Bon',
@@ -475,6 +514,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 16)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Na',
@@ -486,6 +526,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 17)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Phra Khanong',
@@ -497,6 +538,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 17)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Pom Prap Sattru Phai',
@@ -508,6 +550,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 18)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Khlong Sam Wa',
@@ -519,6 +562,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 18)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Sue',
@@ -530,6 +574,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 19)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Bang Phlat',
@@ -541,6 +586,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 19)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Dok Mai',
@@ -552,6 +598,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 20)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
     {
       'subDistrict': 'Vadhana',
@@ -563,6 +610,7 @@ Future<void> seedAreas() async {
       'riskLevel': 'low',
       'reportedAt': Timestamp.fromDate(DateTime(2025, 5, 20)),
       'updatedAt': Timestamp.now(),
+      'isLatest': true,
     },
   ];
 

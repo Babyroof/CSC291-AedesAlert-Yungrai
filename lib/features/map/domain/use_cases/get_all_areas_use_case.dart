@@ -8,7 +8,7 @@ class GetAllAreasUseCase {
 
   final MapRepository _repository;
 
-  Future<List<MapAreaEntity>> execute() => _repository.getAllAreas();
+  Stream<List<MapAreaEntity>> execute() => _repository.watchAllAreas();
 }
 
 final getAllAreasUseCaseProvider = Provider<GetAllAreasUseCase>((ref) {

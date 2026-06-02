@@ -13,25 +13,32 @@ class MapRepositoryImpl implements MapRepository {
   final FirebaseFirestore _firestore;
 
   @override
-  Future<List<MapAreaEntity>> getAllAreas() async {
-    final snapshot = await _firestore
+  Stream<List<MapAreaEntity>> watchAllAreas() {
+    return _firestore
         .collection(AppConstants.areasCollection)
         .where('isLatest', isEqualTo: true)
-        .get();
-    return snapshot.docs.map((doc) {
-      final m = AreaModel.fromFirestore(doc);
-      return MapAreaEntity(
-        id: m.id,
-        subDistrict: m.subDistrict,
-        district: m.district,
-        province: m.province,
-        lat: m.location.latitude,
-        lng: m.location.longitude,
-        radius: m.radius,
-        riskScore: m.riskScore,
-        riskLevel: m.riskLevel,
-      );
-    }).toList();
+        .snapshots()
+        .asyncMap((snapshot) async {
+          final docs = snapshot.docs.isNotEmpty
+              ? snapshot.docs
+              : (await _firestore
+                        .collection(AppConstants.areasCollection)
+                        .get())
+                    .docs;
+          return docs.map((doc) {
+            final m = AreaModel.fromFirestore(doc);
+            return MapAreaEntity(
+              id: m.id,
+              subDistrict: m.subDistrict,
+              district: m.district,
+              province: m.province,
+              lat: m.location.latitude,
+              lng: m.location.longitude,
+              riskScore: m.riskScore,
+              riskLevel: m.riskLevel,
+            );
+          }).toList();
+        });
   }
 
   @override
