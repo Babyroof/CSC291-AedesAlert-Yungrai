@@ -13,21 +13,24 @@ class RankingRepositoryImpl implements RankingRepository {
   Future<List<RankingAreaEntity>> getRankedAreas({int limit = 20}) async {
     final snapshot = await _firestore
         .collection(AppConstants.areasCollection)
-        .orderBy('riskScore', descending: true)
+        .where('isLatest', isEqualTo: true)
         .get();
 
-    return snapshot.docs.map((doc) {
+    final entities = snapshot.docs.map((doc) {
       final data = doc.data();
+      final district = data['district'] as String? ?? '';
       return RankingAreaEntity(
         id: doc.id,
-        subDistrict: data['subDistrict'] as String? ?? '',
-        district: data['district'] as String? ?? '',
+        subDistrict: data['subDistrict'] as String? ?? district,
+        district: district,
         province: data['province'] as String? ?? '',
         riskScore: ((data['riskScore'] as num?) ?? 0).toDouble(),
         riskLevel: data['riskLevel'] as String? ?? 'low',
-        updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+        updatedAt:
+            (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       );
-    }).toList();
+    }).toList()..sort((a, b) => b.riskScore.compareTo(a.riskScore));
+    return entities;
   }
 }
 

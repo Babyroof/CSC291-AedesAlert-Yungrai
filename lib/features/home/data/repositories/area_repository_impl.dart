@@ -17,6 +17,7 @@ class AreaRepositoryImpl implements AreaRepository {
   }) async {
     final snapshot = await _firestore
         .collection(AppConstants.areasCollection)
+        .where('isLatest', isEqualTo: true)
         .get();
 
     if (snapshot.docs.isEmpty) return null;

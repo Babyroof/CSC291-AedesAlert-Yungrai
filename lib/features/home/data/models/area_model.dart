@@ -27,17 +27,19 @@ class AreaModel {
 
   factory AreaModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data()!;
+    final district = data['district'] as String? ?? '';
     return AreaModel(
       id: doc.id,
-      subDistrict: data['subDistrict'] as String,
-      district: data['district'] as String,
-      province: data['province'] as String,
+      subDistrict: data['subDistrict'] as String? ?? district,
+      district: district,
+      province: data['province'] as String? ?? '',
       location: data['location'] as GeoPoint,
-      radius: (data['radius'] as num).toDouble(),
+      radius: ((data['radius'] as num?) ?? 500).toDouble(),
       riskScore: ((data['riskScore'] as num?) ?? 0).toDouble(),
-      riskLevel: data['riskLevel'] as String,
-      reportedAt: (data['reportedAt'] as Timestamp).toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      riskLevel: data['riskLevel'] as String? ?? 'low',
+      reportedAt:
+          (data['reportedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
