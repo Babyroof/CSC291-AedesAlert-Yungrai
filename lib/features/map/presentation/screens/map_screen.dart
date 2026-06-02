@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -624,7 +624,9 @@ class _ZoneRow extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  '${area.subDistrict}, ${area.district}',
+                  area.subDistrict.isNotEmpty
+                      ? '${area.subDistrict}, ${area.district}'
+                      : area.district,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

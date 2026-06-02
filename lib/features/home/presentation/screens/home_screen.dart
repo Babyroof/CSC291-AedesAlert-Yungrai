@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -198,7 +198,9 @@ class _RiskCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${area.subDistrict}, ${area.district} - ${area.province}',
+            area.subDistrict.isNotEmpty
+                ? '${area.subDistrict}, ${area.district} - ${area.province}'
+                : '${area.district} - ${area.province}',
             style: Theme.of(
               context,
             ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),

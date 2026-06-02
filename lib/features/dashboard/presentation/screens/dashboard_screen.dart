@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/themes/app_colors.dart';
@@ -140,7 +140,7 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             _Header(selectedMonth: selectedMonth),
             const SizedBox(height: 4),
-            _MonthSelector(selectedMonth: selectedMonth),
+            _MonthSelector(selectedMonth: selectedMonth, months: data.monthLabels),
             const SizedBox(height: 16),
             _StatCardsGrid(data: data),
             const SizedBox(height: 24),
@@ -193,16 +193,15 @@ class _Header extends StatelessWidget {
 // ─── Month Selector ───────────────────────────────────────────────────────────
 
 class _MonthSelector extends ConsumerWidget {
-  const _MonthSelector({required this.selectedMonth});
+  const _MonthSelector({required this.selectedMonth, required this.months});
   final int selectedMonth;
-
-  static const _months = ['July 2024', 'June 2024'];
+  final List<String> months;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
-        ..._months.asMap().entries.map((e) {
+        ...months.asMap().entries.map((e) {
           final isSelected = e.key == selectedMonth;
           return Padding(
             padding: const EdgeInsets.only(right: 8),
