@@ -10,6 +10,7 @@ import '../../../../core/widgets/yungrai_app_bar.dart';
 import '../../data/models/area_model.dart';
 import '../../domain/entities/weather_forecast_model.dart';
 import '../controllers/home_controller.dart';
+import '../../../map/presentation/controllers/map_controller.dart';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -446,11 +447,11 @@ class _WeatherCard extends StatelessWidget {
 
 // ── Quick Services ─────────────────────────────────────────────────────────
 
-class _QuickServicesSection extends StatelessWidget {
+class _QuickServicesSection extends ConsumerWidget {
   const _QuickServicesSection();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -465,7 +466,12 @@ class _QuickServicesSection extends StatelessWidget {
                   child: _ServiceButton(
                     icon: Icons.local_hospital_outlined,
                     label: 'Hospital Nearby',
-                    onTap: () {},
+                    onTap: () {
+                      ref
+                          .read(mapControllerProvider.notifier)
+                          .setFilter('hospitals');
+                      context.go(routeMap);
+                    },
                   ),
                 ),
                 const SizedBox(width: 12),
