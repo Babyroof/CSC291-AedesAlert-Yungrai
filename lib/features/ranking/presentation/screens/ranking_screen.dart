@@ -25,7 +25,7 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(rankingControllerProvider);
     return Scaffold(
-      appBar: const YungraiAppBar(),
+      appBar: const YungraiAppBar(showBackButton: true),
       body: state.areas.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
