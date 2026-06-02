@@ -43,10 +43,8 @@ class _DashboardViewData {
     monthlyScores: const [8.0, 10.0, 12.0, 9.0, 11.0, 14.0, 18.4],
     monthLabels: const ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
     distribution: const [
-      _DistributionItem('CRITICAL', AppColors.riskCritical, '04 Areas', 4, 130),
       _DistributionItem('HIGH', AppColors.riskHigh, '12 Areas', 12, 130),
       _DistributionItem('MEDIUM', AppColors.riskMedium, '28 Areas', 28, 130),
-      _DistributionItem('LOW', AppColors.riskLow, '86 Areas', 86, 130),
     ],
     topAreas: const [
       _RankArea(1, 'Nong Chok', 94.2, 'critical'),
@@ -113,22 +111,38 @@ class _DashboardViewData {
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  @override
+  Widget build(BuildContext context) {
     ref.watch(dashboardInitProvider);
-    final selectedMonth = ref.watch(_selectedMonthProvider);
+    final selectedMonthIdx = ref.watch(_selectedMonthProvider);
 
     // Reads live state from controller; falls back to placeholder until
     // loadDashboard() is called and data arrives.
     final dashState = ref.watch(dashboardControllerProvider);
+    final summary = dashState.summary.valueOrNull;
     final data =
-        dashState.summary.whenOrNull(
-          data: (s) => s != null ? _DashboardViewData.fromSummary(s) : null,
-        ) ??
-        _DashboardViewData.placeholder();
+        summary != null ? _DashboardViewData.fromSummary(summary) : null;
+    final displayData = data ?? _DashboardViewData.placeholder();
+
+    // When the user taps a month tab, update the selected index and fetch
+    // only the top-5 areas for that month — no full Firestore reload.
+    void onMonthTap(int idx) {
+      ref.read(_selectedMonthProvider.notifier).state = idx;
+      final trend = summary?.monthlyTrend;
+      if (trend == null || idx >= trend.length) return;
+      final monthKey = trend[idx].monthKey;
+      ref
+          .read(dashboardControllerProvider.notifier)
+          .selectMonth(monthKey);
+    }
 
     return Scaffold(
       appBar: const YungraiAppBar(),
@@ -138,20 +152,24 @@ class DashboardScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Header(selectedMonth: selectedMonth),
+            _Header(selectedMonth: selectedMonthIdx),
             const SizedBox(height: 4),
-            _MonthSelector(selectedMonth: selectedMonth, months: data.monthLabels),
+            _MonthSelector(
+              selectedMonth: selectedMonthIdx,
+              months: displayData.monthLabels,
+              onTap: onMonthTap,
+            ),
             const SizedBox(height: 16),
-            _StatCardsGrid(data: data),
+            _StatCardsGrid(data: displayData),
             const SizedBox(height: 24),
             _RiskScoreChart(
-              scores: data.monthlyScores,
-              months: data.monthLabels,
+              scores: displayData.monthlyScores,
+              months: displayData.monthLabels,
             ),
             const SizedBox(height: 24),
-            _RiskDistribution(items: data.distribution),
+            _RiskDistribution(items: displayData.distribution),
             const SizedBox(height: 24),
-            _Top5RiskAreas(areas: data.topAreas),
+            _Top5RiskAreas(areas: displayData.topAreas),
             const SizedBox(height: 24),
           ],
         ),
@@ -192,13 +210,18 @@ class _Header extends StatelessWidget {
 
 // ─── Month Selector ───────────────────────────────────────────────────────────
 
-class _MonthSelector extends ConsumerWidget {
-  const _MonthSelector({required this.selectedMonth, required this.months});
+class _MonthSelector extends StatelessWidget {
+  const _MonthSelector({
+    required this.selectedMonth,
+    required this.months,
+    required this.onTap,
+  });
   final int selectedMonth;
   final List<String> months;
+  final void Function(int idx) onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Row(
       children: [
         ...months.asMap().entries.map((e) {
@@ -206,8 +229,7 @@ class _MonthSelector extends ConsumerWidget {
           return Padding(
             padding: const EdgeInsets.only(right: 8),
             child: GestureDetector(
-              onTap: () =>
-                  ref.read(_selectedMonthProvider.notifier).state = e.key,
+              onTap: () => onTap(e.key),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
@@ -422,13 +444,7 @@ class _RiskScoreChart extends StatelessWidget {
                 color: AppColors.textPrimary,
               ),
             ),
-            Row(
-              children: [
-                _LegendDot(color: AppColors.riskLow, label: 'Low'),
-                const SizedBox(width: 12),
-                _LegendDot(color: AppColors.riskCritical, label: 'Critical'),
-              ],
-            ),
+            const SizedBox.shrink(),
           ],
         ),
         const SizedBox(height: 12),
@@ -448,29 +464,6 @@ class _RiskScoreChart extends StatelessWidget {
   }
 }
 
-class _LegendDot extends StatelessWidget {
-  const _LegendDot({required this.color, required this.label});
-  final Color color;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
-        ),
-      ],
-    );
-  }
-}
 
 class _BarChartPainter extends CustomPainter {
   _BarChartPainter({
@@ -760,7 +753,7 @@ class _Top5RiskAreas extends StatelessWidget {
             children: const [
               Expanded(
                 flex: 5,
-                child: Text('RANK\nSUB-DISTRICT', style: _headerStyle),
+                child: Text('RANK\nDISTRICT', style: _headerStyle),
               ),
               Expanded(
                 flex: 11,

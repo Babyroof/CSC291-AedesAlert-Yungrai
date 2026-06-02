@@ -8,11 +8,30 @@ class GetRiskCountsUseCase {
 
   final DashboardRepository _repository;
 
+  /// Fix 3 & 5 — counts are based on the number of *distinct districts*
+  /// at each risk level, not raw document count.
+  ///
+  /// When a district has multiple sub-district documents we take the
+  /// riskLevel of the sub-district with the highest riskScore for that
+  /// district (worst-case representative level).
   Future<RiskCountModel> execute() async {
     final areas = await _repository.getAllAreas();
-    int critical = 0, high = 0, medium = 0, low = 0;
+
+    // Group areas by district → keep the highest-scored one per district.
+    final Map<String, String> districtLevel = {};
+    final Map<String, double> districtMaxScore = {};
+
     for (final area in areas) {
-      switch (area.riskLevel) {
+      final prev = districtMaxScore[area.district] ?? -1;
+      if (area.riskScore > prev) {
+        districtMaxScore[area.district] = area.riskScore;
+        districtLevel[area.district] = area.riskLevel;
+      }
+    }
+
+    int critical = 0, high = 0, medium = 0, low = 0;
+    for (final level in districtLevel.values) {
+      switch (level) {
         case 'critical':
           critical++;
         case 'high':
@@ -23,6 +42,7 @@ class GetRiskCountsUseCase {
           low++;
       }
     }
+
     return RiskCountModel(
       criticalCount: critical,
       highCount: high,

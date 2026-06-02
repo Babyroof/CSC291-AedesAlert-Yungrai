@@ -33,6 +33,12 @@ class RankingRepositoryImpl implements RankingRepository {
     }).toList()..sort((a, b) => b.riskScore.compareTo(a.riskScore));
     return entities;
   }
+  
+  @override
+  Stream<List<RankingAreaEntity>> watchRankedAreas({int limit = 20}) {
+    // TODO: implement watchRankedAreas
+    throw UnimplementedError();
+  }
 }
 
 final rankingRepositoryProvider = Provider<RankingRepository>((ref) {

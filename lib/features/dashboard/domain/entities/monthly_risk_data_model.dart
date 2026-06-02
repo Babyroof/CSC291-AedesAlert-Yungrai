@@ -29,4 +29,22 @@ class MonthlyRiskDataModel {
       areaCount: scores.length,
     );
   }
+
+  /// Creates a [MonthlyRiskDataModel] from a pre-computed two-step district
+  /// average ([avg]) so the caller is not forced to pass raw score lists.
+  /// [areaCount] is the total number of area documents in this month.
+  factory MonthlyRiskDataModel.fromComputedAvg(
+    String monthKey,
+    double avg,
+    int areaCount,
+  ) {
+    final parts = monthKey.split('-');
+    final month = int.parse(parts[1]);
+    return MonthlyRiskDataModel(
+      monthKey: monthKey,
+      monthLabel: DateFormatter.monthAbbreviation(month),
+      avgRiskScore: double.parse(avg.toStringAsFixed(1)),
+      areaCount: areaCount,
+    );
+  }
 }
