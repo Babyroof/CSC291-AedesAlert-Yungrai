@@ -155,7 +155,10 @@ void main() {
 
   group('watchRankedAreas', () {
     test('throws UnimplementedError (not yet implemented)', () {
-      expect(() => repository.watchRankedAreas(), throwsA(isA<UnimplementedError>()));
+      expect(
+        () => repository.watchRankedAreas(),
+        throwsA(isA<UnimplementedError>()),
+      );
     });
   });
 }
