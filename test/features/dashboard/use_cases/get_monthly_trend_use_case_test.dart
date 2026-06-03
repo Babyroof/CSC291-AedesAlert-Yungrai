@@ -38,7 +38,7 @@ AreaModel _makeArea({
       radius: 500,
       riskScore: score,
       riskLevel: 'medium',
-      reportedAt: DateTime(2024, 1, 1),
+      reportedAt: updatedAt,
       updatedAt: updatedAt,
     );
 

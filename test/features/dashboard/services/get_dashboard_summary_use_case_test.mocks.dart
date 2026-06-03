@@ -80,12 +80,15 @@ class MockGetAverageRiskScoreUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<double> execute({String? selectedMonthKey}) =>
+  _i4.Future<double> execute({
+    String? userDistrict,
+    String? selectedMonthKey,
+  }) =>
       (super.noSuchMethod(
             Invocation.method(
               #execute,
               [],
-              {#selectedMonthKey: selectedMonthKey},
+              {#userDistrict: userDistrict, #selectedMonthKey: selectedMonthKey},
             ),
             returnValue: _i4.Future<double>.value(0.0),
           )
@@ -104,12 +107,13 @@ class MockGetMonthlyTrendUseCase extends _i1.Mock
   @override
   _i4.Future<List<_i7.MonthlyRiskDataModel>> execute({
     _i10.GeoPoint? userLocation,
+    String? userDistrict,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
               #execute,
               [],
-              {#userLocation: userLocation},
+              {#userLocation: userLocation, #userDistrict: userDistrict},
             ),
             returnValue: _i4.Future<List<_i7.MonthlyRiskDataModel>>.value(
               <_i7.MonthlyRiskDataModel>[],

@@ -66,9 +66,9 @@ void main() {
         lowCount: 4,
       ),
     );
-    when(mockGetAverageScore.execute()).thenAnswer((_) async => 55.0);
+    when(mockGetAverageScore.execute(userDistrict: anyNamed('userDistrict'), selectedMonthKey: anyNamed('selectedMonthKey'))).thenAnswer((_) async => 55.0);
     when(
-      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation')),
+      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation'), userDistrict: anyNamed('userDistrict')),
     ).thenAnswer(
       (_) async => [
         MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
@@ -106,9 +106,9 @@ void main() {
           lowCount: 0,
         ),
       );
-      when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
+      when(mockGetAverageScore.execute(userDistrict: anyNamed('userDistrict'), selectedMonthKey: anyNamed('selectedMonthKey'))).thenAnswer((_) async => 0.0);
       when(
-        mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation')),
+        mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation'), userDistrict: anyNamed('userDistrict')),
       ).thenAnswer((_) async => []);
       when(
         mockGetTopAreas.execute(
@@ -133,7 +133,7 @@ void main() {
     ).thenThrow(Exception('Firestore error'));
     when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
     when(
-      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation')),
+      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation'), userDistrict: anyNamed('userDistrict')),
     ).thenAnswer((_) async => []);
     when(
       mockGetTopAreas.execute(

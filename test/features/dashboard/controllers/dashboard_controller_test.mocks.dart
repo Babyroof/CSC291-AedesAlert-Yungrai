@@ -121,11 +121,13 @@ class MockGetDashboardSummaryUseCase extends _i1.Mock
   @override
   _i8.Future<_i6.DashboardSummaryModel> execute({
     _i9.GeoPoint? userLocation,
+    String? userDistrict,
     String? selectedMonthKey,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#execute, [], {
               #userLocation: userLocation,
+              #userDistrict: userDistrict,
               #selectedMonthKey: selectedMonthKey,
             }),
             returnValue: _i8.Future<_i6.DashboardSummaryModel>.value(
@@ -133,6 +135,7 @@ class MockGetDashboardSummaryUseCase extends _i1.Mock
                 this,
                 Invocation.method(#execute, [], {
                   #userLocation: userLocation,
+                  #userDistrict: userDistrict,
                   #selectedMonthKey: selectedMonthKey,
                 }),
               ),
