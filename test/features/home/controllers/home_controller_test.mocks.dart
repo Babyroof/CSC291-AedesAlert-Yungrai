@@ -11,6 +11,8 @@ import 'package:aedes_alert_yungrai/features/home/data/models/notification_model
     as _i8;
 import 'package:aedes_alert_yungrai/features/home/domain/entities/weather_forecast_model.dart'
     as _i2;
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_latest_area_for_district_use_case.dart'
+    as _i10;
 import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_latest_notification_use_case.dart'
     as _i7;
 import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_nearest_area_use_case.dart'
@@ -101,4 +103,22 @@ class MockGetWeatherForecastUseCase extends _i1.Mock
             ),
           )
           as _i4.Future<_i2.WeatherForecastModel>);
+}
+
+/// A class which mocks [GetLatestAreaForDistrictUseCase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetLatestAreaForDistrictUseCase extends _i1.Mock
+    implements _i10.GetLatestAreaForDistrictUseCase {
+  MockGetLatestAreaForDistrictUseCase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<_i5.AreaModel?> execute(String? district) =>
+      (super.noSuchMethod(
+            Invocation.method(#execute, [district]),
+            returnValue: _i4.Future<_i5.AreaModel?>.value(),
+          )
+          as _i4.Future<_i5.AreaModel?>);
 }

@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/themes/app_colors.dart';
@@ -7,7 +7,13 @@ import '../../../../features/dashboard/domain/entities/dashboard_summary_model.d
 import '../../../../features/dashboard/presentation/controllers/dashboard_controller.dart';
 import '../../../../features/dashboard/presentation/controllers/dashboard_init_provider.dart';
 
-final _selectedMonthProvider = StateProvider<int>((ref) => 0);
+// Tracks the currently selected month key ("YYYY-MM").
+// Initialized to the current month so the button label is correct on the
+// very first frame, before Firestore data arrives.
+final _selectedMonthKeyProvider = StateProvider<String?>((ref) {
+  final now = DateTime.now();
+  return '${now.year}-${now.month.toString().padLeft(2, '0')}';
+});
 
 // ─── View Model ───────────────────────────────────────────────────────────────
 // All hardcoded values live here.
@@ -40,8 +46,8 @@ class _DashboardViewData {
     criticalCount: 4,
     mediumRiskCount: 28,
     avgRiskScore: 18.4,
-    monthlyScores: const [8.0, 10.0, 12.0, 9.0, 11.0, 14.0, 18.4],
-    monthLabels: const ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+    monthlyScores: const [8.0, 10.0, 18.4],
+    monthLabels: const ['Apr', 'May', 'Jun'],
     distribution: const [
       _DistributionItem('HIGH', AppColors.riskHigh, '12 Areas', 12, 130),
       _DistributionItem('MEDIUM', AppColors.riskMedium, '28 Areas', 28, 130),
@@ -109,6 +115,41 @@ class _DashboardViewData {
   }
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/// Returns the month key for [monthsBack] months before [base].
+/// [base] must be in "YYYY-MM" format.
+String _shiftMonthKey(String base, int monthsBack) {
+  final parts = base.split('-');
+  int year = int.parse(parts[0]);
+  int month = int.parse(parts[1]);
+  month -= monthsBack;
+  while (month <= 0) {
+    month += 12;
+    year -= 1;
+  }
+  return '$year-${month.toString().padLeft(2, '0')}';
+}
+
+/// Returns the 3-letter month abbreviation from a "YYYY-MM" key.
+String _monthAbbr(String monthKey) {
+  final parts = monthKey.split('-');
+  final month = int.parse(parts[1]);
+  const abbrs = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return abbrs[month];
+}
+
+/// Returns a user-friendly "Month YYYY" label from a "YYYY-MM" key.
+String _monthYearLabel(String monthKey) {
+  final parts = monthKey.split('-');
+  final year = int.parse(parts[0]);
+  final month = int.parse(parts[1]);
+  const names = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+  return '${names[month]} $year';
+}
+
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -122,26 +163,54 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     ref.watch(dashboardInitProvider);
-    final selectedMonthIdx = ref.watch(_selectedMonthProvider);
 
     // Reads live state from controller; falls back to placeholder until
     // loadDashboard() is called and data arrives.
     final dashState = ref.watch(dashboardControllerProvider);
+    final isLoading = dashState.summary.isLoading;
     final summary = dashState.summary.valueOrNull;
     final data =
         summary != null ? _DashboardViewData.fromSummary(summary) : null;
     final displayData = data ?? _DashboardViewData.placeholder();
 
-    // When the user taps a month tab, update the selected index and fetch
-    // only the top-5 areas for that month — no full Firestore reload.
-    void onMonthTap(int idx) {
-      ref.read(_selectedMonthProvider.notifier).state = idx;
-      final trend = summary?.monthlyTrend;
-      if (trend == null || idx >= trend.length) return;
-      final monthKey = trend[idx].monthKey;
-      ref
-          .read(dashboardControllerProvider.notifier)
-          .selectMonth(monthKey);
+    // The effective selected month key:
+    //   - what's in the provider if the user has picked one, or
+    //   - the most recent real data month from the summary.
+    final localKey = ref.watch(_selectedMonthKeyProvider);
+    final mostRecentKey = summary?.selectedMonthKey;
+    final selectedKey = localKey ?? mostRecentKey;
+
+    // Build the 3-bar data for the chart from the selected month key.
+    List<double> chartScores;
+    List<String> chartLabels;
+    int chartHighlightIndex;
+
+    if (selectedKey != null) {
+      final k0 = _shiftMonthKey(selectedKey, 2); // 2 months before selected
+      final k1 = _shiftMonthKey(selectedKey, 1); // 1 month before selected
+      final k2 = selectedKey;                     // the selected month
+
+      final trend = summary?.monthlyTrend ?? [];
+      final scoreMap = {for (final m in trend) m.monthKey: m.avgRiskScore};
+
+      chartScores = [
+        scoreMap[k0] ?? 0.0,
+        scoreMap[k1] ?? 0.0,
+        scoreMap[k2] ?? 0.0,
+      ];
+      chartLabels = [_monthAbbr(k0), _monthAbbr(k1), _monthAbbr(k2)];
+      chartHighlightIndex = 2; // rightmost bar = selected month
+    } else {
+      // Fallback before data loads
+      chartScores = displayData.monthlyScores.length >= 3
+          ? displayData.monthlyScores.sublist(
+              displayData.monthlyScores.length - 3)
+          : List<double>.from(displayData.monthlyScores);
+      chartLabels = displayData.monthLabels.length >= 3
+          ? displayData.monthLabels.sublist(
+              displayData.monthLabels.length - 3)
+          : List<String>.from(displayData.monthLabels);
+      chartHighlightIndex = chartScores.isEmpty ? 0 : chartScores.length - 1;
     }
 
     return Scaffold(
@@ -152,20 +221,49 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Header(selectedMonth: selectedMonthIdx),
+            const _Header(),
             const SizedBox(height: 4),
             _MonthSelector(
-              selectedMonth: selectedMonthIdx,
-              months: displayData.monthLabels,
-              onTap: onMonthTap,
+              selectedMonthKey: selectedKey,
+              mostRecentKey: mostRecentKey,
+              onPickMonth: (picked) {
+                ref.read(_selectedMonthKeyProvider.notifier).state = picked;
+                ref
+                    .read(dashboardControllerProvider.notifier)
+                    .selectMonth(picked);
+              },
+              onResetToRecent: () {
+                if (mostRecentKey != null) {
+                  ref.read(_selectedMonthKeyProvider.notifier).state = null;
+                  ref
+                      .read(dashboardControllerProvider.notifier)
+                      .selectMonth(mostRecentKey);
+                }
+              },
             ),
             const SizedBox(height: 16),
-            _StatCardsGrid(data: displayData),
+            if (isLoading)
+              const SizedBox(
+                height: 120,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else
+              _StatCardsGrid(
+                data: displayData,
+                selectedMonthAvg: chartScores[chartHighlightIndex],
+              ),
             const SizedBox(height: 24),
-            _RiskScoreChart(
-              scores: displayData.monthlyScores,
-              months: displayData.monthLabels,
-            ),
+            if (isLoading)
+              const SizedBox(
+                height: 160,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else
+              _RiskScoreChart(
+                scores: chartScores,
+                months: chartLabels,
+                highlightIndex: chartHighlightIndex,
+              ),
             const SizedBox(height: 24),
             _RiskDistribution(items: displayData.distribution),
             const SizedBox(height: 24),
@@ -181,8 +279,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 // ─── Header ──────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
-  const _Header({required this.selectedMonth});
-  final int selectedMonth;
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
@@ -209,64 +306,94 @@ class _Header extends StatelessWidget {
 }
 
 // ─── Month Selector ───────────────────────────────────────────────────────────
+// Shows a chip with the selected month name (resets to most recent when tapped)
+// and a calendar icon button that opens a month/year picker.
 
 class _MonthSelector extends StatelessWidget {
   const _MonthSelector({
-    required this.selectedMonth,
-    required this.months,
-    required this.onTap,
+    required this.selectedMonthKey,
+    required this.mostRecentKey,
+    required this.onPickMonth,
+    required this.onResetToRecent,
   });
-  final int selectedMonth;
-  final List<String> months;
-  final void Function(int idx) onTap;
+
+  final String? selectedMonthKey;
+  final String? mostRecentKey;
+  final void Function(String monthKey) onPickMonth;
+  final VoidCallback onResetToRecent;
 
   @override
   Widget build(BuildContext context) {
+    final effectiveKey = selectedMonthKey ?? mostRecentKey;
+    final label = effectiveKey != null ? _monthYearLabel(effectiveKey) : '—';
+    // The chip is "selected" (filled) when the local key matches mostRecent
+    // or when no override is set (i.e. we are showing the most-recent month).
+    final isCurrentMonth =
+        selectedMonthKey == null || selectedMonthKey == mostRecentKey;
+
     return Row(
       children: [
-        ...months.asMap().entries.map((e) {
-          final isSelected = e.key == selectedMonth;
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: GestureDetector(
-              onTap: () => onTap(e.key),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 7,
-                ),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  border: isSelected
-                      ? null
-                      : Border.all(color: AppColors.border),
-                ),
-                child: Text(
-                  e.value,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected
-                        ? AppColors.textOnPrimary
-                        : AppColors.textSecondary,
-                  ),
-                ),
+        GestureDetector(
+          onTap: onResetToRecent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+            decoration: BoxDecoration(
+              color: isCurrentMonth ? AppColors.primary : Colors.transparent,
+              borderRadius: BorderRadius.circular(20),
+              border: isCurrentMonth
+                  ? null
+                  : Border.all(color: AppColors.border),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isCurrentMonth
+                    ? AppColors.textOnPrimary
+                    : AppColors.textSecondary,
               ),
             ),
-          );
-        }),
-        const SizedBox(width: 4),
+          ),
+        ),
+        const SizedBox(width: 8),
         Container(
-          padding: const EdgeInsets.all(7),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.border),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(
-            Icons.calendar_today_outlined,
-            size: 16,
-            color: AppColors.textSecondary,
+          child: IconButton(
+            icon: const Icon(
+              Icons.calendar_month,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
+            padding: const EdgeInsets.all(7),
+            constraints: const BoxConstraints(),
+            onPressed: () async {
+              // Derive initial year/month from the effective key, or now.
+              int initialYear;
+              int initialMonth;
+              if (effectiveKey != null) {
+                final parts = effectiveKey.split('-');
+                initialYear = int.parse(parts[0]);
+                initialMonth = int.parse(parts[1]);
+              } else {
+                final now = DateTime.now();
+                initialYear = now.year;
+                initialMonth = now.month;
+              }
+              final picked = await showDialog<String>(
+                context: context,
+                builder: (_) => _MonthYearPickerDialog(
+                  initialYear: initialYear,
+                  initialMonth: initialMonth,
+                ),
+              );
+              if (picked != null) {
+                onPickMonth(picked);
+              }
+            },
           ),
         ),
       ],
@@ -277,8 +404,12 @@ class _MonthSelector extends StatelessWidget {
 // ─── Stat Cards Grid ──────────────────────────────────────────────────────────
 
 class _StatCardsGrid extends StatelessWidget {
-  const _StatCardsGrid({required this.data});
+  const _StatCardsGrid({
+    required this.data,
+    required this.selectedMonthAvg,
+  });
   final _DashboardViewData data;
+  final double selectedMonthAvg;
 
   static String _fmt(int n) => n.toString().padLeft(2, '0');
 
@@ -328,7 +459,7 @@ class _StatCardsGrid extends StatelessWidget {
             Expanded(
               child: _StatCard(
                 label: 'AVG RISK SCORE',
-                value: '${data.avgRiskScore}',
+                value: selectedMonthAvg.toStringAsFixed(1),
                 valueColor: AppColors.riskLow,
                 icon: Icons.verified_user_outlined,
                 iconColor: AppColors.riskLow,
@@ -423,13 +554,17 @@ class _StatCard extends StatelessWidget {
 // ─── Risk Score Bar Chart ─────────────────────────────────────────────────────
 
 class _RiskScoreChart extends StatelessWidget {
-  const _RiskScoreChart({required this.scores, required this.months});
+  const _RiskScoreChart({
+    required this.scores,
+    required this.months,
+    required this.highlightIndex,
+  });
   final List<double> scores;
   final List<String> months;
+  final int highlightIndex;
 
   @override
   Widget build(BuildContext context) {
-    final highlightIndex = scores.isEmpty ? 0 : scores.length - 1;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -503,7 +638,8 @@ class _BarChartPainter extends CustomPainter {
     for (int i = 0; i < n; i++) {
       final isHighlight = i == highlightIndex;
       final bw = slotW * barWidthFraction;
-      final bh = (scores[i] / maxVal) * chartH;
+      final effectiveMax = maxVal > 0 ? maxVal : 1.0;
+      final bh = (scores[i] / effectiveMax) * chartH;
       final bx = centerX(i) - bw / 2;
       final by = topPad + chartH - bh;
 
@@ -557,6 +693,23 @@ class _BarChartPainter extends CustomPainter {
             tooltipLeft + (tooltipW - tp.width) / 2,
             tooltipTop + (tooltipH - tp.height) / 2,
           ),
+        );
+      } else {
+        // Always show a value label above non-highlighted bars, including 0.0.
+        final lp = TextPainter(
+          text: TextSpan(
+            text: scores[i].toStringAsFixed(1),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        lp.paint(
+          canvas,
+          Offset(centerX(i) - lp.width / 2, by - lp.height - 4),
         );
       }
     }
@@ -924,6 +1077,157 @@ class _RankingRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Month + Year Picker Dialog ───────────────────────────────────────────────
+// A custom StatefulWidget dialog that lets the user pick a month and year.
+// Returns a "YYYY-MM" string via Navigator.pop when the user taps a month.
+// No day selection — only month and year.
+
+class _MonthYearPickerDialog extends StatefulWidget {
+  const _MonthYearPickerDialog({
+    required this.initialYear,
+    required this.initialMonth,
+  });
+
+  final int initialYear;
+  final int initialMonth;
+
+  @override
+  State<_MonthYearPickerDialog> createState() => _MonthYearPickerDialogState();
+}
+
+class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
+  late int _year;
+  late int _month;
+
+  static const _monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr',
+    'May', 'Jun', 'Jul', 'Aug',
+    'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _year = widget.initialYear;
+    _month = widget.initialMonth;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final canGoForward =
+        _year < now.year || (_year == now.year && _month < now.month);
+
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Year navigation row ───────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.chevron_left),
+                  color: AppColors.primary,
+                  onPressed: () => setState(() => _year--),
+                ),
+                Text(
+                  '$_year',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  color: canGoForward ? AppColors.primary : AppColors.border,
+                  onPressed: canGoForward
+                      ? () => setState(() => _year++)
+                      : null,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // ── 3×4 month grid ───────────────────────────────
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 12,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 2.2,
+              ),
+              itemBuilder: (context, index) {
+                final monthNumber = index + 1; // 1-based
+                // Highlight the currently selected month.
+                final isHighlighted = monthNumber == _month;
+                // Disable future months.
+                final isFuture = _year > now.year ||
+                    (_year == now.year && monthNumber > now.month);
+
+                return GestureDetector(
+                  onTap: isFuture
+                      ? null
+                      : () {
+                          setState(() => _month = monthNumber);
+                          final key =
+                              '$_year-${monthNumber.toString().padLeft(2, '0')}';
+                          Navigator.of(context).pop(key);
+                        },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    decoration: BoxDecoration(
+                      color: isHighlighted && !isFuture
+                          ? AppColors.primary
+                          : AppColors.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isHighlighted && !isFuture
+                            ? AppColors.primary
+                            : AppColors.border,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        _monthNames[index],
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: isFuture
+                                  ? AppColors.textHint
+                                  : isHighlighted
+                                      ? AppColors.textOnPrimary
+                                      : AppColors.textPrimary,
+                            ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            // ── Cancel button ────────────────────────────────
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

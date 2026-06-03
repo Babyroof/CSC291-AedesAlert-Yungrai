@@ -19,6 +19,7 @@ import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_top_
     as _i8;
 import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart'
     as _i9;
+import 'package:cloud_firestore/cloud_firestore.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -52,11 +53,18 @@ class MockGetRiskCountsUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.RiskCountModel> execute() =>
+  _i4.Future<_i2.RiskCountModel> execute({String? selectedMonthKey}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#execute, [], {#selectedMonthKey: selectedMonthKey}),
             returnValue: _i4.Future<_i2.RiskCountModel>.value(
-              _FakeRiskCountModel_0(this, Invocation.method(#execute, [])),
+              _FakeRiskCountModel_0(
+                this,
+                Invocation.method(
+                  #execute,
+                  [],
+                  {#selectedMonthKey: selectedMonthKey},
+                ),
+              ),
             ),
           )
           as _i4.Future<_i2.RiskCountModel>);
@@ -72,9 +80,13 @@ class MockGetAverageRiskScoreUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<double> execute() =>
+  _i4.Future<double> execute({String? selectedMonthKey}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(
+              #execute,
+              [],
+              {#selectedMonthKey: selectedMonthKey},
+            ),
             returnValue: _i4.Future<double>.value(0.0),
           )
           as _i4.Future<double>);
@@ -90,9 +102,15 @@ class MockGetMonthlyTrendUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<List<_i7.MonthlyRiskDataModel>> execute() =>
+  _i4.Future<List<_i7.MonthlyRiskDataModel>> execute({
+    _i10.GeoPoint? userLocation,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(
+              #execute,
+              [],
+              {#userLocation: userLocation},
+            ),
             returnValue: _i4.Future<List<_i7.MonthlyRiskDataModel>>.value(
               <_i7.MonthlyRiskDataModel>[],
             ),
@@ -110,9 +128,9 @@ class MockGetTopAreasUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<List<_i9.AreaModel>> execute({int? limit = 5}) =>
+  _i4.Future<List<_i9.AreaModel>> execute({int? limit = 5, String? monthKey}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [], {#limit: limit}),
+            Invocation.method(#execute, [], {#limit: limit, #monthKey: monthKey}),
             returnValue: _i4.Future<List<_i9.AreaModel>>.value(
               <_i9.AreaModel>[],
             ),

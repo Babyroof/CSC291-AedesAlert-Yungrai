@@ -32,11 +32,22 @@ class _RankingScreenState extends ConsumerState<RankingScreen> {
         data: (areas) => RefreshIndicator(
           onRefresh: () =>
               ref.read(rankingControllerProvider.notifier).refresh(),
-          child: ListView.builder(
-            itemCount: areas.length,
-            itemBuilder: (context, index) =>
-                _RankingCard(rank: index + 1, area: areas[index]),
-          ),
+          child: areas.isEmpty
+              ? const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Text(
+                      'No ranking data available for this month yet',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: areas.length,
+                  itemBuilder: (context, index) =>
+                      _RankingCard(rank: index + 1, area: areas[index]),
+                ),
         ),
       ),
     );
@@ -60,7 +71,20 @@ class _RankingCard extends StatelessWidget {
           style: TextStyle(color: color, fontWeight: FontWeight.bold),
         ),
       ),
-      title: Text(area.district),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(area.district),
+          Text(
+            area.riskScore.toStringAsFixed(1),
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
       subtitle: Text(area.province),
       trailing: Chip(
         label: Text(

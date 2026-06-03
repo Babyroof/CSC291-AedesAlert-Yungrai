@@ -22,24 +22,34 @@ class GetDashboardSummaryUseCase {
   final GetTopAreasUseCase getTopAreas;
 
   /// [userLocation] — forwarded to [GetMonthlyTrendUseCase] for Fix 4a.
-  /// [selectedMonthKey] — forwarded to [GetTopAreasUseCase] for Fix 6;
-  ///   when null the top-areas query is unfiltered.
+  /// [userDistrict] — forwarded to [GetAverageRiskScoreUseCase] and
+  ///   [GetMonthlyTrendUseCase] so both show data for the user's district only.
+  /// [selectedMonthKey] — forwarded to [GetTopAreasUseCase] and
+  ///   [GetRiskCountsUseCase] for Fix 3 & Fix 6;
+  ///   when null the most-recent month is used automatically.
   Future<DashboardSummaryModel> execute({
     GeoPoint? userLocation,
+    String? userDistrict,
     String? selectedMonthKey,
   }) async {
     // Monthly trend must run first so we know which months exist and can
     // use the most-recent month as the default for top-areas when the
     // caller has not yet specified one.
-    final trend = await getMonthlyTrend.execute(userLocation: userLocation);
+    final trend = await getMonthlyTrend.execute(
+      userLocation: userLocation,
+      userDistrict: userDistrict,
+    );
 
     // Use caller-supplied month or fall back to the most recent real month.
     final effectiveMonthKey =
         selectedMonthKey ?? (trend.isNotEmpty ? trend.last.monthKey : null);
 
     final results = await Future.wait<dynamic>([
-      getRiskCounts.execute(),
-      getAverageScore.execute(),
+      getRiskCounts.execute(selectedMonthKey: effectiveMonthKey),
+      getAverageScore.execute(
+        userDistrict: userDistrict,
+        selectedMonthKey: effectiveMonthKey,
+      ),
       getTopAreas.execute(limit: 5, monthKey: effectiveMonthKey),
     ]);
 

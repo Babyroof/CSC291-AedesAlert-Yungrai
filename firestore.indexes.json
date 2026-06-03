@@ -1,4 +1,22 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "areas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isLatest", "order": "ASCENDING" },
+        { "fieldPath": "reportedAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "areas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "district", "order": "ASCENDING" },
+        { "fieldPath": "isLatest", "order": "ASCENDING" },
+        { "fieldPath": "reportedAt", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

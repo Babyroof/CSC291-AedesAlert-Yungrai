@@ -587,10 +587,10 @@ Future<void> seedAreas() async {
     },
   ];
 
-  for (final area in areas) {
-    await _db.collection('areas').add(area);
-  }
-  print('✅ Areas seeded ($count documents — ${districts.length} districts × ${dates.length} days)');
+  // for (final area in areas) {
+  //   await _db.collection('areas').add(area);
+  // }
+  // print('✅ Areas seeded ($count documents — ${districts.length} districts × ${dates.length} days)');
 }
 
 Future<void> clearAll() async {

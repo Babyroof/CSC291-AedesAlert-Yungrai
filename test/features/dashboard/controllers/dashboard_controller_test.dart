@@ -47,6 +47,7 @@ void main() {
       MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
     ],
     topFiveAreas: [fakeArea()],
+    selectedMonthKey: '2024-06',
   );
 
   test('initial state is loading', () {
@@ -54,7 +55,12 @@ void main() {
   });
 
   test('loadDashboard sets summary data on success', () async {
-    when(mockGetSummary.execute()).thenAnswer((_) async => fakeSummary());
+    when(
+      mockGetSummary.execute(
+        userLocation: anyNamed('userLocation'),
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenAnswer((_) async => fakeSummary());
 
     await controller.loadDashboard();
 
@@ -63,7 +69,12 @@ void main() {
   });
 
   test('loadDashboard sets error state on failure', () async {
-    when(mockGetSummary.execute()).thenThrow(Exception('Firestore error'));
+    when(
+      mockGetSummary.execute(
+        userLocation: anyNamed('userLocation'),
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenThrow(Exception('Firestore error'));
 
     await controller.loadDashboard();
 
@@ -71,9 +82,14 @@ void main() {
   });
 
   test('empty areas — all zeros summary loads without crash', () async {
-    when(mockGetSummary.execute()).thenAnswer(
-      (_) async => DashboardSummaryModel(
-        riskCounts: const RiskCountModel(
+    when(
+      mockGetSummary.execute(
+        userLocation: anyNamed('userLocation'),
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenAnswer(
+      (_) async => const DashboardSummaryModel(
+        riskCounts: RiskCountModel(
           criticalCount: 0,
           highCount: 0,
           mediumCount: 0,
@@ -82,6 +98,7 @@ void main() {
         averageRiskScore: 0.0,
         monthlyTrend: [],
         topFiveAreas: [],
+        selectedMonthKey: null,
       ),
     );
 
@@ -93,11 +110,21 @@ void main() {
   });
 
   test('refresh calls loadDashboard again', () async {
-    when(mockGetSummary.execute()).thenAnswer((_) async => fakeSummary());
+    when(
+      mockGetSummary.execute(
+        userLocation: anyNamed('userLocation'),
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenAnswer((_) async => fakeSummary());
 
     await controller.loadDashboard();
     await controller.refresh();
 
-    verify(mockGetSummary.execute()).called(2);
+    verify(
+      mockGetSummary.execute(
+        userLocation: anyNamed('userLocation'),
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).called(2);
   });
 }

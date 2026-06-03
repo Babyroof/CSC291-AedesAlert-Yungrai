@@ -1,4 +1,4 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -79,9 +79,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final state = ref.watch(homeControllerProvider);
 
     final isLoading = state.nearestArea is AsyncLoading;
-    final area = state.nearestArea.valueOrNull;
+    final nearestArea = state.nearestArea.valueOrNull;
     final notification = state.latestNotification.valueOrNull;
     final forecast = state.weatherForecast.valueOrNull;
+
+    // Use the latest district area record for risk score/level display.
+    // Falls back to the nearest area if the district query has not resolved yet.
+    final latestDistrictArea = state.latestDistrictArea.valueOrNull;
+    final displayArea = latestDistrictArea ?? nearestArea;
+
+    // The alert banner severity comes from the latest district data.
+    final alertLevel = displayArea?.riskLevel;
 
     return Scaffold(
       appBar: const YungraiAppBar(),
@@ -95,22 +103,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (area != null) _RiskCard(area: area),
-                    if (area != null) const SizedBox(height: 12),
-                    if (area != null &&
-                        (area.riskLevel == 'high' ||
-                            area.riskLevel == 'critical'))
+                    if (displayArea != null) _RiskCard(area: displayArea),
+                    if (displayArea == null)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(24),
+                          child: Text(
+                            'No updated data in this month yet',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (displayArea != null) const SizedBox(height: 12),
+                    if (displayArea != null &&
+                        (alertLevel == 'high' || alertLevel == 'critical'))
                       _AlertBanner(
-                        title: area.riskLevel == 'critical'
+                        title: alertLevel == 'critical'
                             ? 'Critical Risk Alert'
                             : 'High Risk Alert',
                         body:
                             notification?.body ??
                             'High mosquito activity detected in your current zone. Please take immediate preventive measures.',
                       ),
-                    if (area != null &&
-                        (area.riskLevel == 'high' ||
-                            area.riskLevel == 'critical'))
+                    if (displayArea != null &&
+                        (alertLevel == 'high' || alertLevel == 'critical'))
                       const SizedBox(height: 20),
                     if (forecast != null) _WeatherSection(forecast: forecast),
                     if (forecast != null) const SizedBox(height: 20),
@@ -174,7 +194,9 @@ class _RiskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _riskColor(area.riskLevel);
-    final score = (area.riskScore / 10).toStringAsFixed(1);
+    // riskScore is already on a 0–100 scale — display it directly.
+    // Bug was: dividing by 10 turned e.g. 4.0 → 0.4.
+    final score = area.riskScore.toStringAsFixed(1);
 
     return Container(
       width: double.infinity,

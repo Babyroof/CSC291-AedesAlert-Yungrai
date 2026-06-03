@@ -12,7 +12,7 @@ void main() {
   });
 
   // Helper: seed one doc and return its snapshot.
-  Future<DocumentSnapshot> seedDoc(
+  Future<DocumentSnapshot<Map<String, dynamic>>> seedDoc(
     String docId,
     Map<String, dynamic> data,
   ) async {

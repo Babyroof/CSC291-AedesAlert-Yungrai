@@ -19,7 +19,13 @@ class FcmService {
     if (settings.authorizationStatus == AuthorizationStatus.denied) return;
 
     // 2. Get token and save to Firestore
-    final token = await FirebaseMessaging.instance.getToken();
+    // TODO: Generate a VAPID key from Firebase Console → Project Settings →
+    // Cloud Messaging → Web Push certificates → Generate key pair, then
+    // replace the empty string below with the actual key.
+    const webVapidKey = ''; // <-- paste your Web Push VAPID key here
+    final token = await FirebaseMessaging.instance.getToken(
+      vapidKey: (kIsWeb && webVapidKey.isNotEmpty) ? webVapidKey : null,
+    );
     if (token != null) await _saveToken(uid, token);
 
     // 3. Listen for token refresh

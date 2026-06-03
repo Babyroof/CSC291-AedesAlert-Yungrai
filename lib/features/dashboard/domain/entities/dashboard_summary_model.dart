@@ -8,7 +8,7 @@ class DashboardSummaryModel {
     required this.averageRiskScore,
     required this.monthlyTrend,
     required this.topFiveAreas,
-    required this.selectedMonthKey,
+    this.selectedMonthKey,
   });
 
   final RiskCountModel riskCounts;

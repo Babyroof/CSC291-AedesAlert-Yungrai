@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedes_alert_yungrai/core/utils/date_formatter.dart';
 import 'package:aedes_alert_yungrai/core/utils/geo_utils.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
 import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/monthly_risk_data_model.dart';
 import 'package:aedes_alert_yungrai/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:aedes_alert_yungrai/features/dashboard/data/repositories/dashboard_repository_impl.dart';
@@ -18,23 +19,40 @@ class GetMonthlyTrendUseCase {
 
   final DashboardRepository _repository;
 
-  /// [userLocation] — optional. When provided the chart only includes area
-  /// documents whose centre is within [_kNearbyRadiusKm] km of the user.
-  /// When null every document is included (safe fallback).
+  /// [userDistrict] — preferred filter. When a non-empty string is provided the
+  /// chart only includes area documents whose [district] field matches exactly.
+  /// Takes precedence over [userLocation] when both are supplied.
+  ///
+  /// [userLocation] — fallback filter. Used when [userDistrict] is null/empty.
+  /// When provided the chart only includes area documents whose centre is within
+  /// [_kNearbyRadiusKm] km of the user.
+  /// When both are null every document is included (safe fallback).
   ///
   /// Fix 1 + 2: only real data months are returned, capped to the 3 most
   /// recent ones.
-  /// Fix 4a: nearby-district filtering.
-  Future<List<MonthlyRiskDataModel>> execute({GeoPoint? userLocation}) async {
+  /// Fix 4a: nearby-district filtering (now also supports district-name filter).
+  Future<List<MonthlyRiskDataModel>> execute({
+    String? userDistrict,
+    GeoPoint? userLocation,
+  }) async {
     final areas = await _repository.getAllAreas();
 
-    // Fix 4a — filter to nearby areas when location is available.
-    final filtered = userLocation == null
-        ? areas
-        : areas.where((a) {
-            final distKm = GeoUtils.distanceInKm(userLocation, a.location);
-            return distKm <= _kNearbyRadiusKm;
-          }).toList();
+    // Prefer district-name filter; fall back to GeoPoint radius; else all areas.
+    final List<AreaModel> filtered;
+    if (userDistrict != null && userDistrict.isNotEmpty) {
+      final byDistrict =
+          areas.where((a) => a.district == userDistrict).toList();
+      // Fall back to all areas when district filter returns nothing.
+      filtered = byDistrict.isNotEmpty ? byDistrict : areas;
+    } else if (userLocation != null) {
+      final byRadius = areas.where((a) {
+        final distKm = GeoUtils.distanceInKm(userLocation, a.location);
+        return distKm <= _kNearbyRadiusKm;
+      }).toList();
+      filtered = byRadius.isNotEmpty ? byRadius : areas;
+    } else {
+      filtered = areas;
+    }
 
     // Bug 1 fix — build per-month, per-district buckets so that each district
     // contributes equally to the monthly average regardless of how many
@@ -42,7 +60,7 @@ class GetMonthlyTrendUseCase {
     final Map<String, Map<String, List<double>>> monthDistrictBuckets = {};
 
     for (final area in filtered) {
-      final monthKey = DateFormatter.toMonthKey(area.updatedAt);
+      final monthKey = DateFormatter.toMonthKey(area.reportedAt);
       monthDistrictBuckets
           .putIfAbsent(monthKey, () => {})
           .putIfAbsent(area.district, () => [])

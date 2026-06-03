@@ -54,7 +54,11 @@ void main() {
   );
 
   void stubAllSuccess() {
-    when(mockGetRiskCounts.execute()).thenAnswer(
+    when(
+      mockGetRiskCounts.execute(
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenAnswer(
       (_) async => const RiskCountModel(
         criticalCount: 1,
         highCount: 2,
@@ -63,13 +67,18 @@ void main() {
       ),
     );
     when(mockGetAverageScore.execute()).thenAnswer((_) async => 55.0);
-    when(mockGetMonthlyTrend.execute()).thenAnswer(
+    when(
+      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation')),
+    ).thenAnswer(
       (_) async => [
         MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
       ],
     );
     when(
-      mockGetTopAreas.execute(limit: anyNamed('limit')),
+      mockGetTopAreas.execute(
+        limit: anyNamed('limit'),
+        monthKey: anyNamed('monthKey'),
+      ),
     ).thenAnswer((_) async => [fakeArea()]);
   }
 
@@ -85,7 +94,11 @@ void main() {
   test(
     'empty areas — all sub-use-cases return zeros/empty without crash',
     () async {
-      when(mockGetRiskCounts.execute()).thenAnswer(
+      when(
+        mockGetRiskCounts.execute(
+          selectedMonthKey: anyNamed('selectedMonthKey'),
+        ),
+      ).thenAnswer(
         (_) async => const RiskCountModel(
           criticalCount: 0,
           highCount: 0,
@@ -94,9 +107,14 @@ void main() {
         ),
       );
       when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
-      when(mockGetMonthlyTrend.execute()).thenAnswer((_) async => []);
       when(
-        mockGetTopAreas.execute(limit: anyNamed('limit')),
+        mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation')),
+      ).thenAnswer((_) async => []);
+      when(
+        mockGetTopAreas.execute(
+          limit: anyNamed('limit'),
+          monthKey: anyNamed('monthKey'),
+        ),
       ).thenAnswer((_) async => []);
 
       final result = await useCase.execute();
@@ -108,11 +126,20 @@ void main() {
   );
 
   test('propagates exception from any sub-use-case', () async {
-    when(mockGetRiskCounts.execute()).thenThrow(Exception('Firestore error'));
-    when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
-    when(mockGetMonthlyTrend.execute()).thenAnswer((_) async => []);
     when(
-      mockGetTopAreas.execute(limit: anyNamed('limit')),
+      mockGetRiskCounts.execute(
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenThrow(Exception('Firestore error'));
+    when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
+    when(
+      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation')),
+    ).thenAnswer((_) async => []);
+    when(
+      mockGetTopAreas.execute(
+        limit: anyNamed('limit'),
+        monthKey: anyNamed('monthKey'),
+      ),
     ).thenAnswer((_) async => []);
 
     expect(() => useCase.execute(), throwsA(isA<Exception>()));

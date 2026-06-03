@@ -49,4 +49,12 @@ class MockAreaRepository extends _i1.Mock implements _i2.AreaRepository {
             returnValue: _i3.Future<_i4.AreaModel?>.value(),
           )
           as _i3.Future<_i4.AreaModel?>);
+
+  @override
+  _i3.Future<_i4.AreaModel?> getLatestAreaByDistrict(String? district) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLatestAreaByDistrict, [district]),
+            returnValue: _i3.Future<_i4.AreaModel?>.value(),
+          )
+          as _i3.Future<_i4.AreaModel?>);
 }

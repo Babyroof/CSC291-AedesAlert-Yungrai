@@ -10,7 +10,7 @@ class GetTopAreasUseCase {
   final DashboardRepository _repository;
 
   /// Fix 6 — Groups area documents by [district], computes the average
-  /// riskScore per district, filters to documents whose [updatedAt] falls
+  /// riskScore per district, filters to documents whose [reportedAt] falls
   /// in [monthKey] (format "YYYY-MM"), then returns the top [limit]
   /// districts sorted by average riskScore descending.
   ///
@@ -28,7 +28,7 @@ class GetTopAreasUseCase {
     final filtered = monthKey == null
         ? areas
         : areas
-            .where((a) => DateFormatter.toMonthKey(a.updatedAt) == monthKey)
+            .where((a) => DateFormatter.toMonthKey(a.reportedAt) == monthKey)
             .toList();
 
     if (filtered.isEmpty) return [];
