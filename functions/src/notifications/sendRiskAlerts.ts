@@ -84,6 +84,8 @@ export const sendRiskAlerts = onSchedule(
           body,
           relatedZone: db.collection("areas").doc(areaId),
           sentAt: admin.firestore.FieldValue.serverTimestamp(),
+          readBy: [],
+          targetDistrict: area.district ?? "",
         });
 
         // Write de-dup log

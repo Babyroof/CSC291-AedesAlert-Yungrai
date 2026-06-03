@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aedes_alert_yungrai/core/constants/app_constants.dart';
 import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
 import 'package:aedes_alert_yungrai/features/home/presentation/controllers/home_state.dart';
 import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_nearest_area_use_case.dart';
@@ -13,16 +15,22 @@ class HomeController extends StateNotifier<HomeState> {
     required GetLatestNotificationUseCase getLatestNotification,
     required GetWeatherForecastUseCase getWeatherForecast,
     required GetLatestAreaForDistrictUseCase getLatestAreaForDistrict,
+    FirebaseFirestore? firestore,
+    FirebaseAuth? auth,
   }) : _getNearestArea = getNearestArea,
        _getLatestNotification = getLatestNotification,
        _getWeatherForecast = getWeatherForecast,
        _getLatestAreaForDistrict = getLatestAreaForDistrict,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _auth = auth ?? FirebaseAuth.instance,
        super(HomeState.initial());
 
   final GetNearestAreaUseCase _getNearestArea;
   final GetLatestNotificationUseCase _getLatestNotification;
   final GetWeatherForecastUseCase _getWeatherForecast;
   final GetLatestAreaForDistrictUseCase _getLatestAreaForDistrict;
+  final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
 
   Future<void> loadHomeData(GeoPoint userLocation) async {
     state = HomeState.initial();
@@ -52,7 +60,18 @@ class HomeController extends StateNotifier<HomeState> {
       return;
     }
 
-    // Step 2: fetch notification, weather, and latest district area in parallel.
+    // Step 2: persist district to the user's Firestore document so the Cloud
+    // Function can target the correct users when sending push notifications.
+    final uid = _auth.currentUser?.uid;
+    if (uid != null && area.district.isNotEmpty) {
+      _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(uid)
+          .set({'district': area.district}, SetOptions(merge: true))
+          .catchError((_) {}); // non-fatal — best-effort write
+    }
+
+    // Step 3: fetch notification, weather, and latest district area in parallel.
     final district = area.district;
     await Future.wait([
       _getLatestNotification

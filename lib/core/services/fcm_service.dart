@@ -9,7 +9,7 @@ class FcmService {
 
   final FirebaseFirestore _firestore;
 
-  Future<void> initialize(String uid) async {
+  Future<void> initialize(String uid, {String? district}) async {
     // 1. Request permission
     final settings = await FirebaseMessaging.instance.requestPermission(
       alert: true,
@@ -26,11 +26,11 @@ class FcmService {
     final token = await FirebaseMessaging.instance.getToken(
       vapidKey: (kIsWeb && webVapidKey.isNotEmpty) ? webVapidKey : null,
     );
-    if (token != null) await _saveToken(uid, token);
+    if (token != null) await _saveToken(uid, token, district: district);
 
     // 3. Listen for token refresh
     FirebaseMessaging.instance.onTokenRefresh
-        .listen((newToken) => _saveToken(uid, newToken));
+        .listen((newToken) => _saveToken(uid, newToken, district: district));
 
     // 4. Foreground message handler
     FirebaseMessaging.onMessage.listen((message) {
@@ -38,10 +38,12 @@ class FcmService {
     });
   }
 
-  Future<void> _saveToken(String uid, String token) async {
+  Future<void> _saveToken(String uid, String token, {String? district}) async {
+    final Map<String, dynamic> data = {'fcmToken': token};
+    if (district != null && district.isNotEmpty) data['district'] = district;
     await _firestore
         .collection(AppConstants.usersCollection)
         .doc(uid)
-        .set({'fcmToken': token}, SetOptions(merge: true));
+        .set(data, SetOptions(merge: true));
   }
 }

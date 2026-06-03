@@ -16,6 +16,14 @@
         { "fieldPath": "isLatest", "order": "ASCENDING" },
         { "fieldPath": "reportedAt", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "notificationsEnabled", "order": "ASCENDING" },
+        { "fieldPath": "district", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -19,14 +20,21 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(notificationControllerProvider.notifier).loadNotifications();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref
+          .read(notificationControllerProvider.notifier)
+          .loadNotifications();
+      // Mark all loaded notifications as read when the screen opens.
+      if (mounted) {
+        ref.read(notificationControllerProvider.notifier).markAllAsRead();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(notificationControllerProvider);
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -75,7 +83,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _NotificationCard(
                     notification: notification,
-                    index: index,
+                    currentUid: uid,
                   ),
                 );
               },
@@ -97,8 +105,8 @@ class _LoadingBody extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: 5,
-      itemBuilder: (_, index) => Padding(
-        padding: const EdgeInsets.only(bottom: 12),
+      itemBuilder: (_, index) => const Padding(
+        padding: EdgeInsets.only(bottom: 12),
         child: _LoadingSkeleton(),
       ),
     );
@@ -106,6 +114,8 @@ class _LoadingBody extends StatelessWidget {
 }
 
 class _LoadingSkeleton extends StatelessWidget {
+  const _LoadingSkeleton();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -227,18 +237,14 @@ class _ErrorBody extends StatelessWidget {
 
 // ── Notification Card ────────────────────────────────────────────────────────
 
-class _NotificationCard extends StatefulWidget {
-  const _NotificationCard({required this.notification, required this.index});
+class _NotificationCard extends ConsumerWidget {
+  const _NotificationCard({
+    required this.notification,
+    required this.currentUid,
+  });
 
   final NotificationEntity notification;
-  final int index;
-
-  @override
-  State<_NotificationCard> createState() => _NotificationCardState();
-}
-
-class _NotificationCardState extends State<_NotificationCard> {
-  bool _isRead = false;
+  final String currentUid;
 
   String _formatTime(DateTime dateTime) {
     final now = DateTime.now();
@@ -258,30 +264,35 @@ class _NotificationCardState extends State<_NotificationCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final notif = widget.notification;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notif = notification;
+    final isRead = notif.isReadBy(currentUid);
     final timeAgo = _formatTime(notif.sentAt);
 
     return GestureDetector(
       onTap: () {
-        setState(() => _isRead = true);
+        if (!isRead) {
+          ref
+              .read(notificationControllerProvider.notifier)
+              .markAsRead(notif.id);
+        }
       },
       child: Container(
         decoration: BoxDecoration(
-          color: _isRead ? Colors.white : const Color(0xFFF8F9FF),
+          color: isRead ? Colors.white : const Color(0xFFF8F9FF),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF000000).withOpacity(0.05),
+              color: const Color(0xFF000000).withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
           border: Border.all(
-            color: _isRead
+            color: isRead
                 ? AppColors.divider
-                : AppColors.primary.withOpacity(0.2),
-            width: _isRead ? 0 : 1.5,
+                : AppColors.primary.withValues(alpha: 0.2),
+            width: isRead ? 0 : 1.5,
           ),
         ),
         padding: const EdgeInsets.all(16),
@@ -292,7 +303,7 @@ class _NotificationCardState extends State<_NotificationCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!_isRead)
+                if (!isRead)
                   Padding(
                     padding: const EdgeInsets.only(right: 8, top: 4),
                     child: Container(
@@ -309,7 +320,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                     notif.title,
                     style: TextStyle(
                       fontFamily: 'Poppins',
-                      fontWeight: _isRead ? FontWeight.w600 : FontWeight.w700,
+                      fontWeight: isRead ? FontWeight.w600 : FontWeight.w700,
                       fontSize: 16,
                       color: AppColors.textPrimary,
                     ),
@@ -324,7 +335,7 @@ class _NotificationCardState extends State<_NotificationCard> {
             // Body text
             Text(
               notif.body,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
                 fontSize: 14,
@@ -342,7 +353,7 @@ class _NotificationCardState extends State<_NotificationCard> {
               children: [
                 Text(
                   timeAgo,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
@@ -359,15 +370,15 @@ class _NotificationCardState extends State<_NotificationCard> {
                       color: AppColors.riskHighBg,
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.location_on,
                           size: 12,
                           color: AppColors.riskHigh,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
                           'Zone Alert',
                           style: TextStyle(

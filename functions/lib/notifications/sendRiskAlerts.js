@@ -1,41 +1,8 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendRiskAlerts = void 0;
 const scheduler_1 = require("firebase-functions/v2/scheduler");
-const admin = __importStar(require("firebase-admin"));
+const admin = require("firebase-admin");
 const firebase_functions_1 = require("firebase-functions");
 const db = admin.firestore();
 const WINDOW_SECONDS = 6 * 60 * 60; // 21600
@@ -44,6 +11,7 @@ exports.sendRiskAlerts = (0, scheduler_1.onSchedule)({
     timeZone: "Asia/Bangkok",
     region: "asia-southeast1",
 }, async () => {
+    var _a, _b, _c, _d, _e, _f;
     const windowKey = Math.floor(Date.now() / 1000 / WINDOW_SECONDS) * WINDOW_SECONDS;
     firebase_functions_1.logger.info(`[sendRiskAlerts] windowKey=${windowKey}`);
     // 1. Query high/critical areas
@@ -61,7 +29,7 @@ exports.sendRiskAlerts = (0, scheduler_1.onSchedule)({
         .where("notificationsEnabled", "==", true)
         .get();
     const tokens = usersSnap.docs
-        .map((d) => d.data().fcmToken ?? "")
+        .map((d) => { var _a; return (_a = d.data().fcmToken) !== null && _a !== void 0 ? _a : ""; })
         .filter((t) => t.length > 0);
     if (tokens.length === 0) {
         firebase_functions_1.logger.info("[sendRiskAlerts] no users with valid fcmTokens");
@@ -87,13 +55,13 @@ exports.sendRiskAlerts = (0, scheduler_1.onSchedule)({
                 firebase_functions_1.logger.warn(`[sendRiskAlerts] area ${areaId} has invalid riskLevel: ${areaRiskLevel}, skipping`);
                 continue;
             }
-            const title = `⚠️ Dengue Risk Alert: ${area.riskLevel?.toUpperCase()}`;
-            const body = `${area.subDistrict ?? ""}, ${area.district ?? ""} — riskScore: ${area.riskScore?.toFixed(1)}`;
+            const title = `⚠️ Dengue Risk Alert: ${(_a = area.riskLevel) === null || _a === void 0 ? void 0 : _a.toUpperCase()}`;
+            const body = `${(_b = area.subDistrict) !== null && _b !== void 0 ? _b : ""}, ${(_c = area.district) !== null && _c !== void 0 ? _c : ""} — riskScore: ${(_d = area.riskScore) === null || _d === void 0 ? void 0 : _d.toFixed(1)}`;
             // Send FCM
             const response = await admin.messaging().sendEachForMulticast({
                 tokens,
                 notification: { title, body },
-                data: { areaId, riskLevel: area.riskLevel ?? "" },
+                data: { areaId, riskLevel: (_e = area.riskLevel) !== null && _e !== void 0 ? _e : "" },
             });
             firebase_functions_1.logger.info(`[sendRiskAlerts] area=${areaId} success=${response.successCount} fail=${response.failureCount}`);
             // Write to notifications collection
@@ -102,6 +70,8 @@ exports.sendRiskAlerts = (0, scheduler_1.onSchedule)({
                 body,
                 relatedZone: db.collection("areas").doc(areaId),
                 sentAt: admin.firestore.FieldValue.serverTimestamp(),
+                readBy: [],
+                targetDistrict: (_f = area.district) !== null && _f !== void 0 ? _f : "",
             });
             // Write de-dup log
             await logRef.set({
