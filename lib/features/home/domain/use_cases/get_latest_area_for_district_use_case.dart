@@ -18,5 +18,5 @@ class GetLatestAreaForDistrictUseCase {
 
 final getLatestAreaForDistrictUseCaseProvider =
     Provider<GetLatestAreaForDistrictUseCase>((ref) {
-  return GetLatestAreaForDistrictUseCase(ref.watch(areaRepositoryProvider));
-});
+      return GetLatestAreaForDistrictUseCase(ref.watch(areaRepositoryProvider));
+    });

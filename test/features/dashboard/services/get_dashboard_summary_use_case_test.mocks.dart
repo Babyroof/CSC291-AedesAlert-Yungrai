@@ -55,15 +55,15 @@ class MockGetRiskCountsUseCase extends _i1.Mock
   @override
   _i4.Future<_i2.RiskCountModel> execute({String? selectedMonthKey}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [], {#selectedMonthKey: selectedMonthKey}),
+            Invocation.method(#execute, [], {
+              #selectedMonthKey: selectedMonthKey,
+            }),
             returnValue: _i4.Future<_i2.RiskCountModel>.value(
               _FakeRiskCountModel_0(
                 this,
-                Invocation.method(
-                  #execute,
-                  [],
-                  {#selectedMonthKey: selectedMonthKey},
-                ),
+                Invocation.method(#execute, [], {
+                  #selectedMonthKey: selectedMonthKey,
+                }),
               ),
             ),
           )
@@ -85,11 +85,10 @@ class MockGetAverageRiskScoreUseCase extends _i1.Mock
     String? selectedMonthKey,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #execute,
-              [],
-              {#userDistrict: userDistrict, #selectedMonthKey: selectedMonthKey},
-            ),
+            Invocation.method(#execute, [], {
+              #userDistrict: userDistrict,
+              #selectedMonthKey: selectedMonthKey,
+            }),
             returnValue: _i4.Future<double>.value(0.0),
           )
           as _i4.Future<double>);
@@ -110,11 +109,10 @@ class MockGetMonthlyTrendUseCase extends _i1.Mock
     String? userDistrict,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(
-              #execute,
-              [],
-              {#userLocation: userLocation, #userDistrict: userDistrict},
-            ),
+            Invocation.method(#execute, [], {
+              #userLocation: userLocation,
+              #userDistrict: userDistrict,
+            }),
             returnValue: _i4.Future<List<_i7.MonthlyRiskDataModel>>.value(
               <_i7.MonthlyRiskDataModel>[],
             ),
@@ -134,7 +132,10 @@ class MockGetTopAreasUseCase extends _i1.Mock
   @override
   _i4.Future<List<_i9.AreaModel>> execute({int? limit = 5, String? monthKey}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [], {#limit: limit, #monthKey: monthKey}),
+            Invocation.method(#execute, [], {
+              #limit: limit,
+              #monthKey: monthKey,
+            }),
             returnValue: _i4.Future<List<_i9.AreaModel>>.value(
               <_i9.AreaModel>[],
             ),

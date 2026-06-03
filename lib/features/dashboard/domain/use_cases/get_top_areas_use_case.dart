@@ -18,18 +18,15 @@ class GetTopAreasUseCase {
   /// so that the existing UI row simply displays the district name.
   ///
   /// When [monthKey] is null all months are included (no time filter).
-  Future<List<AreaModel>> execute({
-    int limit = 5,
-    String? monthKey,
-  }) async {
+  Future<List<AreaModel>> execute({int limit = 5, String? monthKey}) async {
     final areas = await _repository.getAllAreas();
 
     // Apply month filter when a key is provided.
     final filtered = monthKey == null
         ? areas
         : areas
-            .where((a) => DateFormatter.toMonthKey(a.reportedAt) == monthKey)
-            .toList();
+              .where((a) => DateFormatter.toMonthKey(a.reportedAt) == monthKey)
+              .toList();
 
     if (filtered.isEmpty) return [];
 
@@ -79,8 +76,7 @@ class GetTopAreasUseCase {
         reportedAt: rep.reportedAt,
         updatedAt: rep.updatedAt,
       );
-    }).toList()
-      ..sort((a, b) => b.riskScore.compareTo(a.riskScore));
+    }).toList()..sort((a, b) => b.riskScore.compareTo(a.riskScore));
 
     return districtModels.take(limit).toList();
   }

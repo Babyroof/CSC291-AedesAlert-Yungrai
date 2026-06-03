@@ -35,9 +35,10 @@ class GetRiskCountsUseCase {
     final filtered = effectiveKey == null
         ? areas
         : areas
-            .where((a) =>
-                DateFormatter.toMonthKey(a.reportedAt) == effectiveKey)
-            .toList();
+              .where(
+                (a) => DateFormatter.toMonthKey(a.reportedAt) == effectiveKey,
+              )
+              .toList();
 
     // Group areas by district → keep the highest-scored one per district.
     final Map<String, String> districtLevel = {};

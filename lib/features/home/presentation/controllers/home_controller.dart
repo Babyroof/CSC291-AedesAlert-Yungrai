@@ -94,8 +94,8 @@ class HomeController extends StateNotifier<HomeState> {
       _getLatestAreaForDistrict
           .execute(district)
           .then(
-            (a) => state =
-                state.copyWith(latestDistrictArea: AsyncValue.data(a)),
+            (a) =>
+                state = state.copyWith(latestDistrictArea: AsyncValue.data(a)),
             onError: (Object e, StackTrace st) => state = state.copyWith(
               latestDistrictArea: AsyncValue.error(e, st),
             ),
@@ -112,8 +112,9 @@ final homeControllerProvider = StateNotifierProvider<HomeController, HomeState>(
       getNearestArea: ref.watch(getNearestAreaUseCaseProvider),
       getLatestNotification: ref.watch(getLatestNotificationUseCaseProvider),
       getWeatherForecast: ref.watch(getWeatherForecastUseCaseProvider),
-      getLatestAreaForDistrict:
-          ref.watch(getLatestAreaForDistrictUseCaseProvider),
+      getLatestAreaForDistrict: ref.watch(
+        getLatestAreaForDistrictUseCaseProvider,
+      ),
     );
   },
 );

@@ -75,8 +75,9 @@ void main() {
   });
 
   test('unknown riskLevel falls into low bucket', () async {
-    when(mockRepo.getAllAreas())
-        .thenAnswer((_) async => [makeArea('unknown', 'D1')]);
+    when(
+      mockRepo.getAllAreas(),
+    ).thenAnswer((_) async => [makeArea('unknown', 'D1')]);
     final result = await useCase.execute();
     expect(result.lowCount, 1);
   });

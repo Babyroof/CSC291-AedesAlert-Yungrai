@@ -111,10 +111,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           child: Text(
                             'No updated data in this month yet',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),
                         ),
                       ),

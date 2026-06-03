@@ -5,7 +5,7 @@ import 'package:aedes_alert_yungrai/core/constants/app_constants.dart';
 
 class FcmService {
   FcmService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
 
@@ -29,8 +29,9 @@ class FcmService {
     if (token != null) await _saveToken(uid, token, district: district);
 
     // 3. Listen for token refresh
-    FirebaseMessaging.instance.onTokenRefresh
-        .listen((newToken) => _saveToken(uid, newToken, district: district));
+    FirebaseMessaging.instance.onTokenRefresh.listen(
+      (newToken) => _saveToken(uid, newToken, district: district),
+    );
 
     // 4. Foreground message handler
     FirebaseMessaging.onMessage.listen((message) {

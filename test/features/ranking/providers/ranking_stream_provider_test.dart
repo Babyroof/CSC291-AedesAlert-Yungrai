@@ -28,22 +28,20 @@ class FakeRankingRepository implements RankingRepository {
 // ---------------------------------------------------------------------------
 
 RankingAreaEntity fakeEntity(String id, {int rank = 1}) => RankingAreaEntity(
-      id: id,
-      subDistrict: 'S',
-      district: 'D',
-      province: 'P',
-      riskScore: 55.0,
-      riskLevel: 'medium',
-      rank: rank,
-      updatedAt: DateTime(2024, 6, 1),
-    );
+  id: id,
+  subDistrict: 'S',
+  district: 'D',
+  province: 'P',
+  riskScore: 55.0,
+  riskLevel: 'medium',
+  rank: rank,
+  updatedAt: DateTime(2024, 6, 1),
+);
 
 ProviderContainer buildContainer(Stream<List<RankingAreaEntity>> stream) {
   final fakeRepo = FakeRankingRepository(stream);
   return ProviderContainer(
-    overrides: [
-      rankingRepositoryProvider.overrideWithValue(fakeRepo),
-    ],
+    overrides: [rankingRepositoryProvider.overrideWithValue(fakeRepo)],
   );
 }
 
@@ -108,17 +106,19 @@ void main() {
       expect(state, isA<AsyncError<List<RankingAreaEntity>>>());
     });
 
-    test('emits AsyncData with empty list when repository returns empty stream',
-        () async {
-      final container = buildContainer(Stream.value([]));
-      addTearDown(container.dispose);
+    test(
+      'emits AsyncData with empty list when repository returns empty stream',
+      () async {
+        final container = buildContainer(Stream.value([]));
+        addTearDown(container.dispose);
 
-      await activateAndSettle(container, rankedAreasStreamProvider);
+        await activateAndSettle(container, rankedAreasStreamProvider);
 
-      final state = container.read(rankedAreasStreamProvider);
-      expect(state, isA<AsyncData<List<RankingAreaEntity>>>());
-      expect(state.value, isEmpty);
-    });
+        final state = container.read(rankedAreasStreamProvider);
+        expect(state, isA<AsyncData<List<RankingAreaEntity>>>());
+        expect(state.value, isEmpty);
+      },
+    );
 
     test('emits multiple updates as stream produces new values', () async {
       final ctrl = StreamController<List<RankingAreaEntity>>();

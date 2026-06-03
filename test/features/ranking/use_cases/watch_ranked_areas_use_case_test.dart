@@ -28,17 +28,20 @@ class FakeRankingRepository implements RankingRepository {
 // Helper
 // ---------------------------------------------------------------------------
 
-RankingAreaEntity fakeEntity(String id, {double riskScore = 50.0, int rank = 1}) =>
-    RankingAreaEntity(
-      id: id,
-      subDistrict: 'S',
-      district: 'D',
-      province: 'P',
-      riskScore: riskScore,
-      riskLevel: 'medium',
-      rank: rank,
-      updatedAt: DateTime(2024, 6, 1),
-    );
+RankingAreaEntity fakeEntity(
+  String id, {
+  double riskScore = 50.0,
+  int rank = 1,
+}) => RankingAreaEntity(
+  id: id,
+  subDistrict: 'S',
+  district: 'D',
+  province: 'P',
+  riskScore: riskScore,
+  riskLevel: 'medium',
+  rank: rank,
+  updatedAt: DateTime(2024, 6, 1),
+);
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -55,7 +58,10 @@ void main() {
 
   group('WatchRankedAreasUseCase.watch', () {
     test('returns the stream from the repository', () async {
-      final expectedAreas = [fakeEntity('a1', rank: 1), fakeEntity('a2', rank: 2)];
+      final expectedAreas = [
+        fakeEntity('a1', rank: 1),
+        fakeEntity('a2', rank: 2),
+      ];
       fakeRepo.streamToReturn = Stream.value(expectedAreas);
 
       final result = await useCase.watch().first;
@@ -109,13 +115,11 @@ void main() {
     });
 
     test('repository stream error propagates to caller', () async {
-      fakeRepo.streamToReturn =
-          Stream.error(Exception('Firestore unavailable'));
-
-      expect(
-        useCase.watch(),
-        emitsError(isA<Exception>()),
+      fakeRepo.streamToReturn = Stream.error(
+        Exception('Firestore unavailable'),
       );
+
+      expect(useCase.watch(), emitsError(isA<Exception>()));
     });
   });
 }

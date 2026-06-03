@@ -11,6 +11,8 @@ class WatchRankedAreasUseCase {
       _repository.watchRankedAreas(limit: limit);
 }
 
-final watchRankedAreasUseCaseProvider = Provider<WatchRankedAreasUseCase>((ref) {
+final watchRankedAreasUseCaseProvider = Provider<WatchRankedAreasUseCase>((
+  ref,
+) {
   return WatchRankedAreasUseCase(ref.watch(rankingRepositoryProvider));
 });

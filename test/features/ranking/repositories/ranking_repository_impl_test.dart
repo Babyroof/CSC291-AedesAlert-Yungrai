@@ -57,11 +57,13 @@ void main() {
       expect(result[2].rank, 3);
     });
 
-    test('returns empty list when ranking collection is empty (no crash)',
-        () async {
-      final result = await repository.watchRankedAreas().first;
-      expect(result, isEmpty);
-    });
+    test(
+      'returns empty list when ranking collection is empty (no crash)',
+      () async {
+        final result = await repository.watchRankedAreas().first;
+        expect(result, isEmpty);
+      },
+    );
 
     test('limit parameter caps the number of returned documents', () async {
       for (int i = 1; i <= 10; i++) {
@@ -72,29 +74,38 @@ void main() {
       expect(result.length, 5);
     });
 
-    test('each document maps to a RankingAreaEntity with correct fields',
-        () async {
-      await addRankingDoc('area-x', rank: 1, riskScore: 75.5, riskLevel: 'high');
+    test(
+      'each document maps to a RankingAreaEntity with correct fields',
+      () async {
+        await addRankingDoc(
+          'area-x',
+          rank: 1,
+          riskScore: 75.5,
+          riskLevel: 'high',
+        );
 
-      final result = await repository.watchRankedAreas().first;
+        final result = await repository.watchRankedAreas().first;
 
-      expect(result.length, 1);
-      final entity = result.first;
-      expect(entity.id, 'area-x');
-      expect(entity.rank, 1);
-      expect(entity.riskScore, 75.5);
-      expect(entity.riskLevel, 'high');
-    });
+        expect(result.length, 1);
+        final entity = result.first;
+        expect(entity.id, 'area-x');
+        expect(entity.rank, 1);
+        expect(entity.riskScore, 75.5);
+        expect(entity.riskLevel, 'high');
+      },
+    );
 
-    test('500+ docs batch: 502 docs, limit 502, no crash, length == 502',
-        () async {
-      // Seed 502 documents with sequential rank values.
-      for (int i = 1; i <= 502; i++) {
-        await addRankingDoc('area-$i', rank: i, riskScore: i.toDouble());
-      }
+    test(
+      '500+ docs batch: 502 docs, limit 502, no crash, length == 502',
+      () async {
+        // Seed 502 documents with sequential rank values.
+        for (int i = 1; i <= 502; i++) {
+          await addRankingDoc('area-$i', rank: i, riskScore: i.toDouble());
+        }
 
-      final result = await repository.watchRankedAreas(limit: 502).first;
-      expect(result.length, 502);
-    });
+        final result = await repository.watchRankedAreas(limit: 502).first;
+        expect(result.length, 502);
+      },
+    );
   });
 }

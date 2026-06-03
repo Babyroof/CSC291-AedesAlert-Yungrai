@@ -40,8 +40,9 @@ class GetMonthlyTrendUseCase {
     // Prefer district-name filter; fall back to GeoPoint radius; else all areas.
     final List<AreaModel> filtered;
     if (userDistrict != null && userDistrict.isNotEmpty) {
-      final byDistrict =
-          areas.where((a) => a.district == userDistrict).toList();
+      final byDistrict = areas
+          .where((a) => a.district == userDistrict)
+          .toList();
       // Fall back to all areas when district filter returns nothing.
       filtered = byDistrict.isNotEmpty ? byDistrict : areas;
     } else if (userLocation != null) {
@@ -83,14 +84,14 @@ class GetMonthlyTrendUseCase {
           districtAvgList.reduce((a, b) => a + b) / districtAvgList.length;
 
       // Total area-doc count (for reference).
-      final totalCount = byDistrict.values
-          .fold<int>(0, (acc, scores) => acc + scores.length);
+      final totalCount = byDistrict.values.fold<int>(
+        0,
+        (acc, scores) => acc + scores.length,
+      );
 
-      allMonths.add(MonthlyRiskDataModel.fromComputedAvg(
-        monthKey,
-        monthAvg,
-        totalCount,
-      ));
+      allMonths.add(
+        MonthlyRiskDataModel.fromComputedAvg(monthKey, monthAvg, totalCount),
+      );
     }
 
     // Sort newest first, keep only the _kMaxMonths most recent real months,

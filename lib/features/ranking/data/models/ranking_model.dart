@@ -22,7 +22,9 @@ class RankingModel {
   final int rank;
   final DateTime updatedAt;
 
-  factory RankingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory RankingModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data() ?? {};
     return RankingModel(
       areaId: data['areaId'] as String? ?? doc.id,
@@ -32,19 +34,18 @@ class RankingModel {
       riskScore: (data['riskScore'] as num?)?.toDouble() ?? 0.0,
       riskLevel: data['riskLevel'] as String? ?? 'low',
       rank: (data['rank'] as num?)?.toInt() ?? 0,
-      updatedAt:
-          (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
   RankingAreaEntity toEntity() => RankingAreaEntity(
-        id: areaId,
-        subDistrict: subDistrict,
-        district: district,
-        province: province,
-        riskScore: riskScore,
-        riskLevel: riskLevel,
-        rank: rank,
-        updatedAt: updatedAt,
-      );
+    id: areaId,
+    subDistrict: subDistrict,
+    district: district,
+    province: province,
+    riskScore: riskScore,
+    riskLevel: riskLevel,
+    rank: rank,
+    updatedAt: updatedAt,
+  );
 }

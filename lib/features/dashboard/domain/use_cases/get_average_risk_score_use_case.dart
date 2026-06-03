@@ -47,10 +47,9 @@ class GetAverageRiskScoreUseCase {
     if (areas.isEmpty) return 0.0;
 
     // Optionally filter to user's district before any month filtering.
-    final districtFiltered =
-        (userDistrict != null && userDistrict.isNotEmpty)
-            ? areas.where((a) => a.district == userDistrict).toList()
-            : areas;
+    final districtFiltered = (userDistrict != null && userDistrict.isNotEmpty)
+        ? areas.where((a) => a.district == userDistrict).toList()
+        : areas;
 
     // Fall back to all areas when the district filter returns nothing
     // (e.g. stale/invalid district name).
@@ -79,8 +78,7 @@ class GetAverageRiskScoreUseCase {
     final districtAvgs = byDistrict.values.map(
       (scores) => scores.reduce((a, b) => a + b) / scores.length,
     );
-    final monthAvg =
-        districtAvgs.reduce((a, b) => a + b) / districtAvgs.length;
+    final monthAvg = districtAvgs.reduce((a, b) => a + b) / districtAvgs.length;
     return double.parse(monthAvg.toStringAsFixed(1));
   }
 }

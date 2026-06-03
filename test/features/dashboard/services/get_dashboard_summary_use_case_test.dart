@@ -55,9 +55,7 @@ void main() {
 
   void stubAllSuccess() {
     when(
-      mockGetRiskCounts.execute(
-        selectedMonthKey: anyNamed('selectedMonthKey'),
-      ),
+      mockGetRiskCounts.execute(selectedMonthKey: anyNamed('selectedMonthKey')),
     ).thenAnswer(
       (_) async => const RiskCountModel(
         criticalCount: 1,
@@ -66,9 +64,17 @@ void main() {
         lowCount: 4,
       ),
     );
-    when(mockGetAverageScore.execute(userDistrict: anyNamed('userDistrict'), selectedMonthKey: anyNamed('selectedMonthKey'))).thenAnswer((_) async => 55.0);
     when(
-      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation'), userDistrict: anyNamed('userDistrict')),
+      mockGetAverageScore.execute(
+        userDistrict: anyNamed('userDistrict'),
+        selectedMonthKey: anyNamed('selectedMonthKey'),
+      ),
+    ).thenAnswer((_) async => 55.0);
+    when(
+      mockGetMonthlyTrend.execute(
+        userLocation: anyNamed('userLocation'),
+        userDistrict: anyNamed('userDistrict'),
+      ),
     ).thenAnswer(
       (_) async => [
         MonthlyRiskDataModel.fromBucket('2024-06', [55.0]),
@@ -106,9 +112,17 @@ void main() {
           lowCount: 0,
         ),
       );
-      when(mockGetAverageScore.execute(userDistrict: anyNamed('userDistrict'), selectedMonthKey: anyNamed('selectedMonthKey'))).thenAnswer((_) async => 0.0);
       when(
-        mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation'), userDistrict: anyNamed('userDistrict')),
+        mockGetAverageScore.execute(
+          userDistrict: anyNamed('userDistrict'),
+          selectedMonthKey: anyNamed('selectedMonthKey'),
+        ),
+      ).thenAnswer((_) async => 0.0);
+      when(
+        mockGetMonthlyTrend.execute(
+          userLocation: anyNamed('userLocation'),
+          userDistrict: anyNamed('userDistrict'),
+        ),
       ).thenAnswer((_) async => []);
       when(
         mockGetTopAreas.execute(
@@ -127,13 +141,14 @@ void main() {
 
   test('propagates exception from any sub-use-case', () async {
     when(
-      mockGetRiskCounts.execute(
-        selectedMonthKey: anyNamed('selectedMonthKey'),
-      ),
+      mockGetRiskCounts.execute(selectedMonthKey: anyNamed('selectedMonthKey')),
     ).thenThrow(Exception('Firestore error'));
     when(mockGetAverageScore.execute()).thenAnswer((_) async => 0.0);
     when(
-      mockGetMonthlyTrend.execute(userLocation: anyNamed('userLocation'), userDistrict: anyNamed('userDistrict')),
+      mockGetMonthlyTrend.execute(
+        userLocation: anyNamed('userLocation'),
+        userDistrict: anyNamed('userDistrict'),
+      ),
     ).thenAnswer((_) async => []);
     when(
       mockGetTopAreas.execute(

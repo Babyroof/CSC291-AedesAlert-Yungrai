@@ -9,14 +9,16 @@ Future<void> seedAdditionalPlaces() async {
     // ─── HOSPITALS ──────────────────────────────────────────
     {
       'name': 'Siriraj Hospital',
-      'description': 'Largest public hospital in Thailand, Faculty of Medicine Siriraj',
+      'description':
+          'Largest public hospital in Thailand, Faculty of Medicine Siriraj',
       'location': const GeoPoint(13.7600, 100.4850),
       'phoneNumber': '02-419-7000',
       'type': 'hospital',
     },
     {
       'name': 'Vajira Hospital',
-      'description': 'Public hospital under Bangkok Metropolitan Administration',
+      'description':
+          'Public hospital under Bangkok Metropolitan Administration',
       'location': const GeoPoint(13.7693, 100.5025),
       'phoneNumber': '02-244-3000',
       'type': 'hospital',
@@ -121,7 +123,8 @@ Future<void> seedAdditionalPlaces() async {
     },
     {
       'name': 'Yanhee Hospital',
-      'description': 'Private hospital specializing in cosmetic and general medicine',
+      'description':
+          'Private hospital specializing in cosmetic and general medicine',
       'location': const GeoPoint(13.7920, 100.4780),
       'phoneNumber': '02-879-0300',
       'type': 'hospital',
@@ -156,14 +159,16 @@ Future<void> seedAdditionalPlaces() async {
     },
     {
       'name': 'Taksin Hospital',
-      'description': 'Public hospital under Bangkok Metropolitan Administration, Thon Buri',
+      'description':
+          'Public hospital under Bangkok Metropolitan Administration, Thon Buri',
       'location': const GeoPoint(13.7210, 100.4890),
       'phoneNumber': '02-437-0123',
       'type': 'hospital',
     },
     {
       'name': 'Hua Chiew General Hospital',
-      'description': 'Private hospital in Samphanthawong district, Chinatown area',
+      'description':
+          'Private hospital in Samphanthawong district, Chinatown area',
       'location': const GeoPoint(13.7380, 100.5110),
       'phoneNumber': '02-223-1351',
       'type': 'hospital',
@@ -228,7 +233,8 @@ Future<void> seedAdditionalPlaces() async {
     },
     {
       'name': 'Min Buri Community Clinic',
-      'description': 'Community clinic in Min Buri district, accepts universal healthcare card',
+      'description':
+          'Community clinic in Min Buri district, accepts universal healthcare card',
       'location': const GeoPoint(13.8120, 100.7470),
       'phoneNumber': '02-517-4567',
       'type': 'clinic',
@@ -284,7 +290,8 @@ Future<void> seedAdditionalPlaces() async {
     },
     {
       'name': 'Sai Mai Community Clinic',
-      'description': 'Community clinic in Sai Mai district, accepts universal healthcare card',
+      'description':
+          'Community clinic in Sai Mai district, accepts universal healthcare card',
       'location': const GeoPoint(13.9180, 100.6450),
       'phoneNumber': '02-991-4567',
       'type': 'clinic',

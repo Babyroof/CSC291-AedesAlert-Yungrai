@@ -12,7 +12,8 @@ class RankingRepositoryImpl implements RankingRepository {
   /// Converts a list of Firestore document snapshots to [RankingAreaEntity]
   /// objects, keeping only the highest-scoring document per district.
   List<RankingAreaEntity> _entitiesToRanked(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> docs) {
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  ) {
     // De-duplicate: keep the doc with the highest riskScore per district.
     final Map<String, QueryDocumentSnapshot<Map<String, dynamic>>> byDistrict =
         {};
@@ -24,8 +25,8 @@ class RankingRepositoryImpl implements RankingRepository {
       if (existing == null) {
         byDistrict[district] = doc;
       } else {
-        final existingScore =
-            ((existing.data()['riskScore'] as num?) ?? 0).toDouble();
+        final existingScore = ((existing.data()['riskScore'] as num?) ?? 0)
+            .toDouble();
         if (score > existingScore) {
           byDistrict[district] = doc;
         }
@@ -45,8 +46,7 @@ class RankingRepositoryImpl implements RankingRepository {
         updatedAt:
             (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       );
-    }).toList()
-      ..sort((a, b) => b.riskScore.compareTo(a.riskScore));
+    }).toList()..sort((a, b) => b.riskScore.compareTo(a.riskScore));
 
     return entities;
   }
@@ -85,7 +85,7 @@ class RankingRepositoryImpl implements RankingRepository {
       return _entitiesToRanked(fallbackSnapshot.docs);
     }
   }
-  
+
   @override
   Stream<List<RankingAreaEntity>> watchRankedAreas({int limit = 20}) {
     // TODO: implement watchRankedAreas

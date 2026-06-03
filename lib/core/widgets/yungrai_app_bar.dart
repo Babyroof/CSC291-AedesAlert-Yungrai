@@ -5,10 +5,7 @@ import '../themes/app_colors.dart';
 import '../../features/notification/presentation/controllers/notification_controller.dart';
 
 class YungraiAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const YungraiAppBar({
-    super.key,
-    this.showBackButton = false,
-  });
+  const YungraiAppBar({super.key, this.showBackButton = false});
 
   final bool showBackButton;
 

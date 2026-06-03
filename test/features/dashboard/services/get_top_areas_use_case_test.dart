@@ -18,20 +18,23 @@ void main() {
     useCase = GetTopAreasUseCase(mockRepo);
   });
 
-  AreaModel makeArea(String id, double score,
-      {String district = 'D', DateTime? updatedAt}) =>
-      AreaModel(
-        id: id,
-        subDistrict: 'S',
-        district: district,
-        province: 'P',
-        location: const GeoPoint(13.7563, 100.5018),
-        radius: 500,
-        riskScore: score,
-        riskLevel: 'high',
-        reportedAt: DateTime(2024, 1, 1),
-        updatedAt: updatedAt ?? DateTime(2024, 6, 1),
-      );
+  AreaModel makeArea(
+    String id,
+    double score, {
+    String district = 'D',
+    DateTime? updatedAt,
+  }) => AreaModel(
+    id: id,
+    subDistrict: 'S',
+    district: district,
+    province: 'P',
+    location: const GeoPoint(13.7563, 100.5018),
+    radius: 500,
+    riskScore: score,
+    riskLevel: 'high',
+    reportedAt: DateTime(2024, 1, 1),
+    updatedAt: updatedAt ?? DateTime(2024, 6, 1),
+  );
 
   test('empty collection returns empty list without crash', () async {
     when(mockRepo.getAllAreas()).thenAnswer((_) async => []);
@@ -40,10 +43,12 @@ void main() {
   });
 
   test('returns areas from repository sorted by score descending', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea('a1', 90.0, district: 'A'),
-          makeArea('a2', 80.0, district: 'B'),
-        ]);
+    when(mockRepo.getAllAreas()).thenAnswer(
+      (_) async => [
+        makeArea('a1', 90.0, district: 'A'),
+        makeArea('a2', 80.0, district: 'B'),
+      ],
+    );
     final result = await useCase.execute(limit: 5);
     expect(result.length, 2);
     // First result should be the highest-scored district.
@@ -51,12 +56,14 @@ void main() {
   });
 
   test('passes limit to result — returns at most limit districts', () async {
-    when(mockRepo.getAllAreas()).thenAnswer((_) async => [
-          makeArea('a1', 90.0, district: 'A'),
-          makeArea('a2', 80.0, district: 'B'),
-          makeArea('a3', 70.0, district: 'C'),
-          makeArea('a4', 60.0, district: 'D'),
-        ]);
+    when(mockRepo.getAllAreas()).thenAnswer(
+      (_) async => [
+        makeArea('a1', 90.0, district: 'A'),
+        makeArea('a2', 80.0, district: 'B'),
+        makeArea('a3', 70.0, district: 'C'),
+        makeArea('a4', 60.0, district: 'D'),
+      ],
+    );
     final result = await useCase.execute(limit: 2);
     expect(result.length, 2);
   });
@@ -64,8 +71,9 @@ void main() {
   test(
     'null riskScore area (defaulted to 0.0) is returned without crash',
     () async {
-      when(mockRepo.getAllAreas())
-          .thenAnswer((_) async => [makeArea('nullArea', 0.0)]);
+      when(
+        mockRepo.getAllAreas(),
+      ).thenAnswer((_) async => [makeArea('nullArea', 0.0)]);
       final result = await useCase.execute(limit: 5);
       expect(result.first.riskScore, 0.0);
     },

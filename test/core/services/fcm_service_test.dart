@@ -33,53 +33,47 @@ void main() {
   // ---------------------------------------------------------------------------
 
   group('FcmService Firestore contract (mirrors _saveToken behaviour)', () {
-    test(
-      'update sets fcmToken on users/{uid} document',
-      () async {
-        // Pre-create the document so update() does not throw on fake store.
-        await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .set({'fcmToken': ''});
+    test('update sets fcmToken on users/{uid} document', () async {
+      // Pre-create the document so update() does not throw on fake store.
+      await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .set({'fcmToken': ''});
 
-        await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .update({'fcmToken': 'token-abc-123'});
+      await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .update({'fcmToken': 'token-abc-123'});
 
-        final snap = await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .get();
-        expect(snap.data()?['fcmToken'], 'token-abc-123');
-      },
-    );
+      final snap = await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .get();
+      expect(snap.data()?['fcmToken'], 'token-abc-123');
+    });
 
-    test(
-      'second update overwrites token (simulates onTokenRefresh)',
-      () async {
-        await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .set({'fcmToken': ''});
+    test('second update overwrites token (simulates onTokenRefresh)', () async {
+      await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .set({'fcmToken': ''});
 
-        await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .update({'fcmToken': 'first-token'});
+      await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .update({'fcmToken': 'first-token'});
 
-        await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .update({'fcmToken': 'refreshed-token'});
+      await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .update({'fcmToken': 'refreshed-token'});
 
-        final snap = await fakeFirestore
-            .collection(AppConstants.usersCollection)
-            .doc('test-uid')
-            .get();
-        expect(snap.data()?['fcmToken'], 'refreshed-token');
-      },
-    );
+      final snap = await fakeFirestore
+          .collection(AppConstants.usersCollection)
+          .doc('test-uid')
+          .get();
+      expect(snap.data()?['fcmToken'], 'refreshed-token');
+    });
 
     test('each uid gets its own token, no cross-contamination', () async {
       for (final uid in ['uid-A', 'uid-B']) {
@@ -124,10 +118,7 @@ void main() {
 
   group('FcmService constructor', () {
     test('accepts injected FirebaseFirestore without throwing', () {
-      expect(
-        () => FcmService(firestore: fakeFirestore),
-        returnsNormally,
-      );
+      expect(() => FcmService(firestore: fakeFirestore), returnsNormally);
     });
 
     test('creates a service instance with the provided store', () {

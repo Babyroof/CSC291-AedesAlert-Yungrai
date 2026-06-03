@@ -155,35 +155,37 @@ void main() {
       expect(entity.updatedAt, fixedDate);
     });
 
-    test('two areas with equal riskScore map to distinct entities without crash',
-        () {
-      final m1 = RankingModel(
-        areaId: 'a1',
-        subDistrict: 'S1',
-        district: 'D',
-        province: 'P',
-        riskScore: 50.0,
-        riskLevel: 'medium',
-        rank: 1,
-        updatedAt: fixedDate,
-      );
-      final m2 = RankingModel(
-        areaId: 'a2',
-        subDistrict: 'S2',
-        district: 'D',
-        province: 'P',
-        riskScore: 50.0,
-        riskLevel: 'medium',
-        rank: 2,
-        updatedAt: fixedDate,
-      );
+    test(
+      'two areas with equal riskScore map to distinct entities without crash',
+      () {
+        final m1 = RankingModel(
+          areaId: 'a1',
+          subDistrict: 'S1',
+          district: 'D',
+          province: 'P',
+          riskScore: 50.0,
+          riskLevel: 'medium',
+          rank: 1,
+          updatedAt: fixedDate,
+        );
+        final m2 = RankingModel(
+          areaId: 'a2',
+          subDistrict: 'S2',
+          district: 'D',
+          province: 'P',
+          riskScore: 50.0,
+          riskLevel: 'medium',
+          rank: 2,
+          updatedAt: fixedDate,
+        );
 
-      final e1 = m1.toEntity();
-      final e2 = m2.toEntity();
+        final e1 = m1.toEntity();
+        final e2 = m2.toEntity();
 
-      expect(e1.id, 'a1');
-      expect(e2.id, 'a2');
-      expect(e1.riskScore, e2.riskScore);
-    });
+        expect(e1.id, 'a1');
+        expect(e2.id, 'a2');
+        expect(e1.riskScore, e2.riskScore);
+      },
+    );
   });
 }

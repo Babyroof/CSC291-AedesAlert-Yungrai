@@ -19,8 +19,7 @@ class FakeAreaRepository implements AreaRepository {
   Future<AreaModel?> getNearestArea(
     GeoPoint userLocation, {
     double radiusKm = 5.0,
-  }) async =>
-      null;
+  }) async => null;
 
   @override
   Future<AreaModel?> getLatestAreaByDistrict(String district) async {
@@ -39,19 +38,18 @@ AreaModel _fakeArea({
   double riskScore = 65.0,
   String riskLevel = 'high',
   DateTime? updatedAt,
-}) =>
-    AreaModel(
-      id: id,
-      subDistrict: 'Sub',
-      district: district,
-      province: 'Bangkok',
-      location: const GeoPoint(13.7563, 100.5018),
-      radius: 500,
-      riskScore: riskScore,
-      riskLevel: riskLevel,
-      reportedAt: DateTime(2024, 1, 1),
-      updatedAt: updatedAt ?? DateTime(2024, 6, 1),
-    );
+}) => AreaModel(
+  id: id,
+  subDistrict: 'Sub',
+  district: district,
+  province: 'Bangkok',
+  location: const GeoPoint(13.7563, 100.5018),
+  radius: 500,
+  riskScore: riskScore,
+  riskLevel: riskLevel,
+  reportedAt: DateTime(2024, 1, 1),
+  updatedAt: updatedAt ?? DateTime(2024, 6, 1),
+);
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -118,13 +116,15 @@ void main() {
   });
 
   // ── Test 4 ──────────────────────────────────────────────────────────────
-  test('filters by district name correctly — passes district to repository',
-      () async {
-    fakeRepo.latestAreaToReturn = _fakeArea(district: 'Khlong Toei');
+  test(
+    'filters by district name correctly — passes district to repository',
+    () async {
+      fakeRepo.latestAreaToReturn = _fakeArea(district: 'Khlong Toei');
 
-    await useCase.execute('Khlong Toei');
+      await useCase.execute('Khlong Toei');
 
-    // The use case must forward the exact district name to the repository.
-    expect(fakeRepo.capturedDistrict, 'Khlong Toei');
-  });
+      // The use case must forward the exact district name to the repository.
+      expect(fakeRepo.capturedDistrict, 'Khlong Toei');
+    },
+  );
 }

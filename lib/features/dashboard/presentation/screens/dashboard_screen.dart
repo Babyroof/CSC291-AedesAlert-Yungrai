@@ -135,8 +135,21 @@ String _shiftMonthKey(String base, int monthsBack) {
 String _monthAbbr(String monthKey) {
   final parts = monthKey.split('-');
   final month = int.parse(parts[1]);
-  const abbrs = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const abbrs = [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   return abbrs[month];
 }
 
@@ -145,8 +158,21 @@ String _monthYearLabel(String monthKey) {
   final parts = monthKey.split('-');
   final year = int.parse(parts[0]);
   final month = int.parse(parts[1]);
-  const names = ['', 'January', 'February', 'March', 'April', 'May', 'June',
-                      'July', 'August', 'September', 'October', 'November', 'December'];
+  const names = [
+    '',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   return '${names[month]} $year';
 }
 
@@ -169,8 +195,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final dashState = ref.watch(dashboardControllerProvider);
     final isLoading = dashState.summary.isLoading;
     final summary = dashState.summary.valueOrNull;
-    final data =
-        summary != null ? _DashboardViewData.fromSummary(summary) : null;
+    final data = summary != null
+        ? _DashboardViewData.fromSummary(summary)
+        : null;
     final displayData = data ?? _DashboardViewData.placeholder();
 
     // The effective selected month key:
@@ -188,7 +215,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     if (selectedKey != null) {
       final k0 = _shiftMonthKey(selectedKey, 2); // 2 months before selected
       final k1 = _shiftMonthKey(selectedKey, 1); // 1 month before selected
-      final k2 = selectedKey;                     // the selected month
+      final k2 = selectedKey; // the selected month
 
       final trend = summary?.monthlyTrend ?? [];
       final scoreMap = {for (final m in trend) m.monthKey: m.avgRiskScore};
@@ -204,11 +231,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       // Fallback before data loads
       chartScores = displayData.monthlyScores.length >= 3
           ? displayData.monthlyScores.sublist(
-              displayData.monthlyScores.length - 3)
+              displayData.monthlyScores.length - 3,
+            )
           : List<double>.from(displayData.monthlyScores);
       chartLabels = displayData.monthLabels.length >= 3
-          ? displayData.monthLabels.sublist(
-              displayData.monthLabels.length - 3)
+          ? displayData.monthLabels.sublist(displayData.monthLabels.length - 3)
           : List<String>.from(displayData.monthLabels);
       chartHighlightIndex = chartScores.isEmpty ? 0 : chartScores.length - 1;
     }
@@ -404,10 +431,7 @@ class _MonthSelector extends StatelessWidget {
 // ─── Stat Cards Grid ──────────────────────────────────────────────────────────
 
 class _StatCardsGrid extends StatelessWidget {
-  const _StatCardsGrid({
-    required this.data,
-    required this.selectedMonthAvg,
-  });
+  const _StatCardsGrid({required this.data, required this.selectedMonthAvg});
   final _DashboardViewData data;
   final double selectedMonthAvg;
 
@@ -599,7 +623,6 @@ class _RiskScoreChart extends StatelessWidget {
   }
 }
 
-
 class _BarChartPainter extends CustomPainter {
   _BarChartPainter({
     required this.scores,
@@ -707,10 +730,7 @@ class _BarChartPainter extends CustomPainter {
           ),
           textDirection: TextDirection.ltr,
         )..layout();
-        lp.paint(
-          canvas,
-          Offset(centerX(i) - lp.width / 2, by - lp.height - 4),
-        );
+        lp.paint(canvas, Offset(centerX(i) - lp.width / 2, by - lp.height - 4));
       }
     }
 
@@ -1105,9 +1125,18 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
   late int _month;
 
   static const _monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr',
-    'May', 'Jun', 'Jul', 'Aug',
-    'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   @override
@@ -1142,9 +1171,9 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
                 Text(
                   '$_year',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
@@ -1172,7 +1201,8 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
                 // Highlight the currently selected month.
                 final isHighlighted = monthNumber == _month;
                 // Disable future months.
-                final isFuture = _year > now.year ||
+                final isFuture =
+                    _year > now.year ||
                     (_year == now.year && monthNumber > now.month);
 
                 return GestureDetector(
@@ -1201,13 +1231,13 @@ class _MonthYearPickerDialogState extends State<_MonthYearPickerDialog> {
                       child: Text(
                         _monthNames[index],
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: isFuture
-                                  ? AppColors.textHint
-                                  : isHighlighted
-                                      ? AppColors.textOnPrimary
-                                      : AppColors.textPrimary,
-                            ),
+                          fontWeight: FontWeight.w600,
+                          color: isFuture
+                              ? AppColors.textHint
+                              : isHighlighted
+                              ? AppColors.textOnPrimary
+                              : AppColors.textPrimary,
+                        ),
                       ),
                     ),
                   ),

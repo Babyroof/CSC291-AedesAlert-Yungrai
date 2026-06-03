@@ -53,9 +53,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
-              .map(
-                (doc) => NotificationDataModel.fromFirestore(doc).toEntity(),
-              )
+              .map((doc) => NotificationDataModel.fromFirestore(doc).toEntity())
               .where((notif) => !notif.isReadBy(uid))
               .length,
         );

@@ -65,9 +65,7 @@ class NotificationController extends StateNotifier<NotificationState> {
 
     // Optimistic local update first.
     final updated = current
-        .map(
-          (n) => n.isReadBy(uid) ? n : n.copyWithReadBy([...n.readBy, uid]),
-        )
+        .map((n) => n.isReadBy(uid) ? n : n.copyWithReadBy([...n.readBy, uid]))
         .toList();
     state = state.copyWith(notifications: AsyncValue.data(updated));
 
