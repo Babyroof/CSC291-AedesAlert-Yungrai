@@ -50,8 +50,9 @@ class GetAverageRiskScoreUseCase {
     if (areas.isEmpty) return null;
 
     // Filter to user's district.
-    final districtFiltered =
-        areas.where((a) => a.district == userDistrict).toList();
+    final districtFiltered = areas
+        .where((a) => a.district == userDistrict)
+        .toList();
 
     // If the district filter returns nothing (stale/invalid name) return null
     // rather than silently falling back to a city-wide average.

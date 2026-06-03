@@ -291,10 +291,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: Center(child: CircularProgressIndicator()),
               )
             else
-              _StatCardsGrid(
-                data: displayData,
-                selectedMonthAvg: avgRiskScore,
-              ),
+              _StatCardsGrid(data: displayData, selectedMonthAvg: avgRiskScore),
             const SizedBox(height: 24),
             if (isLoading)
               const SizedBox(
@@ -606,6 +603,7 @@ class _RiskScoreChart extends StatelessWidget {
   final List<double> scores;
   final List<String> months;
   final int highlightIndex;
+
   /// When true, location is unavailable — show a prompt instead of bars.
   final bool noDistrict;
 
@@ -635,25 +633,22 @@ class _RiskScoreChart extends StatelessWidget {
             child: Center(
               child: Text(
                 'Enable location to see district trend',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
               ),
             ),
           )
         else
-        SizedBox(
-          height: 160,
-          child: CustomPaint(
-            painter: _BarChartPainter(
-              scores: scores,
-              months: months,
-              highlightIndex: highlightIndex,
+          SizedBox(
+            height: 160,
+            child: CustomPaint(
+              painter: _BarChartPainter(
+                scores: scores,
+                months: months,
+                highlightIndex: highlightIndex,
+              ),
+              child: const SizedBox.expand(),
             ),
-            child: const SizedBox.expand(),
           ),
-        ),
       ],
     );
   }
