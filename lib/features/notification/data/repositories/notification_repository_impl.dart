@@ -35,6 +35,29 @@ class NotificationRepositoryImpl implements NotificationRepository {
     if (snapshot.docs.isEmpty) return null;
     return NotificationDataModel.fromFirestore(snapshot.docs.first).toEntity();
   }
+
+  @override
+  Future<void> markAsRead(String notifId, String uid) async {
+    await _firestore
+        .collection(AppConstants.notificationsCollection)
+        .doc(notifId)
+        .update({
+          'readBy': FieldValue.arrayUnion([uid]),
+        });
+  }
+
+  @override
+  Stream<int> unreadCountStream(String uid) {
+    return _firestore
+        .collection(AppConstants.notificationsCollection)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => NotificationDataModel.fromFirestore(doc).toEntity())
+              .where((notif) => !notif.isReadBy(uid))
+              .length,
+        );
+  }
 }
 
 final notificationFeatureRepositoryProvider = Provider<NotificationRepository>((

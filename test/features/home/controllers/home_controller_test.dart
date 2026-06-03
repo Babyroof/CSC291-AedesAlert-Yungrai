@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -9,6 +11,7 @@ import 'package:aedes_alert_yungrai/features/home/domain/entities/weather_foreca
 import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_nearest_area_use_case.dart';
 import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_latest_notification_use_case.dart';
 import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_weather_forecast_use_case.dart';
+import 'package:aedes_alert_yungrai/features/home/domain/use_cases/get_latest_area_for_district_use_case.dart';
 import 'package:aedes_alert_yungrai/features/home/presentation/controllers/home_controller.dart';
 
 import 'home_controller_test.mocks.dart';
@@ -17,11 +20,16 @@ import 'home_controller_test.mocks.dart';
   GetNearestAreaUseCase,
   GetLatestNotificationUseCase,
   GetWeatherForecastUseCase,
+  GetLatestAreaForDistrictUseCase,
+  FirebaseAuth,
 ])
 void main() {
   late MockGetNearestAreaUseCase mockGetNearestArea;
   late MockGetLatestNotificationUseCase mockGetLatestNotification;
   late MockGetWeatherForecastUseCase mockGetWeatherForecast;
+  late MockGetLatestAreaForDistrictUseCase mockGetLatestAreaForDistrict;
+  late MockFirebaseAuth mockFirebaseAuth;
+  late FakeFirebaseFirestore fakeFirestore;
   late HomeController controller;
 
   const userLocation = GeoPoint(13.7563, 100.5018);
@@ -54,11 +62,21 @@ void main() {
     mockGetNearestArea = MockGetNearestAreaUseCase();
     mockGetLatestNotification = MockGetLatestNotificationUseCase();
     mockGetWeatherForecast = MockGetWeatherForecastUseCase();
+    mockGetLatestAreaForDistrict = MockGetLatestAreaForDistrictUseCase();
+    mockFirebaseAuth = MockFirebaseAuth();
+    fakeFirestore = FakeFirebaseFirestore();
+
+    // currentUser returns null by default — the controller's best-effort
+    // Firestore write is skipped when uid is null, which is fine for testing.
+    when(mockFirebaseAuth.currentUser).thenReturn(null);
 
     controller = HomeController(
       getNearestArea: mockGetNearestArea,
       getLatestNotification: mockGetLatestNotification,
       getWeatherForecast: mockGetWeatherForecast,
+      getLatestAreaForDistrict: mockGetLatestAreaForDistrict,
+      firestore: fakeFirestore,
+      auth: mockFirebaseAuth,
     );
   });
 
@@ -66,9 +84,10 @@ void main() {
     expect(controller.state.nearestArea, isA<AsyncLoading>());
     expect(controller.state.latestNotification, isA<AsyncLoading>());
     expect(controller.state.weatherForecast, isA<AsyncLoading>());
+    expect(controller.state.latestDistrictArea, isA<AsyncLoading>());
   });
 
-  test('loadHomeData populates all three fields on success', () async {
+  test('loadHomeData populates all fields on success', () async {
     when(
       mockGetNearestArea.execute(any, radiusKm: anyNamed('radiusKm')),
     ).thenAnswer((_) async => fakeArea());
@@ -83,12 +102,16 @@ void main() {
     when(
       mockGetWeatherForecast.execute(any),
     ).thenAnswer((_) async => fakeForecast());
+    when(
+      mockGetLatestAreaForDistrict.execute(any),
+    ).thenAnswer((_) async => fakeArea());
 
     await controller.loadHomeData(userLocation);
 
     expect(controller.state.nearestArea.value?.id, 'a1');
     expect(controller.state.latestNotification.value?.title, 'Alert');
     expect(controller.state.weatherForecast.value?.days.length, 1);
+    expect(controller.state.latestDistrictArea.value?.id, 'a1');
   });
 
   test(
@@ -103,6 +126,7 @@ void main() {
       expect(controller.state.nearestArea.value, isNull);
       expect(controller.state.latestNotification.value, isNull);
       expect(controller.state.weatherForecast.value, isNull);
+      expect(controller.state.latestDistrictArea.value, isNull);
     },
   );
 
@@ -118,6 +142,7 @@ void main() {
       expect(controller.state.nearestArea, isA<AsyncError>());
       expect(controller.state.latestNotification.value, isNull);
       expect(controller.state.weatherForecast.value, isNull);
+      expect(controller.state.latestDistrictArea.value, isNull);
     },
   );
 
@@ -133,6 +158,9 @@ void main() {
       when(
         mockGetWeatherForecast.execute(any),
       ).thenAnswer((_) async => throw Exception('timeout'));
+      when(
+        mockGetLatestAreaForDistrict.execute(any),
+      ).thenAnswer((_) async => null);
 
       await controller.loadHomeData(userLocation);
 

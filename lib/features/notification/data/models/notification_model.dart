@@ -8,6 +8,7 @@ class NotificationDataModel {
     required this.body,
     this.relatedZoneId,
     required this.sentAt,
+    this.readBy = const [],
   });
 
   final String id;
@@ -15,6 +16,7 @@ class NotificationDataModel {
   final String body;
   final String? relatedZoneId;
   final DateTime sentAt;
+  final List<String> readBy;
 
   factory NotificationDataModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> doc,
@@ -26,7 +28,8 @@ class NotificationDataModel {
       title: data['title'] as String? ?? '',
       body: data['body'] as String? ?? '',
       relatedZoneId: relatedZone?.id,
-      sentAt: (data['sentAt'] as Timestamp).toDate(),
+      sentAt: (data['sentAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      readBy: List<String>.from(data['readBy'] ?? []),
     );
   }
 
@@ -36,5 +39,6 @@ class NotificationDataModel {
     body: body,
     relatedZoneId: relatedZoneId,
     sentAt: sentAt,
+    readBy: readBy,
   );
 }

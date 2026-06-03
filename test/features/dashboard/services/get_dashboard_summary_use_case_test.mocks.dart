@@ -16,9 +16,10 @@ import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_mont
 import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_risk_counts_use_case.dart'
     as _i3;
 import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_top_areas_use_case.dart'
-    as _i8;
-import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart'
     as _i9;
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart'
+    as _i10;
+import 'package:cloud_firestore/cloud_firestore.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -34,7 +35,6 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeRiskCountModel_0 extends _i1.SmartFake
     implements _i2.RiskCountModel {
@@ -52,11 +52,18 @@ class MockGetRiskCountsUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<_i2.RiskCountModel> execute() =>
+  _i4.Future<_i2.RiskCountModel> execute({String? selectedMonthKey}) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#execute, [], {
+              #selectedMonthKey: selectedMonthKey,
+            }),
             returnValue: _i4.Future<_i2.RiskCountModel>.value(
-              _FakeRiskCountModel_0(this, Invocation.method(#execute, [])),
+              _FakeRiskCountModel_0(
+                this,
+                Invocation.method(#execute, [], {
+                  #selectedMonthKey: selectedMonthKey,
+                }),
+              ),
             ),
           )
           as _i4.Future<_i2.RiskCountModel>);
@@ -72,9 +79,15 @@ class MockGetAverageRiskScoreUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<double> execute() =>
+  _i4.Future<double> execute({
+    String? userDistrict,
+    String? selectedMonthKey,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#execute, [], {
+              #userDistrict: userDistrict,
+              #selectedMonthKey: selectedMonthKey,
+            }),
             returnValue: _i4.Future<double>.value(0.0),
           )
           as _i4.Future<double>);
@@ -90,9 +103,15 @@ class MockGetMonthlyTrendUseCase extends _i1.Mock
   }
 
   @override
-  _i4.Future<List<_i7.MonthlyRiskDataModel>> execute() =>
+  _i4.Future<List<_i7.MonthlyRiskDataModel>> execute({
+    String? userDistrict,
+    _i8.GeoPoint? userLocation,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#execute, [], {
+              #userDistrict: userDistrict,
+              #userLocation: userLocation,
+            }),
             returnValue: _i4.Future<List<_i7.MonthlyRiskDataModel>>.value(
               <_i7.MonthlyRiskDataModel>[],
             ),
@@ -104,18 +123,24 @@ class MockGetMonthlyTrendUseCase extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetTopAreasUseCase extends _i1.Mock
-    implements _i8.GetTopAreasUseCase {
+    implements _i9.GetTopAreasUseCase {
   MockGetTopAreasUseCase() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<List<_i9.AreaModel>> execute({int? limit = 5}) =>
+  _i4.Future<List<_i10.AreaModel>> execute({
+    int? limit = 5,
+    String? monthKey,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, [], {#limit: limit}),
-            returnValue: _i4.Future<List<_i9.AreaModel>>.value(
-              <_i9.AreaModel>[],
+            Invocation.method(#execute, [], {
+              #limit: limit,
+              #monthKey: monthKey,
+            }),
+            returnValue: _i4.Future<List<_i10.AreaModel>>.value(
+              <_i10.AreaModel>[],
             ),
           )
-          as _i4.Future<List<_i9.AreaModel>>);
+          as _i4.Future<List<_i10.AreaModel>>);
 }

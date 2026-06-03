@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../themes/app_colors.dart';
+import '../../features/notification/presentation/controllers/notification_controller.dart';
 
-class YungraiAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const YungraiAppBar({
-    super.key,
-    this.hasNotification = true,
-    this.showBackButton = false,
-  });
+class YungraiAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  const YungraiAppBar({super.key, this.showBackButton = false});
 
-  final bool hasNotification;
   final bool showBackButton;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unreadCount =
+        ref.watch(unreadNotificationCountProvider).valueOrNull ?? 0;
+
     return AppBar(
       automaticallyImplyLeading: false,
       leading: showBackButton
@@ -29,12 +29,12 @@ class YungraiAppBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () => context.pop(),
             )
           : null,
-      title: Row(
+      title: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.pest_control, color: AppColors.primary, size: 28),
-          const SizedBox(width: 8),
-          const Text(
+          Icon(Icons.pest_control, color: AppColors.primary, size: 28),
+          SizedBox(width: 8),
+          Text(
             'Yungrai',
             style: TextStyle(
               color: AppColors.primary,
@@ -50,7 +50,7 @@ class YungraiAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: GestureDetector(
             onTap: () => context.push('/notification'),
             child: Badge(
-              isLabelVisible: hasNotification,
+              isLabelVisible: unreadCount > 0,
               smallSize: 8,
               child: const Icon(
                 Icons.notifications_outlined,

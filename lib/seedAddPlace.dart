@@ -1,0 +1,305 @@
+// ignore_for_file: avoid_print
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final _db = FirebaseFirestore.instance;
+
+// ─── ADD MORE PLACES (keeps existing 10, adds 40 more = 50 total) ─────────
+Future<void> seedAdditionalPlaces() async {
+  final places = [
+    // ─── HOSPITALS ──────────────────────────────────────────
+    {
+      'name': 'Siriraj Hospital',
+      'description':
+          'Largest public hospital in Thailand, Faculty of Medicine Siriraj',
+      'location': const GeoPoint(13.7600, 100.4850),
+      'phoneNumber': '02-419-7000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Vajira Hospital',
+      'description':
+          'Public hospital under Bangkok Metropolitan Administration',
+      'location': const GeoPoint(13.7693, 100.5025),
+      'phoneNumber': '02-244-3000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Police General Hospital',
+      'description': 'Hospital for police officers and general public',
+      'location': const GeoPoint(13.7480, 100.5340),
+      'phoneNumber': '02-207-6000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Lerdsin Hospital',
+      'description': 'Public hospital under Department of Medical Services',
+      'location': const GeoPoint(13.7290, 100.5260),
+      'phoneNumber': '02-353-9800',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Bangkok Christian Hospital',
+      'description': 'Private hospital in Silom area',
+      'location': const GeoPoint(13.7242, 100.5254),
+      'phoneNumber': '02-625-9000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Phramongkutklao Hospital',
+      'description': 'Military hospital open to the public, Ratchawithi Road',
+      'location': const GeoPoint(13.7720, 100.5320),
+      'phoneNumber': '02-354-7600',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Rajavithi Hospital',
+      'description': 'Public hospital specializing in infectious diseases',
+      'location': const GeoPoint(13.7735, 100.5358),
+      'phoneNumber': '02-354-8108',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Samitivej Thonburi Hospital',
+      'description': 'Private hospital in Thon Buri area',
+      'location': const GeoPoint(13.7190, 100.4720),
+      'phoneNumber': '02-878-9999',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Bangkok Hospital Thonburi',
+      'description': 'Private hospital on Phet Kasem Road',
+      'location': const GeoPoint(13.7230, 100.4560),
+      'phoneNumber': '02-877-1111',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Vichaiyut Hospital',
+      'description': 'Private hospital near Phaya Thai BTS',
+      'location': const GeoPoint(13.7530, 100.5340),
+      'phoneNumber': '02-619-5555',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Saint Louis Hospital',
+      'description': 'Private Catholic hospital in Sathon district',
+      'location': const GeoPoint(13.7180, 100.5270),
+      'phoneNumber': '02-838-5000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Wattanosoth Hospital',
+      'description': 'Private cancer specialty hospital, Ram Inthra Road',
+      'location': const GeoPoint(13.8560, 100.6130),
+      'phoneNumber': '02-948-7700',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Bangkok Hospital Lat Phrao',
+      'description': 'Private hospital on Lat Phrao Road',
+      'location': const GeoPoint(13.8150, 100.5680),
+      'phoneNumber': '02-530-5555',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Synphaet Ramintra Hospital',
+      'description': 'Private hospital on Ram Inthra Road',
+      'location': const GeoPoint(13.8620, 100.6200),
+      'phoneNumber': '02-793-3333',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Paolo Hospital Phahon Yothin',
+      'description': 'Private hospital near Mo Chit BTS',
+      'location': const GeoPoint(13.8180, 100.5530),
+      'phoneNumber': '02-271-7000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Nonthavej Hospital',
+      'description': 'Private hospital in Nonthaburi, serving north Bangkok',
+      'location': const GeoPoint(13.8680, 100.5200),
+      'phoneNumber': '02-596-7888',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Yanhee Hospital',
+      'description':
+          'Private hospital specializing in cosmetic and general medicine',
+      'location': const GeoPoint(13.7920, 100.4780),
+      'phoneNumber': '02-879-0300',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Thonburi Hospital',
+      'description': 'Private hospital in Bang Phlat district',
+      'location': const GeoPoint(13.7920, 100.4760),
+      'phoneNumber': '02-487-2000',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Praram 9 Hospital',
+      'description': 'Private hospital near Rama 9 MRT station',
+      'location': const GeoPoint(13.7560, 100.5670),
+      'phoneNumber': '02-202-9999',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Sikarin Hospital',
+      'description': 'Private hospital in Lat Krabang near Suvarnabhumi',
+      'location': const GeoPoint(13.7260, 100.7220),
+      'phoneNumber': '02-330-8888',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Bangpakok 9 International Hospital',
+      'description': 'Private hospital in Rat Burana district',
+      'location': const GeoPoint(13.6680, 100.5050),
+      'phoneNumber': '02-877-1111',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Taksin Hospital',
+      'description':
+          'Public hospital under Bangkok Metropolitan Administration, Thon Buri',
+      'location': const GeoPoint(13.7210, 100.4890),
+      'phoneNumber': '02-437-0123',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Hua Chiew General Hospital',
+      'description':
+          'Private hospital in Samphanthawong district, Chinatown area',
+      'location': const GeoPoint(13.7380, 100.5110),
+      'phoneNumber': '02-223-1351',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Nawamin 9 Hospital',
+      'description': 'Private hospital in Bueng Kum district',
+      'location': const GeoPoint(13.8010, 100.6370),
+      'phoneNumber': '02-943-5999',
+      'type': 'hospital',
+    },
+    {
+      'name': 'Charoen Krung Pracharak Hospital',
+      'description': 'Public hospital in Bang Kho Laem district',
+      'location': const GeoPoint(13.6940, 100.5170),
+      'phoneNumber': '02-289-7777',
+      'type': 'hospital',
+    },
+
+    // ─── CLINICS ────────────────────────────────────────────
+    {
+      'name': 'Asoke Medical Clinic',
+      'description': 'General clinic near Asok BTS/MRT, open 08:00 - 21:00',
+      'location': const GeoPoint(13.7360, 100.5600),
+      'phoneNumber': '02-258-4567',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Thong Lo Health Clinic',
+      'description': 'General clinic on Sukhumvit 55, open daily',
+      'location': const GeoPoint(13.7270, 100.5790),
+      'phoneNumber': '02-391-2345',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Victory Monument Clinic',
+      'description': 'Community clinic near Victory Monument BTS',
+      'location': const GeoPoint(13.7650, 100.5370),
+      'phoneNumber': '02-245-6789',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Bearing Community Clinic',
+      'description': 'Community clinic, accepts universal healthcare card',
+      'location': const GeoPoint(13.6660, 100.6270),
+      'phoneNumber': '02-383-5678',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Bangna Medical Clinic',
+      'description': 'General clinic in Bang Na district',
+      'location': const GeoPoint(13.6620, 100.6040),
+      'phoneNumber': '02-399-4567',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Don Mueang Family Clinic',
+      'description': 'General clinic near Don Mueang Airport',
+      'location': const GeoPoint(13.9080, 100.5990),
+      'phoneNumber': '02-566-3456',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Min Buri Community Clinic',
+      'description':
+          'Community clinic in Min Buri district, accepts universal healthcare card',
+      'location': const GeoPoint(13.8120, 100.7470),
+      'phoneNumber': '02-517-4567',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Phra Khanong Health Center',
+      'description': 'BMA health center in Phra Khanong district',
+      'location': const GeoPoint(13.7010, 100.5920),
+      'phoneNumber': '02-331-5678',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Wang Thonglang Clinic',
+      'description': 'General clinic open 08:00 - 20:00',
+      'location': const GeoPoint(13.7760, 100.5930),
+      'phoneNumber': '02-934-3456',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Chatuchak Medical Center',
+      'description': 'Medical center near Chatuchak Weekend Market',
+      'location': const GeoPoint(13.8190, 100.5500),
+      'phoneNumber': '02-272-4567',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Ratchadaphisek Clinic',
+      'description': 'General clinic on Ratchadaphisek Road',
+      'location': const GeoPoint(13.7760, 100.5680),
+      'phoneNumber': '02-276-3456',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Saphan Sung Community Clinic',
+      'description': 'Community clinic in Saphan Sung district',
+      'location': const GeoPoint(13.7590, 100.6620),
+      'phoneNumber': '02-543-5678',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Chom Thong Health Center',
+      'description': 'BMA health center in Chom Thong district',
+      'location': const GeoPoint(13.6950, 100.4770),
+      'phoneNumber': '02-476-4567',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Pracha Uthit Clinic',
+      'description': 'General clinic on Pracha Uthit Road, Rat Burana',
+      'location': const GeoPoint(13.6700, 100.5060),
+      'phoneNumber': '02-427-3456',
+      'type': 'clinic',
+    },
+    {
+      'name': 'Sai Mai Community Clinic',
+      'description':
+          'Community clinic in Sai Mai district, accepts universal healthcare card',
+      'location': const GeoPoint(13.9180, 100.6450),
+      'phoneNumber': '02-991-4567',
+      'type': 'clinic',
+    },
+  ];
+
+  for (final place in places) {
+    await _db.collection('places').add(place);
+  }
+  print('✅ Added ${places.length} more places (total ~50)');
+}

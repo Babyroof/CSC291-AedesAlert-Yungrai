@@ -17,6 +17,7 @@ import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_risk
     as _i2;
 import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_top_areas_use_case.dart'
     as _i5;
+import 'package:cloud_firestore/cloud_firestore.dart' as _i9;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -32,7 +33,6 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeGetRiskCountsUseCase_0 extends _i1.SmartFake
     implements _i2.GetRiskCountsUseCase {
@@ -118,13 +118,25 @@ class MockGetDashboardSummaryUseCase extends _i1.Mock
           as _i5.GetTopAreasUseCase);
 
   @override
-  _i8.Future<_i6.DashboardSummaryModel> execute() =>
+  _i8.Future<_i6.DashboardSummaryModel> execute({
+    _i9.GeoPoint? userLocation,
+    String? userDistrict,
+    String? selectedMonthKey,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#execute, []),
+            Invocation.method(#execute, [], {
+              #userLocation: userLocation,
+              #userDistrict: userDistrict,
+              #selectedMonthKey: selectedMonthKey,
+            }),
             returnValue: _i8.Future<_i6.DashboardSummaryModel>.value(
               _FakeDashboardSummaryModel_4(
                 this,
-                Invocation.method(#execute, []),
+                Invocation.method(#execute, [], {
+                  #userLocation: userLocation,
+                  #userDistrict: userDistrict,
+                  #selectedMonthKey: selectedMonthKey,
+                }),
               ),
             ),
           )

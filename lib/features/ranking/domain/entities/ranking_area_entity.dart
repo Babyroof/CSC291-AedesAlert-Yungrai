@@ -7,6 +7,7 @@ class RankingAreaEntity {
     required this.riskScore,
     required this.riskLevel,
     required this.updatedAt,
+    this.rank = 0,
   });
 
   final String id;
@@ -16,4 +17,5 @@ class RankingAreaEntity {
   final double riskScore;
   final String riskLevel;
   final DateTime updatedAt;
+  final int rank;
 }

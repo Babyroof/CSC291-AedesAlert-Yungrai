@@ -18,7 +18,7 @@ void main() {
     useCase = GetMonthlyTrendUseCase(mockRepo);
   });
 
-  AreaModel makeArea(double score, DateTime updatedAt) => AreaModel(
+  AreaModel makeArea(double score, DateTime reportedAt) => AreaModel(
     id: 'a',
     subDistrict: 'S',
     district: 'D',
@@ -27,8 +27,8 @@ void main() {
     radius: 500,
     riskScore: score,
     riskLevel: 'medium',
-    reportedAt: DateTime(2024, 1, 1),
-    updatedAt: updatedAt,
+    reportedAt: reportedAt,
+    updatedAt: reportedAt,
   );
 
   test('empty collection returns empty list without crash', () async {

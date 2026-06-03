@@ -2,6 +2,9 @@ import * as admin from "firebase-admin";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import axios from "axios";
 
+export { sendDailyRiskNotifications } from "./notifications/sendDailyRiskNotifications";
+export { migrateNotificationDistricts } from "./notifications/migrateNotificationDistricts";
+
 admin.initializeApp();
 const db = admin.firestore();
 
