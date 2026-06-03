@@ -22,6 +22,7 @@ class AreaRepositoryImpl implements AreaRepository {
     try {
       snapshot = await _firestore
           .collection(AppConstants.areasCollection)
+          .where('isLatest', isEqualTo: true)
           .get();
     } catch (_) {
       return null;
@@ -55,6 +56,7 @@ class AreaRepositoryImpl implements AreaRepository {
     // when data was present.
     final snapshot = await _firestore
         .collection(AppConstants.areasCollection)
+        .where('isLatest', isEqualTo: true)
         .where('district', isEqualTo: district)
         .orderBy('reportedAt', descending: true)
         .limit(1)
