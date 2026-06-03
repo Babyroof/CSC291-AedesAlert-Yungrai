@@ -35,25 +35,30 @@ class GetAverageRiskScoreUseCase {
 
   /// [userDistrict] — optional district name string.
   /// When provided only areas matching that district are included in the avg.
-  /// When null or empty all districts are included (city-wide fallback).
+  /// When null or empty returns null — no district known, so no avg to show.
   ///
   /// [selectedMonthKey] — optional "YYYY-MM" string.
   /// When null the most-recent month found in the data is used.
-  Future<double> execute({
+  Future<double?> execute({
     String? userDistrict,
     String? selectedMonthKey,
   }) async {
+    // Without a district we cannot compute a meaningful district-scoped avg.
+    if (userDistrict == null || userDistrict.isEmpty) return null;
+
     final areas = await _repository.getAllAreas();
-    if (areas.isEmpty) return 0.0;
+    if (areas.isEmpty) return null;
 
-    // Optionally filter to user's district before any month filtering.
-    final districtFiltered = (userDistrict != null && userDistrict.isNotEmpty)
-        ? areas.where((a) => a.district == userDistrict).toList()
-        : areas;
+    // Filter to user's district.
+    final districtFiltered = areas
+        .where((a) => a.district == userDistrict)
+        .toList();
 
-    // Fall back to all areas when the district filter returns nothing
-    // (e.g. stale/invalid district name).
-    final source = districtFiltered.isNotEmpty ? districtFiltered : areas;
+    // If the district filter returns nothing (stale/invalid name) return null
+    // rather than silently falling back to a city-wide average.
+    if (districtFiltered.isEmpty) return null;
+
+    final source = districtFiltered;
 
     // Determine effective month key.
     String? effectiveKey = selectedMonthKey;
@@ -66,7 +71,7 @@ class GetAverageRiskScoreUseCase {
     final filtered = source
         .where((a) => DateFormatter.toMonthKey(a.reportedAt) == effectiveKey)
         .toList();
-    if (filtered.isEmpty) return 0.0;
+    if (filtered.isEmpty) return null;
 
     // Step 1: group by district, compute per-district average.
     final Map<String, List<double>> byDistrict = {};

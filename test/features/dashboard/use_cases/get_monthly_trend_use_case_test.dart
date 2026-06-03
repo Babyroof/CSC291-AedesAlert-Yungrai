@@ -67,7 +67,7 @@ void main() {
         _makeArea(district: 'D1', score: 70, updatedAt: DateTime(2024, 5, 1)),
       ];
 
-      final result = await useCase.execute();
+      final result = await useCase.execute(userDistrict: 'D1');
 
       // Should return exactly 3 (the _kMaxMonths cap).
       expect(result.length, 3);
@@ -103,7 +103,9 @@ void main() {
       ),
     ];
 
-    final result = await useCase.execute();
+    // Pass a non-matching district so the use case falls back to all areas,
+    // which exercises the intended two-step multi-district formula.
+    final result = await useCase.execute(userDistrict: 'FALLBACK_ALL');
 
     expect(result.length, 1);
     final bucket = result.first;
@@ -117,7 +119,7 @@ void main() {
   test('returns empty list when no areas exist', () async {
     fakeRepo.areasToReturn = [];
 
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D1');
 
     expect(result, isEmpty);
   });
@@ -136,7 +138,7 @@ void main() {
         _makeArea(district: 'D', score: 50, updatedAt: pastMonth2),
       ];
 
-      final result = await useCase.execute();
+      final result = await useCase.execute(userDistrict: 'D');
 
       // All returned months must have real data (scores > 0 from the seed).
       expect(result, isNotEmpty);
