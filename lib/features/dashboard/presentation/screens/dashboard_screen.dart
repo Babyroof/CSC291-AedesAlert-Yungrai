@@ -35,7 +35,7 @@ class _DashboardViewData {
   final int highRiskCount;
   final int criticalCount;
   final int mediumRiskCount;
-  final double avgRiskScore;
+  final double? avgRiskScore;
   final List<double> monthlyScores;
   final List<String> monthLabels;
   final List<_DistributionItem> distribution;
@@ -45,7 +45,7 @@ class _DashboardViewData {
     highRiskCount: 12,
     criticalCount: 4,
     mediumRiskCount: 28,
-    avgRiskScore: 18.4,
+    avgRiskScore: null,
     monthlyScores: const [8.0, 10.0, 18.4],
     monthLabels: const ['Apr', 'May', 'Jun'],
     distribution: const [
@@ -69,7 +69,9 @@ class _DashboardViewData {
       highRiskCount: summary.riskCounts.highCount,
       criticalCount: summary.riskCounts.criticalCount,
       mediumRiskCount: summary.riskCounts.mediumCount,
-      avgRiskScore: double.parse(summary.averageRiskScore.toStringAsFixed(1)),
+      avgRiskScore: summary.averageRiskScore != null
+          ? double.parse(summary.averageRiskScore!.toStringAsFixed(1))
+          : null,
       monthlyScores: trend.map((e) => e.avgRiskScore).toList(),
       monthLabels: trend.map((e) => e.monthLabel).toList(),
       distribution: [
@@ -207,12 +209,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final mostRecentKey = summary?.selectedMonthKey;
     final selectedKey = localKey ?? mostRecentKey;
 
+    // When data has loaded but the trend is empty it means no district is
+    // known (location denied / unavailable). The chart and avg card should
+    // show nothing in that case.
+    final trendIsEmpty = summary != null && (summary.monthlyTrend.isEmpty);
+
     // Build the 3-bar data for the chart from the selected month key.
     List<double> chartScores;
     List<String> chartLabels;
     int chartHighlightIndex;
 
-    if (selectedKey != null) {
+    if (trendIsEmpty) {
+      // No district — show empty chart with the "enable location" prompt.
+      chartScores = [];
+      chartLabels = [];
+      chartHighlightIndex = 0;
+    } else if (selectedKey != null) {
       final k0 = _shiftMonthKey(selectedKey, 2); // 2 months before selected
       final k1 = _shiftMonthKey(selectedKey, 1); // 1 month before selected
       final k2 = selectedKey; // the selected month
@@ -239,6 +251,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           : List<String>.from(displayData.monthLabels);
       chartHighlightIndex = chartScores.isEmpty ? 0 : chartScores.length - 1;
     }
+
+    // Avg risk score: use the district-scoped value from the summary.
+    // null means no district is known → show "--" in the card.
+    final double? avgRiskScore = summary?.averageRiskScore;
 
     return Scaffold(
       appBar: const YungraiAppBar(),
@@ -277,7 +293,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             else
               _StatCardsGrid(
                 data: displayData,
-                selectedMonthAvg: chartScores[chartHighlightIndex],
+                selectedMonthAvg: avgRiskScore,
               ),
             const SizedBox(height: 24),
             if (isLoading)
@@ -290,6 +306,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 scores: chartScores,
                 months: chartLabels,
                 highlightIndex: chartHighlightIndex,
+                noDistrict: trendIsEmpty,
               ),
             const SizedBox(height: 24),
             _RiskDistribution(items: displayData.distribution),
@@ -433,7 +450,7 @@ class _MonthSelector extends StatelessWidget {
 class _StatCardsGrid extends StatelessWidget {
   const _StatCardsGrid({required this.data, required this.selectedMonthAvg});
   final _DashboardViewData data;
-  final double selectedMonthAvg;
+  final double? selectedMonthAvg;
 
   static String _fmt(int n) => n.toString().padLeft(2, '0');
 
@@ -483,7 +500,9 @@ class _StatCardsGrid extends StatelessWidget {
             Expanded(
               child: _StatCard(
                 label: 'AVG RISK SCORE',
-                value: selectedMonthAvg.toStringAsFixed(1),
+                value: selectedMonthAvg != null
+                    ? selectedMonthAvg!.toStringAsFixed(1)
+                    : '--',
                 valueColor: AppColors.riskLow,
                 icon: Icons.verified_user_outlined,
                 iconColor: AppColors.riskLow,
@@ -582,10 +601,13 @@ class _RiskScoreChart extends StatelessWidget {
     required this.scores,
     required this.months,
     required this.highlightIndex,
+    this.noDistrict = false,
   });
   final List<double> scores;
   final List<String> months;
   final int highlightIndex;
+  /// When true, location is unavailable — show a prompt instead of bars.
+  final bool noDistrict;
 
   @override
   Widget build(BuildContext context) {
@@ -607,6 +629,20 @@ class _RiskScoreChart extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
+        if (noDistrict)
+          SizedBox(
+            height: 160,
+            child: Center(
+              child: Text(
+                'Enable location to see district trend',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          )
+        else
         SizedBox(
           height: 160,
           child: CustomPaint(

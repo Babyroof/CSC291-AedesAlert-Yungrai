@@ -55,7 +55,7 @@ class GetDashboardSummaryUseCase {
 
     return DashboardSummaryModel(
       riskCounts: results[0] as RiskCountModel,
-      averageRiskScore: results[1] as double,
+      averageRiskScore: results[1] as double?,
       monthlyTrend: trend,
       topFiveAreas: results[2] as List<AreaModel>,
       selectedMonthKey: effectiveMonthKey,

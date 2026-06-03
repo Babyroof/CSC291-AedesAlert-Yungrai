@@ -12,7 +12,7 @@ class DashboardSummaryModel {
   });
 
   final RiskCountModel riskCounts;
-  final double averageRiskScore;
+  final double? averageRiskScore;
   final List<MonthlyRiskDataModel> monthlyTrend;
   final List<AreaModel> topFiveAreas;
 
