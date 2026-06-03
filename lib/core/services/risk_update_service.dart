@@ -33,7 +33,7 @@ class RiskUpdateService {
   final Dio _dio;
 
   static DateTime? _lastRunAt;
-  static const _minInterval = Duration(hours: 24);
+  static const _minInterval = Duration(hours: 1);
 
   bool get _shouldRun =>
       _lastRunAt == null ||
