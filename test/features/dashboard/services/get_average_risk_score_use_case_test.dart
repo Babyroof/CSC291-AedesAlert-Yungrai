@@ -31,15 +31,15 @@ void main() {
     updatedAt: DateTime(2024, 6, 1),
   );
 
-  test('empty collection returns 0.0 without crash', () async {
+  test('empty collection returns null without crash', () async {
     when(mockRepo.getAllAreas()).thenAnswer((_) async => []);
-    final result = await useCase.execute();
-    expect(result, 0.0);
+    final result = await useCase.execute(userDistrict: 'D');
+    expect(result, isNull);
   });
 
   test('single area returns its own score', () async {
     when(mockRepo.getAllAreas()).thenAnswer((_) async => [makeArea(70.0)]);
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D');
     expect(result, 70.0);
   });
 
@@ -47,7 +47,7 @@ void main() {
     when(mockRepo.getAllAreas()).thenAnswer(
       (_) async => [makeArea(60.0), makeArea(80.0), makeArea(100.0)],
     );
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D');
     expect(result, closeTo(80.0, 0.001));
   });
 
@@ -57,7 +57,7 @@ void main() {
       when(
         mockRepo.getAllAreas(),
       ).thenAnswer((_) async => [makeArea(0.0), makeArea(100.0)]);
-      final result = await useCase.execute();
+      final result = await useCase.execute(userDistrict: 'D');
       expect(result, closeTo(50.0, 0.001));
     },
   );

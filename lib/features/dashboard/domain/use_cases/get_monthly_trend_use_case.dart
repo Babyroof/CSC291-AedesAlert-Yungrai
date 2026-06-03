@@ -52,7 +52,9 @@ class GetMonthlyTrendUseCase {
       }).toList();
       filtered = byRadius.isNotEmpty ? byRadius : areas;
     } else {
-      filtered = areas;
+      // No district and no location — we don't know which district to show.
+      // Return an empty list so the chart shows the "enable location" message.
+      return [];
     }
 
     // Bug 1 fix — build per-month, per-district buckets so that each district

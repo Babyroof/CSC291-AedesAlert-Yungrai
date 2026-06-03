@@ -33,7 +33,7 @@ void main() {
 
   test('empty collection returns empty list without crash', () async {
     when(mockRepo.getAllAreas()).thenAnswer((_) async => []);
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D');
     expect(result, isEmpty);
   });
 
@@ -41,7 +41,7 @@ void main() {
     when(
       mockRepo.getAllAreas(),
     ).thenAnswer((_) async => [makeArea(70.0, DateTime(2024, 6, 15))]);
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D');
     expect(result.length, 1);
     expect(result.first.monthKey, '2024-06');
     expect(result.first.avgRiskScore, 70.0);
@@ -54,7 +54,7 @@ void main() {
         makeArea(80.0, DateTime(2024, 6, 20)),
       ],
     );
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D');
     expect(result.length, 1);
     expect(result.first.avgRiskScore, 70.0);
     expect(result.first.areaCount, 2);
@@ -68,7 +68,7 @@ void main() {
         makeArea(70.0, DateTime(2024, 7, 1)),
       ],
     );
-    final result = await useCase.execute();
+    final result = await useCase.execute(userDistrict: 'D');
     expect(result.length, 3);
     expect(result[0].monthKey, '2024-06');
     expect(result[1].monthKey, '2024-07');
@@ -81,7 +81,7 @@ void main() {
       when(
         mockRepo.getAllAreas(),
       ).thenAnswer((_) async => [makeArea(0.0, DateTime(2024, 6, 1))]);
-      final result = await useCase.execute();
+      final result = await useCase.execute(userDistrict: 'D');
       expect(result.first.avgRiskScore, 0.0);
     },
   );
