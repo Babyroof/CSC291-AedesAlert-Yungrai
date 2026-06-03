@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -19,12 +21,15 @@ import 'home_controller_test.mocks.dart';
   GetLatestNotificationUseCase,
   GetWeatherForecastUseCase,
   GetLatestAreaForDistrictUseCase,
+  FirebaseAuth,
 ])
 void main() {
   late MockGetNearestAreaUseCase mockGetNearestArea;
   late MockGetLatestNotificationUseCase mockGetLatestNotification;
   late MockGetWeatherForecastUseCase mockGetWeatherForecast;
   late MockGetLatestAreaForDistrictUseCase mockGetLatestAreaForDistrict;
+  late MockFirebaseAuth mockFirebaseAuth;
+  late FakeFirebaseFirestore fakeFirestore;
   late HomeController controller;
 
   const userLocation = GeoPoint(13.7563, 100.5018);
@@ -58,12 +63,20 @@ void main() {
     mockGetLatestNotification = MockGetLatestNotificationUseCase();
     mockGetWeatherForecast = MockGetWeatherForecastUseCase();
     mockGetLatestAreaForDistrict = MockGetLatestAreaForDistrictUseCase();
+    mockFirebaseAuth = MockFirebaseAuth();
+    fakeFirestore = FakeFirebaseFirestore();
+
+    // currentUser returns null by default — the controller's best-effort
+    // Firestore write is skipped when uid is null, which is fine for testing.
+    when(mockFirebaseAuth.currentUser).thenReturn(null);
 
     controller = HomeController(
       getNearestArea: mockGetNearestArea,
       getLatestNotification: mockGetLatestNotification,
       getWeatherForecast: mockGetWeatherForecast,
       getLatestAreaForDistrict: mockGetLatestAreaForDistrict,
+      firestore: fakeFirestore,
+      auth: mockFirebaseAuth,
     );
   });
 
