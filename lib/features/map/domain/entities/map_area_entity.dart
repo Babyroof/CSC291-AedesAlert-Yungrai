@@ -6,7 +6,6 @@ class MapAreaEntity {
     required this.province,
     required this.lat,
     required this.lng,
-    required this.radius,
     required this.riskScore,
     required this.riskLevel,
   });
@@ -17,7 +16,6 @@ class MapAreaEntity {
   final String province;
   final double lat;
   final double lng;
-  final double radius;
   final double riskScore;
   final String riskLevel;
 }

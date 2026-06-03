@@ -15,10 +15,16 @@ class AreaRepositoryImpl implements AreaRepository {
     GeoPoint userLocation, {
     double radiusKm = AppConstants.defaultGeoRadiusKm,
   }) async {
-    final snapshot = await _firestore
+    var snapshot = await _firestore
         .collection(AppConstants.areasCollection)
         .where('isLatest', isEqualTo: true)
         .get();
+
+    if (snapshot.docs.isEmpty) {
+      snapshot = await _firestore
+          .collection(AppConstants.areasCollection)
+          .get();
+    }
 
     if (snapshot.docs.isEmpty) return null;
 
