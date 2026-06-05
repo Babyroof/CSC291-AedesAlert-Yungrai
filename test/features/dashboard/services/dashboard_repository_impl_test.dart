@@ -23,6 +23,7 @@ void main() {
       'riskLevel': riskLevel,
       'reportedAt': Timestamp.fromDate(DateTime(2024, 1, 1)),
       'updatedAt': Timestamp.fromDate(DateTime(2024, 6, 1)),
+      'isLatest': true,
     });
   }
 
