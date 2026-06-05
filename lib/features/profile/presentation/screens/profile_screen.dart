@@ -34,6 +34,121 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     await _authService.logout();
   }
 
+  Future<void> _handleDeleteAccount() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'Delete Account',
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            color: Color(0xFFBA1A1A),
+          ),
+        ),
+        content: const Text(
+          'Are you sure you want to delete your account? This action cannot be undone.',
+          style: TextStyle(fontFamily: 'Poppins'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(fontFamily: 'Poppins', color: Color(0xFF454652)),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Delete',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFFBA1A1A),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    // Firebase requires recent login before deleting account
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final passwordController = TextEditingController();
+    if (!mounted) return;
+    final reAuthConfirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'Confirm Password',
+          style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Please enter your password to confirm.',
+              style: TextStyle(fontFamily: 'Poppins'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(fontFamily: 'Poppins', color: Color(0xFF454652)),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(
+              'Confirm',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFFBA1A1A),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (reAuthConfirmed != true) return;
+
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: passwordController.text,
+      );
+      await user.reauthenticateWithCredential(credential);
+      await ref.read(profileControllerProvider.notifier).deleteAccount();
+      await _authService.logout();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Incorrect password. Please try again.')),
+      );
+    }
+  }
+
   Future<void> _handleNotificationToggle(bool value) async {
     setState(() => _localNotificationsEnabled = value);
     final profile = ref.read(profileControllerProvider).profile.valueOrNull;
@@ -258,6 +373,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       titleFontWeight: FontWeight.w500,
                       arrowIconColor: const Color(0xFFBA1A1A),
                       onTap: () => _handleSignOut(),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildProfileMenuItem(
+                      icon: Icons.delete_outline,
+                      iconBackgroundColor: const Color(0xFFFFEBEE),
+                      iconColor: const Color(0xFFBA1A1A),
+                      title: 'Delete Account',
+                      subtitle: 'Permanently remove your account',
+                      titleColor: const Color(0xFFBA1A1A),
+                      titleFontWeight: FontWeight.w500,
+                      arrowIconColor: const Color(0xFFBA1A1A),
+                      onTap: () => _handleDeleteAccount(),
                     ),
                     const SizedBox(height: 40),
                   ],

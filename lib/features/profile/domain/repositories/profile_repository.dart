@@ -3,4 +3,5 @@ import 'package:aedes_alert_yungrai/features/profile/domain/entities/user_profil
 abstract class ProfileRepository {
   Future<UserProfileEntity?> getProfile(String uid);
   Future<void> updateProfile(UserProfileEntity profile);
+  Future<void> deleteAccount(String uid);
 }

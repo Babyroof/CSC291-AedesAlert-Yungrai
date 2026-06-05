@@ -33,6 +33,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
         .doc(profile.uid)
         .update(model.toFirestore());
   }
+
+  @override
+  Future<void> deleteAccount(String uid) async {
+    await _firestore.collection(AppConstants.usersCollection).doc(uid).delete();
+  }
 }
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
