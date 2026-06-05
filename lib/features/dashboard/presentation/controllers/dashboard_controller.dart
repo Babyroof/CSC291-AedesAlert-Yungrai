@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aedes_alert_yungrai/features/home/data/models/area_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/dashboard_summary_model.dart';
+import 'package:aedes_alert_yungrai/features/dashboard/domain/entities/risk_count_model.dart';
 import 'package:aedes_alert_yungrai/features/dashboard/presentation/controllers/dashboard_state.dart';
 import 'package:aedes_alert_yungrai/features/dashboard/domain/use_cases/get_dashboard_summary_use_case.dart';
 
@@ -56,12 +59,18 @@ class DashboardController extends StateNotifier<DashboardState> {
       final results = await Future.wait([
         _getSummary.getTopAreas.execute(limit: 5, monthKey: monthKey),
         _getSummary.getRiskCounts.execute(selectedMonthKey: monthKey),
+        _getSummary.getAverageScore.execute(
+          userDistrict: _userDistrict,
+          selectedMonthKey: monthKey,
+        ),
       ]);
       state = DashboardState(
         summary: AsyncValue.data(
-          current.copyWith(
-            topFiveAreas: results[0] as dynamic,
-            riskCounts: results[1] as dynamic,
+          DashboardSummaryModel(
+            riskCounts: results[1] as RiskCountModel,
+            averageRiskScore: results[2] as double?,
+            monthlyTrend: current.monthlyTrend,
+            topFiveAreas: results[0] as List<AreaModel>,
             selectedMonthKey: monthKey,
           ),
         ),
