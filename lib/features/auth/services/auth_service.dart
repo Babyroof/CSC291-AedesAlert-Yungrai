@@ -49,6 +49,7 @@ class AuthService {
             .collection('users')
             .doc(user.uid)
             .set(model.toFirestore());
+        await _auth.signOut();
         debugPrint('[AuthService] register: success — uid=${user.uid}');
         return 'Success';
       } catch (e) {

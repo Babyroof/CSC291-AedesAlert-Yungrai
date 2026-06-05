@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aedes_alert_yungrai/core/themes/app_colors.dart';
 import 'package:aedes_alert_yungrai/features/profile/domain/entities/user_profile_entity.dart';
 import 'package:aedes_alert_yungrai/features/profile/presentation/controllers/profile_controller.dart';
+import 'package:aedes_alert_yungrai/features/profile/presentation/controllers/profile_state.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -27,15 +28,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final profile = ref.read(profileControllerProvider).profile.valueOrNull;
-    _firstNameController = TextEditingController(
-      text: profile?.firstName ?? '',
-    );
-    _lastNameController = TextEditingController(text: profile?.lastName ?? '');
-    _emailController = TextEditingController(text: profile?.email ?? '');
-    _phoneNumberController = TextEditingController(
-      text: profile?.phoneNumber ?? '',
-    );
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    _emailController = TextEditingController();
+    _phoneNumberController = TextEditingController();
+  }
+
+  void _populateControllers(UserProfileEntity profile) {
+    if (_firstNameController.text.isEmpty) {
+      _firstNameController.text = profile.firstName;
+      _lastNameController.text = profile.lastName;
+      _emailController.text = profile.email;
+      _phoneNumberController.text = profile.phoneNumber;
+    }
   }
 
   @override
@@ -187,7 +192,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<ProfileState>(
+      profileControllerProvider,
+      (_, next) {
+            final p = next.profile.valueOrNull;
+            if (p != null) _populateControllers(p);
+          }
+          as void Function(ProfileState?, ProfileState),
+    );
+
     final profile = ref.watch(profileControllerProvider).profile.valueOrNull;
+
+    // Populate immediately if already loaded
+    if (profile != null) _populateControllers(profile);
 
     return Scaffold(
       backgroundColor: AppColors.background,
