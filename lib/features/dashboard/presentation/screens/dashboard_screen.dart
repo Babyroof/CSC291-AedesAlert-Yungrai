@@ -10,10 +10,9 @@ import '../../../../features/dashboard/presentation/controllers/dashboard_init_p
 // Tracks the currently selected month key ("YYYY-MM").
 // Initialized to the current month so the button label is correct on the
 // very first frame, before Firestore data arrives.
-final _selectedMonthKeyProvider = StateProvider<String?>((ref) {
-  final now = DateTime.now();
-  return '${now.year}-${now.month.toString().padLeft(2, '0')}';
-});
+// Initialize to null — the effective month is derived from the most-recent
+// month that exists in Firestore data, set once summary loads.
+final _selectedMonthKeyProvider = StateProvider<String?>((ref) => null);
 
 // ─── View Model ───────────────────────────────────────────────────────────────
 // All hardcoded values live here.
@@ -119,20 +118,6 @@ class _DashboardViewData {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/// Returns the month key for [monthsBack] months before [base].
-/// [base] must be in "YYYY-MM" format.
-String _shiftMonthKey(String base, int monthsBack) {
-  final parts = base.split('-');
-  int year = int.parse(parts[0]);
-  int month = int.parse(parts[1]);
-  month -= monthsBack;
-  while (month <= 0) {
-    month += 12;
-    year -= 1;
-  }
-  return '$year-${month.toString().padLeft(2, '0')}';
-}
-
 /// Returns the 3-letter month abbreviation from a "YYYY-MM" key.
 String _monthAbbr(String monthKey) {
   final parts = monthKey.split('-');
@@ -224,21 +209,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       chartScores = [];
       chartLabels = [];
       chartHighlightIndex = 0;
-    } else if (selectedKey != null) {
-      final k0 = _shiftMonthKey(selectedKey, 2); // 2 months before selected
-      final k1 = _shiftMonthKey(selectedKey, 1); // 1 month before selected
-      final k2 = selectedKey; // the selected month
-
-      final trend = summary?.monthlyTrend ?? [];
-      final scoreMap = {for (final m in trend) m.monthKey: m.avgRiskScore};
-
-      chartScores = [
-        scoreMap[k0] ?? 0.0,
-        scoreMap[k1] ?? 0.0,
-        scoreMap[k2] ?? 0.0,
-      ];
-      chartLabels = [_monthAbbr(k0), _monthAbbr(k1), _monthAbbr(k2)];
-      chartHighlightIndex = 2; // rightmost bar = selected month
+    } else if (summary != null && summary.monthlyTrend.isNotEmpty) {
+      // Use actual data months as bars so 0.0 never appears for missing months.
+      final trend = summary.monthlyTrend;
+      chartScores = trend.map((m) => m.avgRiskScore).toList();
+      chartLabels = trend.map((m) => _monthAbbr(m.monthKey)).toList();
+      final idx = selectedKey != null
+          ? trend.indexWhere((m) => m.monthKey == selectedKey)
+          : -1;
+      chartHighlightIndex = idx >= 0 ? idx : trend.length - 1;
     } else {
       // Fallback before data loads
       chartScores = displayData.monthlyScores.length >= 3
@@ -252,9 +231,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       chartHighlightIndex = chartScores.isEmpty ? 0 : chartScores.length - 1;
     }
 
-    // Avg risk score: use the district-scoped value from the summary.
-    // null means no district is known → show "--" in the card.
-    final double? avgRiskScore = summary?.averageRiskScore;
+    // Avg risk score: prefer district-scoped value; fall back to the selected
+    // month's trend avg so the card never shows "--" when chart data exists.
+    final double? avgRiskScore =
+        summary?.averageRiskScore ??
+        summary?.monthlyTrend
+            .where((m) => m.monthKey == selectedKey)
+            .map((m) => m.avgRiskScore)
+            .firstOrNull;
 
     return Scaffold(
       appBar: const YungraiAppBar(),

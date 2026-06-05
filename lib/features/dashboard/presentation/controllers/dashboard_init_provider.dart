@@ -28,17 +28,9 @@ final dashboardInitProvider = FutureProvider<void>((ref) async {
       homeState.latestDistrictArea.valueOrNull?.district ??
       homeState.nearestArea.valueOrNull?.district;
 
-  // Compute the current month key the same way _selectedMonthKeyProvider does
-  // so that Risk Distribution and Top 5 Areas show the correct month on first
-  // load instead of defaulting to the most-recent month in Firestore data.
-  final now = DateTime.now();
-  final currentMonthKey = '${now.year}-${now.month.toString().padLeft(2, '0')}';
-
+  // Pass selectedMonthKey = null so GetDashboardSummaryUseCase auto-detects
+  // the most-recent month that actually has data in Firestore.
   await ref
       .read(dashboardControllerProvider.notifier)
-      .loadDashboard(
-        userLocation: location,
-        userDistrict: userDistrict,
-        selectedMonthKey: currentMonthKey,
-      );
+      .loadDashboard(userLocation: location, userDistrict: userDistrict);
 });

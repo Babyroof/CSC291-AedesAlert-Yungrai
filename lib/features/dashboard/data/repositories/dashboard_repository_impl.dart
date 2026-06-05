@@ -21,6 +21,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   Future<List<AreaModel>> getTopAreasByRisk({int limit = 5}) async {
     final snapshot = await _firestore
         .collection(AppConstants.areasCollection)
+        .where('isLatest', isEqualTo: true)
         .orderBy('riskScore', descending: true)
         .limit(limit)
         .get();
